@@ -16,15 +16,19 @@ import {
   isURLValid,
   isUUIDValid,
 } from './validations/index.js';
+import { ISortDirection } from './utils/types.js';
 import {
   generateUUID,
+
+  delay,
+  retryAsyncFunction,
 } from './utils/index.js';
 
 /* ************************************************************************************************
  *                                         MODULE EXPORTS                                         *
  ************************************************************************************************ */
 export {
-  // shared types
+  // shared
   type IUUIDVersion,
 
   // validations
@@ -45,5 +49,9 @@ export {
   isUUIDValid,
 
   // utils
+  type ISortDirection,
   generateUUID,
+
+  delay,
+  retryAsyncFunction,
 };
