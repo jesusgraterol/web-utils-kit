@@ -20,6 +20,8 @@ import { ISortDirection } from './utils/types.js';
 import {
   generateUUID,
 
+  sortPrimitives,
+  sortRecords,
   delay,
   retryAsyncFunction,
 } from './utils/index.js';
@@ -52,6 +54,8 @@ export {
   type ISortDirection,
   generateUUID,
 
+  sortPrimitives,
+  sortRecords,
   delay,
   retryAsyncFunction,
 };
