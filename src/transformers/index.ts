@@ -1,4 +1,4 @@
-
+import { IDateTemplate } from './types.js';
 
 /* ************************************************************************************************
  *                                           CONSTANTS                                            *
@@ -38,6 +38,14 @@ const prettifyNumber = (
 };
 
 /**
+ * Formats a date instance based on a template.
+ * @param value
+ * @param template
+ * @returns string
+ */
+const prettifyDate = (value: Date | number | string, template: IDateTemplate): string => '';
+
+/**
  * Formats a bytes value into a human readable format.
  * @param value
  * @param decimalPlaces
@@ -69,6 +77,26 @@ const prettifyFileSize = (value: number, decimalPlaces: number = 2): string => {
 };
 
 
+/**
+ * Capitalizes the first letter of a string and returns the new value.
+ * @param val
+ * @returns string
+ */
+const capitalizeFirst = (value: string): string => (
+  value.length > 0 ? `${value[0].toUpperCase()}${value.slice(1)}` : ''
+);
+
+/**
+ * Converts a string value into Title Case.
+ * @param value
+ * @returns string
+ */
+const toTitleCase = (value: string): string => value.replace(
+  /\w\S*/g,
+  (text) => text.charAt(0).toUpperCase() + text.substring(1).toLowerCase(),
+);
+
+
 
 
 
@@ -77,5 +105,8 @@ const prettifyFileSize = (value: number, decimalPlaces: number = 2): string => {
  ************************************************************************************************ */
 export {
   prettifyNumber,
+  prettifyDate,
   prettifyFileSize,
+  capitalizeFirst,
+  toTitleCase,
 };

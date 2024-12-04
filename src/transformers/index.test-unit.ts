@@ -2,6 +2,8 @@ import { describe, test, expect } from 'vitest';
 import {
   prettifyNumber,
   prettifyFileSize,
+  capitalizeFirst,
+  toTitleCase,
 } from './index.js';
 
 /* ************************************************************************************************
@@ -34,5 +36,31 @@ describe('prettifyFileSize', () => {
     [Number.MAX_SAFE_INTEGER, 2, '8.00 PB'],
   ])('prettifyFileSize(%d, %i) -> %s', (a, b, expected) => {
     expect(prettifyFileSize(a, b)).toBe(expected);
+  });
+
+
+
+  describe('capitalizeFirst', () => {
+    test.each([
+      ['', ''],
+      ['hello world', 'Hello world'],
+      ['this should work', 'This should work'],
+    ])('capitalizeFirst(%s) -> %s', (a, expected) => {
+      expect(capitalizeFirst(a)).toBe(expected);
+    });
+  });
+
+
+
+  describe('toTitleCase', () => {
+    test.each([
+      ['', ''],
+      ['hello world', 'Hello World'],
+      ['This should work', 'This Should Work'],
+      ['jesus graterol', 'Jesus Graterol'],
+      ['JESUS GRATEROL', 'Jesus Graterol'],
+    ])('toTitleCase(%s) -> %s', (a, expected) => {
+      expect(toTitleCase(a)).toBe(expected);
+    });
   });
 });

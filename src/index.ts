@@ -28,9 +28,13 @@ import {
   delay,
   retryAsyncFunction,
 } from './utils/index.js';
+import { IDateTemplate } from './transformers/types.js';
 import {
+  prettifyDate,
   prettifyNumber,
   prettifyFileSize,
+  capitalizeFirst,
+  toTitleCase,
 } from './transformers/index.js';
 
 /* ************************************************************************************************
@@ -70,6 +74,10 @@ export {
   retryAsyncFunction,
 
   // transformers
+  type IDateTemplate,
+  prettifyDate,
   prettifyNumber,
   prettifyFileSize,
+  capitalizeFirst,
+  toTitleCase,
 };
