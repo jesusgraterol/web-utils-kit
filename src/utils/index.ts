@@ -45,9 +45,10 @@ const generateRandomString = (
  * @param max
  * @returns number
  */
-const generateRandomFloat = (min: number, max: number): number => (
-  Math.random() * (max - min + 1) + min
-);
+const generateRandomFloat = (min: number, max: number): number => {
+  const value = Math.random() * (max - min + 1) + min;
+  return value > max ? max : value;
+};
 
 /**
  * Generates a random number (integer) constrained by the range.

@@ -28,6 +28,10 @@ import {
   delay,
   retryAsyncFunction,
 } from './utils/index.js';
+import {
+  prettifyNumber,
+  prettifyFileSize,
+} from './transformers/index.js';
 
 /* ************************************************************************************************
  *                                         MODULE EXPORTS                                         *
@@ -64,4 +68,8 @@ export {
   sortRecords,
   delay,
   retryAsyncFunction,
+
+  // transformers
+  prettifyNumber,
+  prettifyFileSize,
 };
