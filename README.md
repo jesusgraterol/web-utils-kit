@@ -16,25 +16,14 @@ npm install -S web-utils
 ```
 
 
+## Examples
 
-
-
-</br>
-
-## Usage
-
-Encoding an error:
+...:
 
 ```typescript
-import { encodeError } from 'error-message-utils';
+import { ... } from 'web-utils';
 
-if (emailExists()) {
-  throw new Error(encodeError(
-    'The provided email is already in use.', 
-    'EMAIL_EXISTS'
-  ));
-  // 'The provided email is already in use.{(EMAIL_EXISTS)}'
-}
+...
 ```
 
 
@@ -70,26 +59,6 @@ npm run test:unit
 ## License
 
 [MIT](https://choosealicense.com/licenses/mit/)
-
-
-
-
-
-<br/>
-
-## Acknowledgments
-
-- ...
-
-
-
-
-
-<br/>
-
-## @TODOS
-
-- [ ] ...
 
 
 

@@ -1,7 +1,7 @@
 {
   "name": "web-utils",
   "version": "1.0.0",
-  "description": "web-utils provides a collection of well-tested and thoroughly documented utility functions for various web development needs. Each function adheres to a strict coding style and best practices to ensure consistency and maintainability.",
+  "description": "The web-utils package provides a collection of well-tested and thoroughly documented utility functions for various web development needs. Each function adheres to a strict coding style and best practices to ensure consistency and maintainability.",
   "type": "module",
   "main": "dist/index.js",
   "scripts": {
