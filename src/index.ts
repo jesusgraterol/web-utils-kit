@@ -16,6 +16,9 @@ import {
   isURLValid,
   isUUIDValid,
 } from './validations/index.js';
+import {
+  generateUUID,
+} from './utils/index.js';
 
 /* ************************************************************************************************
  *                                         MODULE EXPORTS                                         *
@@ -41,6 +44,6 @@ export {
   isURLValid,
   isUUIDValid,
 
-  // utilities
-  // ...
+  // utils
+  generateUUID,
 };
