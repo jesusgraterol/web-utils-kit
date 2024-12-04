@@ -123,6 +123,79 @@ const isPasswordValid = (
   && /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_])[A-Za-z\d\W_]+$/.test(value)
 );
 
+/**
+ * Verifies if a value has the correct OTP Secret Format.
+ * @param value
+ * @returns boolean
+ */
+const isOTPSecretValid = (value: unknown): value is string => (
+  typeof value === 'string'
+  && /^[0-9a-zA-Z]{16,64}$/.test(value)
+);
+
+/**
+ * Verifies if a value has the correct OTP Token Format.
+ * @param value
+ * @returns boolean
+ */
+const isOTPTokenValid = (value: unknown): value is string => (
+  typeof value === 'string'
+  && /^[0-9]{6}$/.test(value)
+);
+
+/**
+ * Verifies if a value has a correct JWT Format:
+ * [Base64-URL Encoded Header].[Base64-URL Encoded Payload].[Signature]
+ * @param value
+ * @returns boolean
+ */
+const isJWTValid = (value: unknown): value is string => (
+  typeof value === 'string'
+  && /^[A-Za-z0-9-_]{2,1000}\.[A-Za-z0-9-_]{2,1000}\.[A-Za-z0-9-_]{2,1000}$/.test(value)
+);
+
+/**
+ * Verifies if a value has a valid Authorization Header format based on the RFC6750. Example:
+ * Authorization: Bearer eyJhbGciOiJIUzI1NiIXVCJ9TJV...r7E20RMHrHDcEfxjoYZgeFONFh7HgQ
+ * More info:
+ * - https://stackoverflow.com/questions/33265812/best-http-authorization-header-type-for-jwt
+ * - https://www.rfc-editor.org/rfc/rfc6750
+ * @param value
+ * @returns boolean
+ */
+const isAuthorizationHeaderValid = (value: unknown): value is string => (
+  typeof value === 'string'
+  && /^Bearer [A-Za-z0-9-_]{2,1000}\.[A-Za-z0-9-_]{2,1000}\.[A-Za-z0-9-_]{2,1000}$/.test(value)
+);
+
+/**
+ * Verifies if a value complies with semantic versioning.
+ * @param value
+ * @returns boolean
+ */
+const isSemverValid = (value: unknown): value is string => (
+  typeof value === 'string'
+  && /^[0-9]{1,5}\.[0-9]{1,5}\.[0-9]{1,5}$/.test(value)
+);
+
+/**
+ * Verifies if a value is a valid URL.
+ * @param value
+ * @returns boolean
+ */
+const isURLValid = (value: unknown): value is string => {
+  if (typeof value !== 'string') {
+    return false;
+  }
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const _ = new URL(value);
+    return true;
+  } catch (e) {
+    return false;
+  }
+};
+
 
 
 
@@ -139,4 +212,10 @@ export {
   isArrayValid,
   isSlugValid,
   isPasswordValid,
+  isOTPSecretValid,
+  isOTPTokenValid,
+  isJWTValid,
+  isAuthorizationHeaderValid,
+  isSemverValid,
+  isURLValid,
 };
