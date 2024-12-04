@@ -1,6 +1,7 @@
 import { describe, afterEach, test, expect, vi } from 'vitest';
 import { ISortDirection } from './types.js';
 import {
+  generateSequence,
   sortPrimitives,
   sortRecords,
   delay,
@@ -12,7 +13,23 @@ import { ERRORS } from '../shared/errors.js';
  *                                             TESTS                                              *
  ************************************************************************************************ */
 
-describe('Sorting Utilities', () => {
+describe('Generators', () => {
+  describe('generateSequence', () => {
+    test.each([
+      [1, 10, 1, [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]],
+      [1, 10, 2, [1, 3, 5, 7, 9]],
+      [0, 4, 1, [0, 1, 2, 3, 4]],
+    ])('generateSequence(%d, %d, %d) -> %o', (a, b, c, expected) => {
+      expect(generateSequence(a, b, c)).toStrictEqual(expected);
+    });
+  });
+});
+
+
+
+
+
+describe('Sorting Utils', () => {
   test.each(<Array<[(number | string)[], ISortDirection, (number | string)[]]>>[
     [[], 'asc', []],
 

@@ -20,6 +20,36 @@ const generateUUID = (version: IUUIDVersion): string => {
   return uuidv4();
 };
 
+/**
+ * Generates a string from randomly picked characters based on the length.
+ * @param length
+ * @param characters?
+ * @returns string
+ */
+const generateRandomString = (
+  length: number,
+  characters: string = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789',
+): string => {
+  let result = '';
+  let counter = 0;
+  while (counter < length) {
+    result += characters.charAt(Math.floor(Math.random() * characters.length));
+    counter += 1;
+  }
+  return result;
+};
+
+/**
+ * Generates a sequence of numbers within a range based on a number of steps.
+ * @param start
+ * @param stop
+ * @param step?
+ * @returns number[]
+ */
+const generateSequence = (start: number, stop: number, step: number = 1): number[] => (
+  Array.from({ length: (stop - start) / step + 1 }, (_, i) => start + i * step)
+);
+
 
 
 
@@ -152,6 +182,9 @@ const retryAsyncFunction = async <T>(
 export {
   // generators
   generateUUID,
+  generateRandomString,
+
+  generateSequence,
 
   // sorting utils
   sortPrimitives,
