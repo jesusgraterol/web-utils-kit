@@ -1,4 +1,5 @@
-
+import { version as uuidVersion, validate as uuidValidate } from 'uuid';
+import { IUUIDVersion } from '../shared/types.js';
 
 /* ************************************************************************************************
  *                                         IMPLEMENTATION                                         *
@@ -196,6 +197,18 @@ const isURLValid = (value: unknown): value is string => {
   }
 };
 
+/**
+ * Verifies if a value is a valid UUID and that it matches a specific version.
+ * @param value
+ * @param version
+ * @returns boolean
+ */
+const isUUIDValid = (value: unknown, version: IUUIDVersion): value is string => (
+  typeof value === 'string'
+  && uuidValidate(value)
+  && uuidVersion(value) === version
+);
+
 
 
 
@@ -218,4 +231,5 @@ export {
   isAuthorizationHeaderValid,
   isSemverValid,
   isURLValid,
+  isUUIDValid,
 };

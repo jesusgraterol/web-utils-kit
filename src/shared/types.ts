@@ -8,7 +8,7 @@
  * UUID Version
  * The UUID versions supported by this library.
  */
-type IUUIDVersion = 'v4' | 'v7';
+type IUUIDVersion = 4 | 7;
 
 
 

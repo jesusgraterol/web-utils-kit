@@ -14,7 +14,9 @@ import {
   isAuthorizationHeaderValid,
   isSemverValid,
   isURLValid,
+  isUUIDValid,
 } from './index.js';
+import { IUUIDVersion } from '../shared/types.js';
 
 /* ************************************************************************************************
  *                                             TESTS                                              *
@@ -569,5 +571,52 @@ describe('isURLValid', () => {
     ['www.balancer.jesusgraterol.dev', false],
   ])('isURLValid(%s) -> %s', (a, expected) => {
     expect(isURLValid(a)).toBe(expected);
+  });
+});
+
+
+
+
+
+describe('isUUIDValid', () => {
+  test.each([
+    // valid
+    ['fcd089f1-6a2c-48b8-b2d7-9faebd1fdfb6', 4, true],
+    ['876cce51-a546-4256-a067-5bc7cdc673ca', 4, true],
+    ['a2047635-3d32-4774-b83d-f9474b9606db', 4, true],
+    ['62af1b6c-6e82-489f-89e4-a5f84b2ec7eb', 4, true],
+    ['06ddec6e-a973-4bd0-b2c8-5b01233eee02', 4, true],
+    ['9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d', 4, true],
+    ['01695553-c90c-705a-b56d-778dfbbd4bed', 7, true],
+
+    // invalid
+    [undefined, 4, false],
+    [null, 4, false],
+    [{}, 4, false],
+    [[], 4, false],
+    ['a', 4, false],
+    ['JESUSGRATEROL@', 4, false],
+    ['Jes15-Gratero_.!', 4, false],
+    ['@@', 4, false],
+    ['Jes15-Gratero_.as', 4, false],
+    ['jesu()', 4, false],
+    ['asdjkhxaslkdj546512asdkasd', 4, false],
+    ['', 4, false],
+    [' ', 4, false],
+    ['   ', 4, false],
+    [123, 4, false],
+    ['9b1deb4d-3b7d4bad-9bdd-2b0d7b3dcb6d', 4, false],
+    ['9b1deb4d-3b7d4bad-9bdd-2b0d7b3dcb6d', 4, false],
+    ['9b1deb4d-3%7d-4bad-9bdd-2b0d7b3d-b6d', 4, false],
+    ['d9428888-122b-11e1-b85c-61cd3cbb3210', 4, false],
+    ['c106a26a-21bb-5538-8bf2-57095d1976c1', 4, false],
+    ['630eb68f-e0fa-5ecc-887a-7c7a62614681', 4, false],
+    ['06ddec6e-a973-4bd0-b2c8-5b01233eee02a', 4, false],
+    ['06ddec6e-a973-4bd0-b2c8-5b01233eee0', 4, false],
+    ['9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d', 7, false],
+    ['01695553-c90c-705a-b56d-778dfbbd4bed', 4, false],
+    [true, 4, false],
+  ])('isUUIDValid(%s, %d) -> %s', (a, b, expected) => {
+    expect(isUUIDValid(a, b as IUUIDVersion)).toBe(expected);
   });
 });
