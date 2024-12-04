@@ -48,6 +48,9 @@ npm run test:integration
 
 # unit tests
 npm run test:unit
+
+# benchmarks
+npm run test:bench
 ```
 
 

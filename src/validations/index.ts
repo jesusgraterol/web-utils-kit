@@ -26,11 +26,14 @@ const isStringValid = (value: unknown, minLength?: number, maxLength?: number): 
  * @param max?
  * @returns boolean
  */
-const isNumberValid = (value: unknown, min?: number, max?: number): value is number => (
+const isNumberValid = (
+  value: unknown,
+  min: number = Number.MIN_SAFE_INTEGER,
+  max: number = Number.MAX_SAFE_INTEGER,
+): value is number => (
   typeof value === 'number'
-  && !Number.isNaN(value)
-  && value >= (min ?? Number.MIN_SAFE_INTEGER)
-  && value <= (max ?? Number.MAX_SAFE_INTEGER)
+  && value >= min
+  && value <= max
 );
 
 /**
@@ -86,10 +89,16 @@ const isArrayValid = (value: unknown, allowEmpty?: boolean): value is Array<any>
  * - Accepts - , . and/or _
  * - Meets a length range (Defaults to 2 - 16)
  * @param value
+ * @param minLength?
+ * @param maxLength?
  * @returns boolean
  */
-const isSlugValid = (value: unknown, minLength?: number, maxLength?: number): value is string => (
-  isStringValid(value, minLength ?? 2, maxLength ?? 16)
+const isSlugValid = (
+  value: unknown,
+  minLength: number = 2,
+  maxLength: number = 16,
+): value is string => (
+  isStringValid(value, minLength, maxLength)
   && /^[a-zA-Z0-9\-._]+$/.test(value)
 );
 
@@ -101,16 +110,20 @@ const isSlugValid = (value: unknown, minLength?: number, maxLength?: number): va
  * - At least one number
  * - At least one special character
  * @param value
+ * @param minLength?
+ * @param maxLength?
  * @returns boolean
  */
 const isPasswordValid = (
   value: unknown,
-  minLength?: number,
-  maxLength?: number,
+  minLength: number = 8,
+  maxLength: number = 2048,
 ): value is string => (
-  isStringValid(value, minLength ?? 8, maxLength ?? 2048)
+  isStringValid(value, minLength, maxLength)
   && /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_])[A-Za-z\d\W_]+$/.test(value)
 );
+
+
 
 
 
