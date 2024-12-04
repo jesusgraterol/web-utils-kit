@@ -40,6 +40,26 @@ const generateRandomString = (
 };
 
 /**
+ * Generates a random number (decimal) constrained by the range.
+ * @param min
+ * @param max
+ * @returns number
+ */
+const generateRandomFloat = (min: number, max: number): number => (
+  Math.random() * (max - min + 1) + min
+);
+
+/**
+ * Generates a random number (integer) constrained by the range.
+ * @param min
+ * @param max
+ * @returns number
+ */
+const generateRandomInteger = (min: number, max: number): number => (
+  Math.floor(generateRandomFloat(min, max))
+);
+
+/**
  * Generates a sequence of numbers within a range based on a number of steps.
  * @param start
  * @param stop
@@ -183,7 +203,8 @@ export {
   // generators
   generateUUID,
   generateRandomString,
-
+  generateRandomFloat,
+  generateRandomInteger,
   generateSequence,
 
   // sorting utils

@@ -1,6 +1,11 @@
 import { describe, test, expect } from 'vitest';
-import { isUUIDValid } from '../validations/index.js';
-import { generateRandomString, generateUUID } from './index.js';
+import { isIntegerValid, isUUIDValid } from '../validations/index.js';
+import {
+  generateUUID,
+  generateRandomString,
+  generateRandomFloat,
+  generateRandomInteger,
+} from './index.js';
 
 /* ************************************************************************************************
  *                                             TESTS                                              *
@@ -53,6 +58,39 @@ describe('Generators', () => {
     test('can generate a random string out a custom list of characters', () => {
       expect(/^[ABCDEFG]{100}$/.test(generateRandomString(100, 'ABCDEFG'))).toBe(true);
       expect(/^[0-9]{100}$/.test(generateRandomString(100, '0123456789'))).toBe(true);
+    });
+  });
+
+
+
+  describe('generateRandomFloat', () => {
+    test.each([
+      [1, 10],
+      [100, 1000],
+      [-100, 10000],
+      [76, 9885],
+      [-5112, -11],
+    ])('generateRandomFloat(%d, %d)', (min, max) => {
+      const val = generateRandomFloat(min, max);
+      expect(val).toBeGreaterThanOrEqual(min);
+      expect(val).toBeLessThanOrEqual(max);
+    });
+  });
+
+
+
+  describe('generateRandomInteger', () => {
+    test.each([
+      [1, 10],
+      [100, 1000],
+      [-100, 10000],
+      [76, 9885],
+      [-5112, -11],
+    ])('generateRandomInteger(%d, %d)', (min, max) => {
+      const val = generateRandomInteger(min, max);
+      expect(val).toBeGreaterThanOrEqual(min);
+      expect(val).toBeLessThanOrEqual(max);
+      expect(isIntegerValid(val)).toBe(true);
     });
   });
 });

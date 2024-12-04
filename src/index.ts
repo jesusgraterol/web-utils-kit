@@ -19,7 +19,10 @@ import {
 import { ISortDirection } from './utils/types.js';
 import {
   generateUUID,
-
+  generateRandomString,
+  generateRandomFloat,
+  generateRandomInteger,
+  generateSequence,
   sortPrimitives,
   sortRecords,
   delay,
@@ -53,7 +56,10 @@ export {
   // utils
   type ISortDirection,
   generateUUID,
-
+  generateRandomString,
+  generateRandomFloat,
+  generateRandomInteger,
+  generateSequence,
   sortPrimitives,
   sortRecords,
   delay,
