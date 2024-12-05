@@ -16,6 +16,16 @@ import {
   isURLValid,
   isUUIDValid,
 } from './validations/index.js';
+import { INumberFormatConfig, IDateTemplate } from './transformers/types.js';
+import {
+  prettifyNumber,
+  prettifyDate,
+  prettifyFileSize,
+  prettifyBadgeCount,
+  capitalizeFirst,
+  toTitleCase,
+  toSlug,
+} from './transformers/index.js';
 import { ISortDirection } from './utils/types.js';
 import {
   generateUUID,
@@ -28,16 +38,6 @@ import {
   delay,
   retryAsyncFunction,
 } from './utils/index.js';
-import { INumberFormatConfig, IDateTemplate } from './transformers/types.js';
-import {
-  prettifyNumber,
-  prettifyDate,
-  prettifyFileSize,
-  prettifyBadgeCount,
-  capitalizeFirst,
-  toTitleCase,
-  toSlug,
-} from './transformers/index.js';
 
 /* ************************************************************************************************
  *                                         MODULE EXPORTS                                         *
@@ -63,6 +63,17 @@ export {
   isURLValid,
   isUUIDValid,
 
+  // transformers
+  type INumberFormatConfig,
+  type IDateTemplate,
+  prettifyNumber,
+  prettifyDate,
+  prettifyFileSize,
+  prettifyBadgeCount,
+  capitalizeFirst,
+  toTitleCase,
+  toSlug,
+
   // utils
   type ISortDirection,
   generateUUID,
@@ -74,15 +85,4 @@ export {
   sortRecords,
   delay,
   retryAsyncFunction,
-
-  // transformers
-  type INumberFormatConfig,
-  type IDateTemplate,
-  prettifyNumber,
-  prettifyDate,
-  prettifyFileSize,
-  prettifyBadgeCount,
-  capitalizeFirst,
-  toTitleCase,
-  toSlug,
 };

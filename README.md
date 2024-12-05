@@ -234,6 +234,110 @@ import { ... } from 'web-utils';
 
 
 
+### Transformers
+
+<details>
+  <summary><code>prettifyNumber</code></summary>
+  
+  Verifies if a value is a valid UUID and that it matches a specific version.
+  ```typescript
+  import { prettifyNumber } from 'web-utils';
+
+  prettifyNumber(1000.583); // '1,000.58'
+  prettifyNumber(2654.69642236, { maximumFractionDigits: 8, suffix: ' BTC' }); 
+  // '2,654.69642236 BTC'
+  prettifyNumber(1000, { minimumFractionDigits: 2, prefix: '$' }); 
+  // '$1,000.00'
+  ```
+</details>
+
+<details>
+  <summary><code>prettifyDate</code></summary>
+  
+  Formats a date instance based on a template.
+  - `date-short` -> 12/05/2024 (Default)
+  - `date-medium` -> December 5, 2024
+  - `date-long` -> Thursday, December 5, 2024
+  - `time-short` -> 12:05 PM
+  - `time-medium` -> 12:05:20 PM
+  - `datetime-short` -> 12/5/2024, 12:05 PM
+  - `datetime-medium` -> December 5, 2024 at 12:05 PM
+  - `datetime-long` -> Thursday, December 5, 2024 at 12:05:20 PM
+  ```typescript
+  import { prettifyDate } from 'web-utils';
+
+  prettifyDate(new Date(), 'datetime-long'); 
+  // 'Thursday, December 5, 2024 at 12:05:20 PM'
+  prettifyDate(Date.now(), 'date-medium'); 
+  // 'December 5, 2024'
+  ```
+</details>
+
+<details>
+  <summary><code>prettifyFileSize</code></summary>
+  
+  Formats a bytes value into a human readable format.
+  ```typescript
+  import { prettifyFileSize } from 'web-utils';
+
+  prettifyFileSize(85545, 6); // '83.540039 kB'
+  prettifyFileSize(79551423); // '75.87 MB'
+  ```
+</details>
+
+<details>
+  <summary><code>prettifyBadgeCount</code></summary>
+  
+  Formats the number that will be inserted in a badge so it doesn't take too much space. If the current count is 0, it returns undefined as the badge shouldn't be displayed.
+  ```typescript
+  import { prettifyBadgeCount } from 'web-utils';
+
+  prettifyBadgeCount(0); // undefined
+  prettifyBadgeCount(11); // '9+'
+  prettifyBadgeCount(135, 99); // '99+'
+  ```
+</details>
+
+<details>
+  <summary><code>capitalizeFirst</code></summary>
+  
+  Capitalizes the first letter of a string and returns the new value.
+  ```typescript
+  import { capitalizeFirst } from 'web-utils';
+
+  capitalizeFirst('hello world'); // 'Hello world'
+  ```
+</details>
+
+<details>
+  <summary><code>toTitleCase</code></summary>
+  
+  Capitalizes the first letter of a string and returns the new value.
+  ```typescript
+  import { toTitleCase } from 'web-utils';
+
+  toTitleCase('hello world'); // 'Hello World'
+  ```
+</details>
+
+<details>
+  <summary><code>toSlug</code></summary>
+  
+  Capitalizes the first letter of a string and returns the new value.
+  ```typescript
+  import { toSlug } from 'web-utils';
+
+  toSlug('HELLO WORLD!!@'); // 'hello-world'
+  ```
+</details>
+
+
+
+
+
+
+
+
 
 
 <br/>
@@ -276,14 +380,14 @@ import { ... } from 'web-utils';
   <summary><code>IDateTemplate</code></summary>
   
   A date can be prettified by choosing a template that meets the user's requirements.
-  - `date-short` -> 29/04/1453
-  - `date-medium` -> April 29th, 1453
-  - `date-long` -> Friday, April 29th, 1453
-  - `time-short` -> 12:00 AM
-  - `time-medium` -> 12:00:00 AM
-  - `datetime-short` -> 29/04/1453, 12:00 AM
-  - `datetime-medium` -> Apr 29, 1453, 12:00:00 AM
-  - `datetime-long` -> Friday, April 29th, 1453 at 12:00:00 AM
+  - `date-short` -> 12/05/2024 (Default)
+  - `date-medium` -> December 5, 2024
+  - `date-long` -> Thursday, December 5, 2024
+  - `time-short` -> 12:05 PM
+  - `time-medium` -> 12:05:20 PM
+  - `datetime-short` -> 12/5/2024, 12:05 PM
+  - `datetime-medium` -> December 5, 2024 at 12:05 PM
+  - `datetime-long` -> Thursday, December 5, 2024 at 12:05:20 PM
   ```typescript
   type IDateTemplate = 'date-short' | 'date-medium' | 'date-long' | 'time-short' | 'time-medium' | 'datetime-short' | 'datetime-medium' | 'datetime-long';
   ```
