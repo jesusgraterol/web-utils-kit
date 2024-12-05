@@ -35,6 +35,7 @@ import {
   prettifyFileSize,
   capitalizeFirst,
   toTitleCase,
+  toSlug,
 } from './transformers/index.js';
 
 /* ************************************************************************************************
@@ -80,4 +81,5 @@ export {
   prettifyFileSize,
   capitalizeFirst,
   toTitleCase,
+  toSlug,
 };

@@ -4,6 +4,7 @@ import {
   prettifyFileSize,
   capitalizeFirst,
   toTitleCase,
+  toSlug,
 } from './index.js';
 
 /* ************************************************************************************************
@@ -45,6 +46,7 @@ describe('prettifyFileSize', () => {
       ['', ''],
       ['hello world', 'Hello world'],
       ['this should work', 'This should work'],
+      ['hello World', 'Hello World'],
     ])('capitalizeFirst(%s) -> %s', (a, expected) => {
       expect(capitalizeFirst(a)).toBe(expected);
     });
@@ -61,6 +63,20 @@ describe('prettifyFileSize', () => {
       ['JESUS GRATEROL', 'Jesus Graterol'],
     ])('toTitleCase(%s) -> %s', (a, expected) => {
       expect(toTitleCase(a)).toBe(expected);
+    });
+  });
+
+
+
+  describe('toSlug', () => {
+    test.each([
+      ['', ''],
+      ['hello world', 'hello-world'],
+      ['hello - world', 'hello-world'],
+      ['HELLO WORLD', 'hello-world'],
+      ['This Should work!!@', 'this-should-work'],
+    ])('toSlug(%s) -> %s', (a, expected) => {
+      expect(toSlug(a)).toBe(expected);
     });
   });
 });

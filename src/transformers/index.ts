@@ -30,10 +30,7 @@ const prettifyNumber = (
   prefix?: string,
   suffix?: string,
 ): string => {
-  const prettifiedValue = value.toLocaleString(undefined, {
-    minimumFractionDigits: decimalPlaces,
-    maximumFractionDigits: decimalPlaces,
-  });
+  const prettifiedValue = value.toLocaleString(undefined, { maximumFractionDigits: decimalPlaces });
   return `${prefix ?? ''}${prettifiedValue}${suffix ?? ''}`;
 };
 
@@ -96,6 +93,15 @@ const toTitleCase = (value: string): string => value.replace(
   (text) => text.charAt(0).toUpperCase() + text.substring(1).toLowerCase(),
 );
 
+/**
+ * Converts a string value into a slug.
+ * @param value
+ * @returns string
+ */
+const toSlug = (value: string): string => (
+  value.length > 0 ? value.toLowerCase().replace(/[^\w ]+/g, '').replace(/ +/g, '-') : ''
+);
+
 
 
 
@@ -109,4 +115,5 @@ export {
   prettifyFileSize,
   capitalizeFirst,
   toTitleCase,
+  toSlug,
 };
