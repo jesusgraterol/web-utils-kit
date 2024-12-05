@@ -142,6 +142,18 @@ await res.json();
 </details>
 
 <details>
+  <summary><code>isEmailValid</code></summary>
+  
+  Verifies if a value is a valid email address.
+  ```typescript
+  import { isEmailValid } from 'web-utils-kit';
+
+  isEmailValid('jesusgraterol@gmail.com'); // true
+  isEmailValid('jesus@graterol'); // false
+  ```
+</details>
+
+<details>
   <summary><code>isSlugValid</code></summary>
   
   Verifies if a slug meets the following requirements:

@@ -6,6 +6,7 @@ import {
   isTimestampValid,
   isObjectValid,
   isArrayValid,
+  isEmailValid,
   isSlugValid,
   isPasswordValid,
   isOTPSecretValid,
@@ -238,6 +239,28 @@ describe('isArrayValid', () => {
     [true, undefined, false],
   ])('isArrayValid(%s, %s) -> %s', (a, b, expected) => {
     expect(isArrayValid(a, b)).toBe(expected);
+  });
+});
+
+
+
+
+
+describe('isEmailValid', () => {
+  test.each([
+    // valid
+    ['jesusgraterol@gmail.com', true],
+    ['hola@jesusgraterol.dev.com', true],
+    ['jesusgraterol.dev@protonmail.com', true],
+
+    // invalid
+    ['jesusgraterol@gmail.', false],
+    ['jesusgraterol@gmail', false],
+    ['domain.com', false],
+    ['@domain.com', false],
+    ['asd@domain.comasdasdasdasdasdasdasdasdasdasdasdasdasdasdaasdasdfasdfadasdsd', false],
+  ])('isEmailValid(%s) -> %s', (a, expected) => {
+    expect(isEmailValid(a)).toBe(expected);
   });
 });
 

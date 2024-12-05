@@ -84,6 +84,17 @@ const isArrayValid = (value: unknown, allowEmpty?: boolean): value is Array<any>
 );
 
 /**
+ * Verifies if a value is a valid email address.
+ * @param value
+ * @returns boolean
+ */
+const isEmailValid = (value: unknown): value is string => (
+  isStringValid(value, 5, 200)
+  // eslint-disable-next-line no-useless-escape
+  && /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)+$/.test(value)
+);
+
+/**
  * Verifies if a slug meets the following requirements:
  * - Accepts any Alpha Characters (lower and upper case)
  * - Accepts any digits
@@ -223,6 +234,7 @@ export {
   isTimestampValid,
   isObjectValid,
   isArrayValid,
+  isEmailValid,
   isSlugValid,
   isPasswordValid,
   isOTPSecretValid,
