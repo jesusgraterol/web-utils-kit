@@ -134,6 +134,22 @@ const prettifyFileSize = (value: number, decimalPlaces: number = 2): string => {
   return '0 B';
 };
 
+/**
+ * Formats the number that will be inserted in a badge so it doesn't take too much space. If the
+ * current count is 0, it returns undefined as the badge shouldn't be displayed.
+ * @param count
+ * @param maxValue?
+ * @returns string | undefined
+ */
+const prettifyBadgeCount = (value: number, maxValue: number = 9): string | undefined => {
+  if (value === 0) {
+    return undefined;
+  }
+  if (value >= maxValue) {
+    return `${maxValue}+`;
+  }
+  return String(value);
+};
 
 /**
  * Capitalizes the first letter of a string and returns the new value.
@@ -174,6 +190,7 @@ export {
   prettifyNumber,
   prettifyDate,
   prettifyFileSize,
+  prettifyBadgeCount,
   capitalizeFirst,
   toTitleCase,
   toSlug,

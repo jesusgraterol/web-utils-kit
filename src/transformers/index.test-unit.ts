@@ -2,6 +2,7 @@ import { describe, test, expect } from 'vitest';
 import {
   prettifyNumber,
   prettifyFileSize,
+  prettifyBadgeCount,
   capitalizeFirst,
   toTitleCase,
   toSlug,
@@ -65,6 +66,24 @@ describe('prettifyFileSize', () => {
     [Number.MAX_SAFE_INTEGER, 2, '8.00 PB'],
   ])('prettifyFileSize(%d, %i) -> %s', (a, b, expected) => {
     expect(prettifyFileSize(a, b)).toBe(expected);
+  });
+});
+
+
+
+
+
+describe('prettifyBadgeCount', () => {
+  test.each([
+    [0, undefined, undefined],
+    [1, undefined, '1'],
+    [9, undefined, '9+'],
+    [10, undefined, '9+'],
+    [9, 9, '9+'],
+    [10, 9, '9+'],
+    [100, 99, '99+'],
+  ])('prettifyBadgeCount(%d, %d) -> %s', (a, b, expected) => {
+    expect(prettifyBadgeCount(a, b)).toBe(expected);
   });
 });
 
