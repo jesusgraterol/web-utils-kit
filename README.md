@@ -1,6 +1,6 @@
-# Web Utils
+# Web Development Utililities
 
-The `web-utils` package provides a collection of well-tested and thoroughly documented utility functions for various web development needs. Each function adheres to a strict coding style and best practices to ensure consistency and maintainability.
+The `webdev-utils` package provides a collection of well-tested and thoroughly documented utility functions for various web development needs. Each function adheres to a strict coding style and best practices to ensure consistency and maintainability.
 
 
 
@@ -12,7 +12,7 @@ The `web-utils` package provides a collection of well-tested and thoroughly docu
 
 Install the package:
 ```bash
-npm install -S web-utils
+npm install -S webdev-utils
 ```
 
 
@@ -21,7 +21,7 @@ npm install -S web-utils
 Validate a password:
 
 ```typescript
-import { isPasswordValid } from 'web-utils';
+import { isPasswordValid } from 'webdev-utils';
 
 isPasswordValid('zR<q%+r2C,&fy.SE&~.(REXTqe4K[?>G'); // true
 isPasswordValid('some-weak-password'); // false
@@ -31,7 +31,7 @@ isPasswordValid('some-weak-password'); // false
 Sort a list of records:
 
 ```typescript
-import { sortRecords } from 'web-utils';
+import { sortRecords } from 'webdev-utils';
 
 [{ v: 1 }, { v: 2 }, { v: 3 }].sort(sortRecords('v', 'desc')); 
 // [{ v: 3 }, { v: 2 }, { v: 1 }]
@@ -40,7 +40,7 @@ import { sortRecords } from 'web-utils';
 Execute an asynchronous function persistently:
 
 ```typescript
-import { retryAsyncFunction } from 'web-utils';
+import { retryAsyncFunction } from 'webdev-utils';
 
 const res = await retryAsyncFunction(
   fetch, 
@@ -66,7 +66,7 @@ await res.json();
   
   Verifies if a value is a valid string and its length is within a range (optional).
   ```typescript
-  import { isStringValid } from 'web-utils';
+  import { isStringValid } from 'webdev-utils';
 
   isStringValid(''); // true
   isStringValid('', 1, 5); // false
@@ -80,7 +80,7 @@ await res.json();
   
   Verifies if a value is a valid number and is within a range (optional). The minimum value defaults to `Number.MIN_SAFE_INTEGER` (-9007199254740991) while the maximum value defaults to `Number.MAX_SAFE_INTEGER` (9007199254740991).
   ```typescript
-  import { isNumberValid } from 'web-utils';
+  import { isNumberValid } from 'webdev-utils';
 
   isNumberValid(1); // true
   isNumberValid(2, 3, 5); // false
@@ -94,7 +94,7 @@ await res.json();
   
   Verifies if a value is a valid integer and is within a range (optional). If a range is not provided, it will use the properties `Number.MIN_SAFE_INTEGER` & `Number.MAX_SAFE_INTEGER`.
   ```typescript
-  import { isIntegerValid } from 'web-utils';
+  import { isIntegerValid } from 'webdev-utils';
 
   isIntegerValid(1); // true
   isIntegerValid(1.5); // false
@@ -106,7 +106,7 @@ await res.json();
   
   Verifies if a value is a valid unix timestamp in milliseconds. The smallest value is set for the beginning of the Unix epoch (January 1st, 1970 - 14400000) on the numeric limit established by JavaScript (9007199254740991).
   ```typescript
-  import { isTimestampValid } from 'web-utils';
+  import { isTimestampValid } from 'webdev-utils';
 
   isTimestampValid(Date.now()); // true
   isTimestampValid(14399999); // false
@@ -119,7 +119,7 @@ await res.json();
   
   Verifies if a value is an actual object. It also validates if it has keys (optional).
   ```typescript
-  import { isObjectValid } from 'web-utils';
+  import { isObjectValid } from 'webdev-utils';
 
   isObjectValid({}); // false
   isObjectValid({}, true); // true
@@ -133,7 +133,7 @@ await res.json();
   
   Verifies if a value is an array. It also validates if it has elements inside (optional).
   ```typescript
-  import { isArrayValid } from 'web-utils';
+  import { isArrayValid } from 'webdev-utils';
 
   isArrayValid([]); // false
   isArrayValid([], true); // true
@@ -150,7 +150,7 @@ await res.json();
    - Accepts `-` `,` `.` and/or `_`
    - Meets a length range (Defaults to 2 - 16)
   ```typescript
-  import { isSlugValid } from 'web-utils';
+  import { isSlugValid } from 'webdev-utils';
 
   isSlugValid('PythonWiz333'); // true
   isSlugValid('hello-world', true); // true
@@ -168,7 +168,7 @@ await res.json();
    - At least one number
    - At least one special character
   ```typescript
-  import { isPasswordValid } from 'web-utils';
+  import { isPasswordValid } from 'webdev-utils';
 
   isPasswordValid('zR<q%+r2C,&fy.SE&~.(REXTqe4K[?>G'); // true
   isPasswordValid('some-weak-password'); // false
@@ -180,7 +180,7 @@ await res.json();
   
   Verifies if a value has the correct OTP Secret Format.
   ```typescript
-  import { isOTPSecretValid } from 'web-utils';
+  import { isOTPSecretValid } from 'webdev-utils';
 
   isOTPSecretValid('NB2RGV2KAY2CMACD'); // true
   ```
@@ -191,7 +191,7 @@ await res.json();
   
   Verifies if a value has the correct OTP Token Format.
   ```typescript
-  import { isOTPTokenValid } from 'web-utils';
+  import { isOTPTokenValid } from 'webdev-utils';
 
   isOTPTokenValid('123456'); // true
   isOTPTokenValid('1234567'); // false
@@ -203,7 +203,7 @@ await res.json();
   
   Verifies if a value has a correct JWT Format: `[Base64-URL Encoded Header].[Base64-URL Encoded Payload].[Signature]`
   ```typescript
-  import { isJWTValid } from 'web-utils';
+  import { isJWTValid } from 'webdev-utils';
 
   isJWTValid('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTIzNDU2Nzg5LCJuYW1lIjoiSm9zZXBoIn0.OpOSSw7e485LOP5PrzScxHb7SR6sAOMRckfFwi4rp7o'); 
   // true
@@ -216,7 +216,7 @@ await res.json();
   Verifies if a value has a valid Authorization Header format based on the RFC6750. Example: 
   `Authorization: Bearer eyJhbGciOiJIUzI1NiIXVCJ9TJV...r7E20RMHrHDcEfxjoYZgeFONFh7HgQ`
   ```typescript
-  import { isAuthorizationHeaderValid } from 'web-utils';
+  import { isAuthorizationHeaderValid } from 'webdev-utils';
 
   isAuthorizationHeaderValid('Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTIzNDU2Nzg5LCJuYW1lIjoiSm9zZXBoIn0.OpOSSw7e485LOP5PrzScxHb7SR6sAOMRckfFwi4rp7o'); 
   // true
@@ -228,7 +228,7 @@ await res.json();
   
   Verifies if a value complies with semantic versioning.
   ```typescript
-  import { isSemverValid } from 'web-utils';
+  import { isSemverValid } from 'webdev-utils';
 
   isSemverValid('1.0.0'); // true
   ```
@@ -239,7 +239,7 @@ await res.json();
   
   Verifies if a value is a valid URL.
   ```typescript
-  import { isURLValid } from 'web-utils';
+  import { isURLValid } from 'webdev-utils';
 
   isURLValid('https://jesusgraterol.dev'); // true
   isURLValid('jesusgraterol.dev'); // false
@@ -251,7 +251,7 @@ await res.json();
   
   Verifies if a value is a valid UUID and that it matches a specific version.
   ```typescript
-  import { isUUIDValid } from 'web-utils';
+  import { isUUIDValid } from 'webdev-utils';
 
   isUUIDValid('9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d', 4); // true
   isUUIDValid('01695553-c90c-705a-b56d-778dfbbd4bed', 7); // true
@@ -267,7 +267,7 @@ await res.json();
   
   Verifies if a value is a valid UUID and that it matches a specific version.
   ```typescript
-  import { prettifyNumber } from 'web-utils';
+  import { prettifyNumber } from 'webdev-utils';
 
   prettifyNumber(1000.583); // '1,000.58'
   prettifyNumber(2654.69642236, { maximumFractionDigits: 8, suffix: ' BTC' }); 
@@ -290,7 +290,7 @@ await res.json();
   - `datetime-medium` -> December 5, 2024 at 12:05 PM
   - `datetime-long` -> Thursday, December 5, 2024 at 12:05:20 PM
   ```typescript
-  import { prettifyDate } from 'web-utils';
+  import { prettifyDate } from 'webdev-utils';
 
   prettifyDate(new Date(), 'datetime-long'); 
   // 'Thursday, December 5, 2024 at 12:05:20 PM'
@@ -304,7 +304,7 @@ await res.json();
   
   Formats a bytes value into a human readable format.
   ```typescript
-  import { prettifyFileSize } from 'web-utils';
+  import { prettifyFileSize } from 'webdev-utils';
 
   prettifyFileSize(85545, 6); // '83.540039 kB'
   prettifyFileSize(79551423); // '75.87 MB'
@@ -316,7 +316,7 @@ await res.json();
   
   Formats the number that will be inserted in a badge so it doesn't take too much space. If the current count is 0, it returns undefined as the badge shouldn't be displayed.
   ```typescript
-  import { prettifyBadgeCount } from 'web-utils';
+  import { prettifyBadgeCount } from 'webdev-utils';
 
   prettifyBadgeCount(0); // undefined
   prettifyBadgeCount(11); // '9+'
@@ -329,7 +329,7 @@ await res.json();
   
   Capitalizes the first letter of a string and returns the new value.
   ```typescript
-  import { capitalizeFirst } from 'web-utils';
+  import { capitalizeFirst } from 'webdev-utils';
 
   capitalizeFirst('hello world'); // 'Hello world'
   ```
@@ -340,7 +340,7 @@ await res.json();
   
   Converts a string value into Title Case.
   ```typescript
-  import { toTitleCase } from 'web-utils';
+  import { toTitleCase } from 'webdev-utils';
 
   toTitleCase('hello world'); // 'Hello World'
   ```
@@ -351,7 +351,7 @@ await res.json();
   
   Converts a string value into a slug.
   ```typescript
-  import { toSlug } from 'web-utils';
+  import { toSlug } from 'webdev-utils';
 
   toSlug('HELLO WORLD!!@'); // 'hello-world'
   ```
@@ -366,7 +366,7 @@ await res.json();
   
   Generates a UUID based on a version.
   ```typescript
-  import { generateUUID } from 'web-utils';
+  import { generateUUID } from 'webdev-utils';
 
   generateUUID(4); // '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d'
   generateUUID(7); // '01695553-c90c-705a-b56d-778dfbbd4bed'
@@ -379,7 +379,7 @@ await res.json();
   
   Generates a string from randomly picked characters based on the length.
   ```typescript
-  import { generateRandomString } from 'web-utils';
+  import { generateRandomString } from 'webdev-utils';
 
   generateRandomString(15); // 'IbnqwSPvZdXxVyS'
   ```
@@ -391,7 +391,7 @@ await res.json();
   
   Generates a random number (decimal) constrained by the range.
   ```typescript
-  import { generateRandomFloat } from 'web-utils';
+  import { generateRandomFloat } from 'webdev-utils';
 
   generateRandomFloat(1, 100); // 67.551
   ```
@@ -403,7 +403,7 @@ await res.json();
   
   Generates a random number (integer) constrained by the range.
   ```typescript
-  import { generateRandomInteger } from 'web-utils';
+  import { generateRandomInteger } from 'webdev-utils';
 
   generateRandomInteger(1, 100); // 71
   ```
@@ -415,7 +415,7 @@ await res.json();
   
   Generates a sequence of numbers within a range based on a number of steps.
   ```typescript
-  import { generateSequence } from 'web-utils';
+  import { generateSequence } from 'webdev-utils';
 
   generateSequence(1, 10); // [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
   generateSequence(1, 10, 2); // [1, 3, 5, 7, 9]
@@ -428,7 +428,7 @@ await res.json();
   
   Sorts a list of primitive values based on their type and a sort direction.
   ```typescript
-  import { sortPrimitives } from 'web-utils';
+  import { sortPrimitives } from 'webdev-utils';
 
   [1, 2, 3, 4, 5].sort(sortPrimitives('asc')); 
   // [1, 2, 3, 4, 5]
@@ -447,7 +447,7 @@ await res.json();
   
   Sorts a list of record values by key based on their type and a sort direction.
   ```typescript
-  import { sortRecords } from 'web-utils';
+  import { sortRecords } from 'webdev-utils';
 
   [{ v: 1 }, { v: 2 }, { v: 3 }].sort(sortRecords('v', 'asc')); 
   // [1, 2, 3, 4, 5]
@@ -466,7 +466,7 @@ await res.json();
   
   Creates an asynchronous delay that resolves once the provided seconds have passed.
   ```typescript
-  import { delay } from 'web-utils';
+  import { delay } from 'webdev-utils';
 
   await delay(3);
   // ~3 seconds later
@@ -479,7 +479,7 @@ await res.json();
   
   Executes an asynchronous function persistently, retrying on error with incremental delays defined in retryScheduleDuration (seconds).
   ```typescript
-  import { retryAsyncFunction } from 'web-utils';
+  import { retryAsyncFunction } from 'webdev-utils';
 
   const res = await retryAsyncFunction(
     fetch, 
