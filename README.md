@@ -18,15 +18,41 @@ npm install -S web-utils
 
 ## Examples
 
-...:
+Validate a password:
 
 ```typescript
-import { ... } from 'web-utils';
+import { isPasswordValid } from 'web-utils';
 
-...
+isPasswordValid('zR<q%+r2C,&fy.SE&~.(REXTqe4K[?>G'); // true
+isPasswordValid('some-weak-password'); // false
 ```
 
 
+Sort a list of records:
+
+```typescript
+import { sortRecords } from 'web-utils';
+
+[{ v: 1 }, { v: 2 }, { v: 3 }].sort(sortRecords('v', 'desc')); 
+// [{ v: 3 }, { v: 2 }, { v: 1 }]
+```
+
+Execute an asynchronous function persistently:
+
+```typescript
+import { retryAsyncFunction } from 'web-utils';
+
+const res = await retryAsyncFunction(
+  fetch, 
+  ['https://api.example.com/user/1'], 
+  [3, 5]
+);
+await res.json();
+// {
+//   uid: '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d',
+//   nickname: 'PythonWiz333'
+// }
+```
 
 
 <br/>
