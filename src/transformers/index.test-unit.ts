@@ -5,6 +5,7 @@ import {
   capitalizeFirst,
   toTitleCase,
   toSlug,
+  prettifyDate,
 } from './index.js';
 import { INumberFormatConfig } from './types.js';
 
@@ -26,6 +27,32 @@ describe('prettifyNumber', () => {
 });
 
 
+
+
+
+describe('prettifyDate', () => {
+  test('', () => {
+    const ts = 1733414720203;
+    [
+      prettifyDate(ts, 'date-short'),
+      prettifyDate(ts, 'date-medium'),
+      prettifyDate(ts, 'date-long'),
+      prettifyDate(ts, 'time-short'),
+      prettifyDate(ts, 'time-medium'),
+      prettifyDate(ts, 'datetime-short'),
+      prettifyDate(ts, 'datetime-medium'),
+      prettifyDate(ts, 'datetime-long'),
+    ].forEach((dateString) => {
+      expect(dateString).toBeTypeOf('string');
+      expect(dateString.length).toBeGreaterThan(0);
+    });
+  });
+});
+
+
+
+
+
 describe('prettifyFileSize', () => {
   test.each([
     [1000, 2, '1000 B'],
@@ -39,45 +66,51 @@ describe('prettifyFileSize', () => {
   ])('prettifyFileSize(%d, %i) -> %s', (a, b, expected) => {
     expect(prettifyFileSize(a, b)).toBe(expected);
   });
+});
 
 
 
-  describe('capitalizeFirst', () => {
-    test.each([
-      ['', ''],
-      ['hello world', 'Hello world'],
-      ['this should work', 'This should work'],
-      ['hello World', 'Hello World'],
-    ])('capitalizeFirst(%s) -> %s', (a, expected) => {
-      expect(capitalizeFirst(a)).toBe(expected);
-    });
+
+
+describe('capitalizeFirst', () => {
+  test.each([
+    ['', ''],
+    ['hello world', 'Hello world'],
+    ['this should work', 'This should work'],
+    ['hello World', 'Hello World'],
+  ])('capitalizeFirst(%s) -> %s', (a, expected) => {
+    expect(capitalizeFirst(a)).toBe(expected);
   });
+});
 
 
 
-  describe('toTitleCase', () => {
-    test.each([
-      ['', ''],
-      ['hello world', 'Hello World'],
-      ['This should work', 'This Should Work'],
-      ['jesus graterol', 'Jesus Graterol'],
-      ['JESUS GRATEROL', 'Jesus Graterol'],
-    ])('toTitleCase(%s) -> %s', (a, expected) => {
-      expect(toTitleCase(a)).toBe(expected);
-    });
+
+
+describe('toTitleCase', () => {
+  test.each([
+    ['', ''],
+    ['hello world', 'Hello World'],
+    ['This should work', 'This Should Work'],
+    ['jesus graterol', 'Jesus Graterol'],
+    ['JESUS GRATEROL', 'Jesus Graterol'],
+  ])('toTitleCase(%s) -> %s', (a, expected) => {
+    expect(toTitleCase(a)).toBe(expected);
   });
+});
 
 
 
-  describe('toSlug', () => {
-    test.each([
-      ['', ''],
-      ['hello world', 'hello-world'],
-      ['hello - world', 'hello-world'],
-      ['HELLO WORLD', 'hello-world'],
-      ['This Should work!!@', 'this-should-work'],
-    ])('toSlug(%s) -> %s', (a, expected) => {
-      expect(toSlug(a)).toBe(expected);
-    });
+
+
+describe('toSlug', () => {
+  test.each([
+    ['', ''],
+    ['hello world', 'hello-world'],
+    ['hello - world', 'hello-world'],
+    ['HELLO WORLD', 'hello-world'],
+    ['This Should work!!@', 'this-should-work'],
+  ])('toSlug(%s) -> %s', (a, expected) => {
+    expect(toSlug(a)).toBe(expected);
   });
 });

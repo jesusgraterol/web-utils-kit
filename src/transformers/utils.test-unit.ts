@@ -1,6 +1,6 @@
 import { describe, test, expect } from 'vitest';
 import { INumberFormatConfig } from './types.js';
-import { buildNumberFormatConfig } from './utils.js';
+import { buildNumberFormatConfig, getDateInstance } from './utils.js';
 
 /* ************************************************************************************************
  *                                            HELPERS                                             *
@@ -36,5 +36,21 @@ describe('buildNumberFormatConfig', () => {
     [{ minimumFractionDigits: 1, maximumFractionDigits: 8, suffix: 'BTC' }, mockNumberFormatConfig(1, 8, '', 'BTC')],
   ])('buildNumberFormatConfig(%o) -> %o', (a, expected) => {
     expect(buildNumberFormatConfig(a)).toStrictEqual(expected);
+  });
+});
+
+
+
+
+
+describe('getDateInstance', () => {
+  test('can create an instance of Date based on any valid value', () => {
+    [
+      1733412835329, '2024-12-05T15:33:55.329Z', new Date(1733412835329),
+    ].forEach((value) => {
+      const instance = getDateInstance(value);
+      expect(instance).toBeInstanceOf(Date);
+      expect(instance.getTime()).toBe(1733412835329);
+    });
   });
 });

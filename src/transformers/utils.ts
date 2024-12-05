@@ -18,6 +18,18 @@ const buildNumberFormatConfig = (
   suffix: config.suffix ?? '',
 });
 
+/**
+ * Creates an instance of Date based on a value.
+ * @param value
+ * @returns Date
+ */
+const getDateInstance = (value: Date | number | string): Date => {
+  if (value instanceof Date) {
+    return value;
+  }
+  return new Date(value);
+};
+
 
 
 
@@ -27,4 +39,5 @@ const buildNumberFormatConfig = (
  ************************************************************************************************ */
 export {
   buildNumberFormatConfig,
+  getDateInstance,
 };

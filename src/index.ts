@@ -30,8 +30,8 @@ import {
 } from './utils/index.js';
 import { INumberFormatConfig, IDateTemplate } from './transformers/types.js';
 import {
-  prettifyDate,
   prettifyNumber,
+  prettifyDate,
   prettifyFileSize,
   capitalizeFirst,
   toTitleCase,
@@ -77,8 +77,8 @@ export {
   // transformers
   type INumberFormatConfig,
   type IDateTemplate,
-  prettifyDate,
   prettifyNumber,
+  prettifyDate,
   prettifyFileSize,
   capitalizeFirst,
   toTitleCase,
