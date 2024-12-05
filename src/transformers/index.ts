@@ -1,4 +1,5 @@
-import { IDateTemplate } from './types.js';
+import { IDateTemplate, INumberFormatConfig } from './types.js';
+import { buildNumberFormatConfig } from './utils.js';
 
 /* ************************************************************************************************
  *                                           CONSTANTS                                            *
@@ -19,19 +20,16 @@ const FILE_SIZE_UNITS: string[] = ['kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB
 /**
  * Formats a numeric value based on the user's default language.
  * @param value
- * @param decimalPlaces?
- * @param prefix?
- * @param suffix?
+ * @param configuration?
  * @returns string
  */
-const prettifyNumber = (
-  value: number,
-  decimalPlaces: number = 2,
-  prefix?: string,
-  suffix?: string,
-): string => {
-  const prettifiedValue = value.toLocaleString(undefined, { maximumFractionDigits: decimalPlaces });
-  return `${prefix ?? ''}${prettifiedValue}${suffix ?? ''}`;
+const prettifyNumber = (value: number, configuration?: Partial<INumberFormatConfig>): string => {
+  const config = buildNumberFormatConfig(configuration);
+  const prettifiedValue = value.toLocaleString(undefined, {
+    minimumFractionDigits: config.minimumFractionDigits,
+    maximumFractionDigits: config.maximumFractionDigits,
+  });
+  return `${config.prefix}${prettifiedValue}${config.suffix}`;
 };
 
 /**

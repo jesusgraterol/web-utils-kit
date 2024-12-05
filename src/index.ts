@@ -28,7 +28,7 @@ import {
   delay,
   retryAsyncFunction,
 } from './utils/index.js';
-import { IDateTemplate } from './transformers/types.js';
+import { INumberFormatConfig, IDateTemplate } from './transformers/types.js';
 import {
   prettifyDate,
   prettifyNumber,
@@ -75,6 +75,7 @@ export {
   retryAsyncFunction,
 
   // transformers
+  type INumberFormatConfig,
   type IDateTemplate,
   prettifyDate,
   prettifyNumber,

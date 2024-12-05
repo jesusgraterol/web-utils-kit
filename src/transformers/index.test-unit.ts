@@ -6,21 +6,22 @@ import {
   toTitleCase,
   toSlug,
 } from './index.js';
+import { INumberFormatConfig } from './types.js';
 
 /* ************************************************************************************************
  *                                             TESTS                                              *
  ************************************************************************************************ */
 
 describe('prettifyNumber', () => {
-  test.each([
-    [1000.58, 2, undefined, undefined, '1,000.58'],
-    [65544152361.6432, 3, undefined, undefined, '65,544,152,361.643'],
-    [1000.58, 2, '$', undefined, '$1,000.58'],
-    [1000.58, 2, undefined, '$', '1,000.58$'],
-    [1000.58, 2, 'USD ', undefined, 'USD 1,000.58'],
-    [1000.58654422, 8, undefined, ' BTC', '1,000.58654422 BTC'],
-  ])('prettifyNumber(%d, %i, %s, %s) -> %s', (a, b, c, d, expected) => {
-    expect(prettifyNumber(a, b, c, d)).toBe(expected);
+  test.each(<Array<[number, Partial<INumberFormatConfig> | undefined, string]>>[
+    [1000.583, undefined, '1,000.58'],
+    [1000.583, { maximumFractionDigits: 2 }, '1,000.58'],
+    [65544152361.6432, { maximumFractionDigits: 3 }, '65,544,152,361.643'],
+    [1000.583, { prefix: '$' }, '$1,000.58'],
+    [2654.69642236, { maximumFractionDigits: 8, suffix: ' BTC' }, '2,654.69642236 BTC'],
+    [1000, { minimumFractionDigits: 2 }, '1,000.00'],
+  ])('prettifyNumber(%d, %o) -> %s', (a, b, expected) => {
+    expect(prettifyNumber(a, b)).toBe(expected);
   });
 });
 
