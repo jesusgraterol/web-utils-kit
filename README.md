@@ -312,7 +312,7 @@ import { ... } from 'web-utils';
 <details>
   <summary><code>toTitleCase</code></summary>
   
-  Capitalizes the first letter of a string and returns the new value.
+  Converts a string value into Title Case.
   ```typescript
   import { toTitleCase } from 'web-utils';
 
@@ -323,7 +323,7 @@ import { ... } from 'web-utils';
 <details>
   <summary><code>toSlug</code></summary>
   
-  Capitalizes the first letter of a string and returns the new value.
+  Converts a string value into a slug.
   ```typescript
   import { toSlug } from 'web-utils';
 
@@ -331,6 +331,142 @@ import { ... } from 'web-utils';
   ```
 </details>
 
+
+
+### Utils
+
+<details>
+  <summary><code>generateUUID</code></summary>
+  
+  Generates a UUID based on a version.
+  ```typescript
+  import { generateUUID } from 'web-utils';
+
+  generateUUID(4); // '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d'
+  generateUUID(7); // '01695553-c90c-705a-b56d-778dfbbd4bed'
+  ```
+</details>
+
+
+<details>
+  <summary><code>generateRandomString</code></summary>
+  
+  Generates a string from randomly picked characters based on the length.
+  ```typescript
+  import { generateRandomString } from 'web-utils';
+
+  generateRandomString(15); // 'IbnqwSPvZdXxVyS'
+  ```
+</details>
+
+
+<details>
+  <summary><code>generateRandomFloat</code></summary>
+  
+  Generates a random number (decimal) constrained by the range.
+  ```typescript
+  import { generateRandomFloat } from 'web-utils';
+
+  generateRandomFloat(1, 100); // 67.551
+  ```
+</details>
+
+
+<details>
+  <summary><code>generateRandomInteger</code></summary>
+  
+  Generates a random number (integer) constrained by the range.
+  ```typescript
+  import { generateRandomInteger } from 'web-utils';
+
+  generateRandomInteger(1, 100); // 71
+  ```
+</details>
+
+
+<details>
+  <summary><code>generateSequence</code></summary>
+  
+  Generates a sequence of numbers within a range based on a number of steps.
+  ```typescript
+  import { generateSequence } from 'web-utils';
+
+  generateSequence(1, 10); // [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+  generateSequence(1, 10, 2); // [1, 3, 5, 7, 9]
+  ```
+</details>
+
+
+<details>
+  <summary><code>sortPrimitives</code></summary>
+  
+  Sorts a list of primitive values based on their type and a sort direction.
+  ```typescript
+  import { sortPrimitives } from 'web-utils';
+
+  [1, 2, 3, 4, 5].sort(sortPrimitives('asc')); 
+  // [1, 2, 3, 4, 5]
+  [1, 2, 3, 4, 5].sort(sortPrimitives('desc')); 
+  // [5, 4, 3, 2, 1]
+  ['a', 'b', 'c'].sort(sortPrimitives('asc')); 
+  // ['a', 'b', 'c']
+  ['a', 'b', 'c'].sort(sortPrimitives('desc')); 
+  // ['c', 'b', 'a']
+  ```
+</details>
+
+
+<details>
+  <summary><code>sortRecords</code></summary>
+  
+  Sorts a list of record values by key based on their type and a sort direction.
+  ```typescript
+  import { sortRecords } from 'web-utils';
+
+  [{ v: 1 }, { v: 2 }, { v: 3 }].sort(sortRecords('v', 'asc')); 
+  // [1, 2, 3, 4, 5]
+  [{ v: 1 }, { v: 2 }, { v: 3 }].sort(sortRecords('v', 'desc')); 
+  // [{ v: 3 }, { v: 2 }, { v: 1 }]
+  [{ v: 'a' }, { v: 'b' }, { v: 'c' }].sort(sortRecords('v', 'asc')); 
+  // [{ v: 'a' }, { v: 'b' }, { v: 'c' }]
+  [{ v: 'a' }, { v: 'b' }, { v: 'c' }].sort(sortRecords('v', 'desc')); 
+  // [{ v: 'c' }, { v: 'b' }, { v: 'a' }]
+  ```
+</details>
+
+
+<details>
+  <summary><code>delay</code></summary>
+  
+  Creates an asynchronous delay that resolves once the provided seconds have passed.
+  ```typescript
+  import { delay } from 'web-utils';
+
+  await delay(3);
+  // ~3 seconds later
+  ```
+</details>
+
+
+<details>
+  <summary><code>retryAsyncFunction</code></summary>
+  
+  Executes an asynchronous function persistently, retrying on error with incremental delays defined in retryScheduleDuration (seconds).
+  ```typescript
+  import { retryAsyncFunction } from 'web-utils';
+
+  const res = await retryAsyncFunction(
+    fetch, 
+    ['https://api.example.com/user/1'], 
+    [3, 5]
+  );
+  await res.json();
+  // {
+  //   uid: '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d',
+  //   nickname: 'PythonWiz333'
+  // }
+  ```
+</details>
 
 
 
