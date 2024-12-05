@@ -6,7 +6,7 @@ import { IUUIDVersion } from '../shared/types.js';
  ************************************************************************************************ */
 
 /**
- * Verifies if a value is a valid string and its length is within a range (optional)
+ * Verifies if a value is a valid string and its length is within a range (optional).
  * @param value
  * @param minLength?
  * @param maxLength?
@@ -73,7 +73,7 @@ const isObjectValid = (value: unknown, allowEmpty?: boolean): value is Record<st
 );
 
 /**
- * Verifies if a value is an array. It also validates if it has elements inside (optional)
+ * Verifies if a value is an array. It also validates if it has elements inside (optional).
  * @param value
  * @param allowEmpty?
  * @returns boolean
