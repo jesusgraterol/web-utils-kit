@@ -38,6 +38,7 @@ import {
   sortRecords,
   delay,
   retryAsyncFunction,
+  shuffleArray,
 } from './utils/index.js';
 
 /* ************************************************************************************************
@@ -87,4 +88,5 @@ export {
   sortRecords,
   delay,
   retryAsyncFunction,
+  shuffleArray,
 };
