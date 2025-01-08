@@ -196,12 +196,20 @@ const retryAsyncFunction = async <T>(
 /**
  * Creates a copy of the input array and shuffles it, using a version of the Fisher-Yates algorithm.
  * @param input
- * @returns [T, ...T[]]
+ * @returns Array<T>
  * @throws
  * - INVALID_OR_EMPTY_ARRAY: if the input is not array or it is empty
  */
-const shuffleArray = <T>(input: Array<T>): [T, ...T[]] => {
-  return input;
+const shuffleArray = <T>(input: Array<T>): Array<T> => {
+  if (!Array.isArray(input) || input.length <= 1) {
+    throw new Error(encodeError('For an array to be shuffled it must contain at least 2 items.', ERRORS.INVALID_OR_EMPTY_ARRAY));
+  }
+  const arr = input.slice();
+  for (let i = arr.length - 1; i > 0; i -= 1) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
 };
 
 
