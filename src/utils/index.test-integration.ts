@@ -1,4 +1,5 @@
 import { describe, test, expect } from 'vitest';
+import { ERRORS } from '../shared/errors.js';
 import { isIntegerValid, isUUIDValid } from '../validations/index.js';
 import {
   generateUUID,
@@ -109,6 +110,18 @@ describe('Misc helpers', () => {
       const shuffled = shuffleArray(arr);
       expect(shuffled).not.toEqual(arr);
       expect(shuffled).toHaveLength(arr.length);
+    });
+
+    test.each<any>([
+      [[]],
+      [[1]],
+      [[1]],
+      [1],
+      ['a'],
+      [new Set([1, 2, 3, 4, 5])],
+      [new Map([['a', 1], ['b', 2], ['c', 3]])],
+    ])('shuffleArray(%o)', (arr) => {
+      expect(() => shuffleArray(arr)).toThrowError(ERRORS.INVALID_OR_EMPTY_ARRAY);
     });
   });
 });
