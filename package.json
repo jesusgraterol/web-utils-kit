@@ -1,6 +1,6 @@
 {
   "name": "web-utils-kit",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "The web-utils-kit package provides a collection of well-tested and thoroughly documented utility functions for various web development needs. Each function adheres to a strict coding style and best practices to ensure consistency and maintainability.",
   "type": "module",
   "main": "dist/index.js",

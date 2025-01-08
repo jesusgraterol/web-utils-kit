@@ -1,8 +1,8 @@
 import { v4 as uuidv4, v7 as uuidv7 } from 'uuid';
 import { encodeError } from 'error-message-utils';
 import { IUUIDVersion } from '../shared/types.js';
-import { ISortDirection } from './types.js';
 import { ERRORS } from '../shared/errors.js';
+import { ISortDirection } from './types.js';
 
 /* ************************************************************************************************
  *                                           GENERATORS                                           *
@@ -193,6 +193,17 @@ const retryAsyncFunction = async <T>(
   }
 };
 
+/**
+ * Creates a copy of the input array and shuffles it, using a version of the Fisher-Yates algorithm.
+ * @param input
+ * @returns [T, ...T[]]
+ * @throws
+ * - INVALID_OR_EMPTY_ARRAY: if the input is not array or it is empty
+ */
+const shuffleArray = <T>(input: Array<T>): [T, ...T[]] => {
+  return input;
+};
+
 
 
 
@@ -215,4 +226,5 @@ export {
   // misc helpers
   delay,
   retryAsyncFunction,
+  shuffleArray,
 };

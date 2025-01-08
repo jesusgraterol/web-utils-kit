@@ -5,6 +5,7 @@ import {
   generateRandomString,
   generateRandomFloat,
   generateRandomInteger,
+  shuffleArray,
 } from './index.js';
 
 /* ************************************************************************************************
@@ -91,6 +92,19 @@ describe('Generators', () => {
       expect(val).toBeGreaterThanOrEqual(min);
       expect(val).toBeLessThanOrEqual(max);
       expect(isIntegerValid(val)).toBe(true);
+    });
+  });
+});
+
+
+
+
+describe('Misc helpers', () => {
+  describe('shuffleArray', () => {
+    test('can shuffle an array of numbers', () => {
+      const arr1: number[] = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+      const shuffled = shuffleArray(arr1);
+      expect(shuffled).not.toEqual(arr1);
     });
   });
 });
