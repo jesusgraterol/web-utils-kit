@@ -194,7 +194,8 @@ const retryAsyncFunction = async <T>(
 };
 
 /**
- * Creates a copy of the input array and shuffles it, using a version of the Fisher-Yates algorithm.
+ * Creates a shallow copy of the input array and shuffles it, using a version of the Fisher-Yates
+ * algorithm.
  * @param input
  * @returns Array<T>
  * @throws

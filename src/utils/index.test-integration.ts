@@ -108,6 +108,7 @@ describe('Misc helpers', () => {
       [[{ a: 1 }, { b: 2 }, { c: 3 }, { d: 4 }, { e: 5 }]],
     ])('shuffleArray(%o)', (arr) => {
       const shuffled = shuffleArray(arr);
+      console.log(shuffled);
       expect(shuffled).not.toEqual(arr);
       expect(shuffled).toHaveLength(arr.length);
     });
