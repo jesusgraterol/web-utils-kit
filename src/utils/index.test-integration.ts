@@ -101,10 +101,14 @@ describe('Generators', () => {
 
 describe('Misc helpers', () => {
   describe('shuffleArray', () => {
-    test('can shuffle an array of numbers', () => {
-      const arr1: number[] = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-      const shuffled = shuffleArray(arr1);
-      expect(shuffled).not.toEqual(arr1);
+    test.each<Array<any>>([
+      [[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]],
+      [['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j']],
+      [[{ a: 1 }, { b: 2 }, { c: 3 }, { d: 4 }, { e: 5 }]],
+    ])('shuffleArray(%o)', (arr) => {
+      const shuffled = shuffleArray(arr);
+      expect(shuffled).not.toEqual(arr);
+      expect(shuffled).toHaveLength(arr.length);
     });
   });
 });
