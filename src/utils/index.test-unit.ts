@@ -10,6 +10,38 @@ import {
 import { ERRORS } from '../shared/errors.js';
 
 /* ************************************************************************************************
+ *                                           CONSTANTS                                            *
+ ************************************************************************************************ */
+
+const TEST_OBJ = {
+  id: 1,
+  name: 'Alice',
+  email: 'alice@example.com',
+  address: {
+    street: '123 Main St',
+    city: 'Anytown',
+    zip: '12345',
+    country: {
+      name: 'USA',
+      code: 'US',
+      state: 'Some State',
+      cities: [
+        { name: 'City A', zip: '11111' },
+        { name: 'City B', zip: '22222' },
+      ],
+    },
+  },
+  orders: [
+    { id: 101, amount: 100, items: [{ id: 201, name: 'Widget A' }] },
+    { id: 102, amount: 50, items: [{ id: 202, name: 'Widget B' }] },
+  ],
+};
+
+
+
+
+
+/* ************************************************************************************************
  *                                             TESTS                                              *
  ************************************************************************************************ */
 
@@ -92,6 +124,16 @@ describe('Sorting Utils', () => {
     [[{ v: [1] }, { v: [2] }, { v: '3' }]],
   ])('sortRecords(%o, %s) -> Error: MIXED_OR_UNSUPPORTED_DATA_TYPES', (a) => {
     expect(() => a.sort(sortRecords('v', 'asc'))).toThrowError(ERRORS.MIXED_OR_UNSUPPORTED_DATA_TYPES);
+  });
+});
+
+
+
+describe('Object Management Helpers', () => {
+  describe('pickKeys', () => {
+    test('can pick a subset of keys from an object', () => {
+
+    });
   });
 });
 

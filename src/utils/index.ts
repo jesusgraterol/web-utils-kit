@@ -179,25 +179,26 @@ const shuffleArray = <T>(input: Array<T>): Array<T> => {
 };
 
 /**
- * Picks a list of keys from an object and returns a new object with the selected keys.
+ * Picks a list of properties from an object and returns a new object (shallow) with the provided
+ * keys.
  * @param input
- * @param keys
+ * @param propKeys
  * @returns Pick<T, K>
  * @throws
  * - INVALID_OR_EMPTY_OBJECT: if the input is not a valid object or it is empty
  * - INVALID_OR_EMPTY_ARRAY: if the keys to be picked are not a valid array or it is empty
  */
-const pickKeys = <T extends Record<string, any>, K extends keyof T>(
+const pickProps = <T extends Record<string, any>, K extends keyof T>(
   input: T,
-  keys: K[],
+  propKeys: K[],
 ): Pick<T, K> => {
   if (!isObjectValid(input)) {
     throw new Error(encodeError('The input must be a valid and non-empty object.', ERRORS.INVALID_OR_EMPTY_OBJECT));
   }
-  if (!isArrayValid(keys)) {
+  if (!isArrayValid(propKeys)) {
     throw new Error(encodeError('The keys must be a valid and non-empty array of strings.', ERRORS.INVALID_OR_EMPTY_ARRAY));
   }
-  return Object.fromEntries(keys.map((key) => [key, input[key]])) as Pick<T, K>;
+  return Object.fromEntries(propKeys.map((key) => [key, input[key]])) as Pick<T, K>;
 };
 
 
@@ -265,7 +266,7 @@ export {
 
   // object management helpers
   shuffleArray,
-  pickKeys,
+  pickProps,
 
   // misc helpers
   delay,

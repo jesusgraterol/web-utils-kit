@@ -35,32 +35,32 @@ const TEST_OBJ = {
 
 
 /* ************************************************************************************************
- *                                            pickKeys                                            *
+ *                                           pickProps                                            *
  ************************************************************************************************ */
 
-const __pickKeys1 = <T extends Record<string, any>, K extends keyof T>(input: T, keys: K[]): Pick<T, K> => (
+const __pickProps1 = <T extends Record<string, any>, K extends keyof T>(input: T, keys: K[]): Pick<T, K> => (
   keys.reduce(
     (result, key) => ({ ...result, [key]: input[key] }),
     {} as Pick<T, K>,
   )
 );
 
-const __pickKeys2 = <T extends Record<string, any>, K extends keyof T>(input: T, keys: K[]): Pick<T, K> => (
+const __pickProps2 = <T extends Record<string, any>, K extends keyof T>(input: T, keys: K[]): Pick<T, K> => (
   Object.fromEntries(
     keys.map((key) => [key, input[key]]),
   ) as Pick<T, K>
 );
 
-describe('pickKeys', () => {
-  bench.only('__pickKeys1', () => {
-    const obj1 = __pickKeys1(TEST_OBJ, ['id', 'name']);
-    const obj2 = __pickKeys1(TEST_OBJ, ['email', 'address']);
-    const obj3 = __pickKeys1(TEST_OBJ, ['id', 'name', 'email', 'address', 'orders']);
+describe('pickProps', () => {
+  bench.only('__pickProps1', () => {
+    const obj1 = __pickProps1(TEST_OBJ, ['id', 'name']);
+    const obj2 = __pickProps1(TEST_OBJ, ['email', 'address']);
+    const obj3 = __pickProps1(TEST_OBJ, ['id', 'name', 'email', 'address', 'orders']);
   });
 
-  bench.only('__pickKeys2', () => {
-    const obj = __pickKeys2(TEST_OBJ, ['id', 'name']);
-    const obj2 = __pickKeys2(TEST_OBJ, ['email', 'address']);
-    const obj3 = __pickKeys2(TEST_OBJ, ['id', 'name', 'email', 'address', 'orders']);
+  bench.only('__pickProps2', () => {
+    const obj = __pickProps2(TEST_OBJ, ['id', 'name']);
+    const obj2 = __pickProps2(TEST_OBJ, ['email', 'address']);
+    const obj3 = __pickProps2(TEST_OBJ, ['id', 'name', 'email', 'address', 'orders']);
   });
 });
