@@ -4,6 +4,7 @@ import {
   generateSequence,
   sortPrimitives,
   sortRecords,
+  pickProps,
   delay,
   retryAsyncFunction,
 } from './index.js';
@@ -129,10 +130,42 @@ describe('Sorting Utils', () => {
 
 
 
-describe('Object Management Helpers', () => {
-  describe('pickKeys', () => {
-    test('can pick a subset of keys from an object', () => {
 
+
+describe('Object Management Helpers', () => {
+  describe('pickProps', () => {
+    test('can pick a subset of properties from an object', () => {
+      expect(pickProps(TEST_OBJ, ['id', 'name'])).toStrictEqual({
+        id: TEST_OBJ.id,
+        name: TEST_OBJ.name,
+      });
+      expect(pickProps(TEST_OBJ, ['email', 'address', 'orders'])).toStrictEqual({
+        email: TEST_OBJ.email,
+        address: TEST_OBJ.address,
+        orders: TEST_OBJ.orders,
+      });
+    });
+
+    test('can pick all of the properties', () => {
+      expect(pickProps(TEST_OBJ, ['id', 'name', 'email', 'address', 'orders'])).toStrictEqual(TEST_OBJ);
+    });
+
+    test.each<Array<any>>([
+      [{}, ['id']],
+      [[], ['id']],
+      [undefined, ['id']],
+      [null, ['id']],
+      ['abc', ['id']],
+      [1, ['id']],
+    ])('pickProps(%s)', (a, b) => {
+      expect(() => pickProps(a, b)).toThrowError(ERRORS.INVALID_OR_EMPTY_OBJECT);
+    });
+
+    test.each<Array<any>>([
+      [{ id: 1 }, {}],
+      [{ id: 1 }, []],
+    ])('pickProps(%s)', (a, b) => {
+      expect(() => pickProps(a, b)).toThrowError(ERRORS.INVALID_OR_EMPTY_ARRAY);
     });
   });
 });
