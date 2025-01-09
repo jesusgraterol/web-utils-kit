@@ -36,9 +36,9 @@ import {
   generateSequence,
   sortPrimitives,
   sortRecords,
+  shuffleArray,
   delay,
   retryAsyncFunction,
-  shuffleArray,
 } from './utils/index.js';
 
 /* ************************************************************************************************
@@ -86,7 +86,7 @@ export {
   generateSequence,
   sortPrimitives,
   sortRecords,
+  shuffleArray,
   delay,
   retryAsyncFunction,
-  shuffleArray,
 };

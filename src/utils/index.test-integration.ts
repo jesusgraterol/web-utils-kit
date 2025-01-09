@@ -100,7 +100,7 @@ describe('Generators', () => {
 
 
 
-describe('Misc helpers', () => {
+describe('Object management helpers', () => {
   describe('shuffleArray', () => {
     test.each<Array<any>>([
       [[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]],

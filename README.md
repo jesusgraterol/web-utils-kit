@@ -474,6 +474,23 @@ await res.json();
 
 
 <details>
+  <summary><code>shuffleArray</code></summary>
+  
+  Creates a shallow copy of the input array and shuffles it, using a version of the Fisher-Yates algorithm.
+  ```typescript
+  import { shuffleArray } from 'web-utils-kit';
+
+  shuffleArray([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
+  // [4, 7, 5, 3,  6, 8, 9, 1, 2, 10]
+  shuffleArray(['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j'])
+  // ['d', 'j', 'c', 'a', 'g', 'e', 'b', 'f', 'i', 'h']
+  shuffleArray([{ a: 1 }, { b: 2 }, { c: 3 }, { d: 4 }, { e: 5 }])
+  // [ { c: 3 }, { d: 4 }, { a: 1 }, { b: 2 }, { e: 5 } ]
+  ```
+</details>
+
+
+<details>
   <summary><code>delay</code></summary>
   
   Creates an asynchronous delay that resolves once the provided seconds have passed.
@@ -503,23 +520,6 @@ await res.json();
   //   uid: '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d',
   //   nickname: 'PythonWiz333'
   // }
-  ```
-</details>
-
-
-<details>
-  <summary><code>shuffleArray</code></summary>
-  
-  Creates a shallow copy of the input array and shuffles it, using a version of the Fisher-Yates algorithm.
-  ```typescript
-  import { shuffleArray } from 'web-utils-kit';
-
-  shuffleArray([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
-  // [4, 7, 5, 3,  6, 8, 9, 1, 2, 10]
-  shuffleArray(['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j'])
-  // ['d', 'j', 'c', 'a', 'g', 'e', 'b', 'f', 'i', 'h']
-  shuffleArray([{ a: 1 }, { b: 2 }, { c: 3 }, { d: 4 }, { e: 5 }])
-  // [ { c: 3 }, { d: 4 }, { a: 1 }, { b: 2 }, { e: 5 } ]
   ```
 </details>
 
