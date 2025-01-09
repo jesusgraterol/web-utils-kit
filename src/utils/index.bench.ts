@@ -14,6 +14,15 @@ const TEST_OBJ = {
     street: '123 Main St',
     city: 'Anytown',
     zip: '12345',
+    country: {
+      name: 'USA',
+      code: 'US',
+      state: 'Some State',
+      cities: [
+        { name: 'City A', zip: '11111' },
+        { name: 'City B', zip: '22222' },
+      ],
+    },
   },
   orders: [
     { id: 101, amount: 100, items: [{ id: 201, name: 'Widget A' }] },
