@@ -51,14 +51,14 @@ const __pickProps2 = <T extends Record<string, any>, K extends keyof T>(input: T
   ) as Pick<T, K>
 );
 
-describe('pickProps', () => {
-  bench.only('__pickProps1', () => {
+describe.skip('pickProps', () => {
+  bench('__pickProps1', () => {
     const obj1 = __pickProps1(TEST_OBJ, ['id', 'name']);
     const obj2 = __pickProps1(TEST_OBJ, ['email', 'address']);
     const obj3 = __pickProps1(TEST_OBJ, ['id', 'name', 'email', 'address', 'orders']);
   });
 
-  bench.only('__pickProps2', () => {
+  bench('__pickProps2', () => {
     const obj = __pickProps2(TEST_OBJ, ['id', 'name']);
     const obj2 = __pickProps2(TEST_OBJ, ['email', 'address']);
     const obj3 = __pickProps2(TEST_OBJ, ['id', 'name', 'email', 'address', 'orders']);

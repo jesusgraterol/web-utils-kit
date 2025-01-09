@@ -491,6 +491,19 @@ await res.json();
 
 
 <details>
+  <summary><code>pickProps</code></summary>
+  
+  Picks a list of properties from an object and returns a new object (shallow) with the provided keys.
+  ```typescript
+  import { pickProps } from 'web-utils-kit';
+
+  pickProps({ a: 1, b: 2, c: 3, d: 4}, ['b', 'd'])
+  // { b: 2, d: 4 }
+  ```
+</details>
+
+
+<details>
   <summary><code>delay</code></summary>
   
   Creates an asynchronous delay that resolves once the provided seconds have passed.
