@@ -3,6 +3,7 @@ import { encodeError } from 'error-message-utils';
 import { IUUIDVersion } from '../shared/types.js';
 import { ERRORS } from '../shared/errors.js';
 import { ISortDirection } from './types.js';
+import { isArrayValid, isObjectValid } from '../validations/index.js';
 
 /* ************************************************************************************************
  *                                           GENERATORS                                           *
@@ -157,7 +158,6 @@ const sortRecords = (
  *                                    OBJECT MANAGEMENT HELPERS                                   *
  ************************************************************************************************ */
 
-
 /**
  * Creates a shallow copy of the input array and shuffles it, using a version of the Fisher-Yates
  * algorithm.
@@ -177,6 +177,29 @@ const shuffleArray = <T>(input: Array<T>): Array<T> => {
   }
   return arr;
 };
+
+/**
+ * Picks a list of keys from an object and returns a new object with the selected keys.
+ * @param input
+ * @param keys
+ * @returns Pick<T, K>
+ * @throws
+ * - INVALID_OR_EMPTY_OBJECT: if the input is not a valid object or it is empty
+ * - INVALID_OR_EMPTY_ARRAY: if the keys to be picked are not a valid array or it is empty
+ */
+const pickKeys = <T extends Record<string, any>, K extends keyof T>(
+  input: T,
+  keys: K[],
+): Pick<T, K> => {
+  if (!isObjectValid(input)) {
+    throw new Error(encodeError('The input must be a valid and non-empty object.', ERRORS.INVALID_OR_EMPTY_OBJECT));
+  }
+  if (!isArrayValid(keys)) {
+    throw new Error(encodeError('The keys must be a valid and non-empty array of strings.', ERRORS.INVALID_OR_EMPTY_ARRAY));
+  }
+  return Object.fromEntries(keys.map((key) => [key, input[key]])) as Pick<T, K>;
+};
+
 
 
 
@@ -242,6 +265,7 @@ export {
 
   // object management helpers
   shuffleArray,
+  pickKeys,
 
   // misc helpers
   delay,
