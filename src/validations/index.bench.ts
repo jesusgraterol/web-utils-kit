@@ -36,7 +36,7 @@ const PASS_3 = 'XYtO&T?%?KfGNLRbwtWliNUp9fraUtw.SGfm|T|/)CPDfkrOObE[<F_,,gyz|nWN
  *                                             TESTS                                              *
  ************************************************************************************************ */
 
-describe('isPasswordValid', () => {
+describe.skip('isPasswordValid', () => {
   bench('using isStringValid', () => {
     isPasswordValid1(PASS_1);
     isPasswordValid1(PASS_2);
