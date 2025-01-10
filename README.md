@@ -497,8 +497,21 @@ await res.json();
   ```typescript
   import { pickProps } from 'web-utils-kit';
 
-  pickProps({ a: 1, b: 2, c: 3, d: 4}, ['b', 'd'])
+  pickProps({ a: 1, b: 2, c: 3, d: 4 }, ['b', 'd'])
   // { b: 2, d: 4 }
+  ```
+</details>
+
+
+<details>
+  <summary><code>omitProps</code></summary>
+  
+  Omits a list of properties from an object and returns a new object (shallow) with only those keys that weren't omitted
+  ```typescript
+  import { omitProps } from 'web-utils-kit';
+
+  omitProps({ a: 1, b: 2, c: 3, d: 4 }, ['b', 'd'])
+  // { a: 1, c: 3 }
   ```
 </details>
 
