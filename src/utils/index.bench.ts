@@ -64,3 +64,43 @@ describe.skip('pickProps', () => {
     const obj3 = __pickProps2(TEST_OBJ, ['id', 'name', 'email', 'address', 'orders']);
   });
 });
+
+
+
+
+
+/* ************************************************************************************************
+ *                                           omitProps                                            *
+ ************************************************************************************************ */
+
+const __omitProps1 = <T extends Record<string, any>, K extends keyof T>(input: T, keys: K[]): Omit<T, K> => (
+  Object.fromEntries(
+    Object.entries(input).filter(([key]) => !keys.includes(key as K)),
+  ) as Omit<T, K>
+);
+
+const __omitProps2 = <T extends Record<string, any>, K extends keyof T>(input: T, keys: K[]): Omit<T, K> => (
+  Object.entries(input).reduce(
+    (previous, [key, value]) => {
+      if (keys.includes(key as K)) {
+        return previous;
+      }
+      return { ...previous, [key]: value };
+    },
+    {} as Omit<T, K>,
+  )
+);
+
+describe('omitProps', () => {
+  bench('__omitProps1', () => {
+    const obj1 = __omitProps1(TEST_OBJ, ['id', 'name']);
+    const obj2 = __omitProps1(TEST_OBJ, ['email', 'address']);
+    const obj3 = __omitProps1(TEST_OBJ, ['id', 'name', 'email', 'address', 'orders']);
+  });
+
+  bench('__omitProps2', () => {
+    const obj = __omitProps2(TEST_OBJ, ['id', 'name']);
+    const obj2 = __omitProps2(TEST_OBJ, ['email', 'address']);
+    const obj3 = __omitProps2(TEST_OBJ, ['id', 'name', 'email', 'address', 'orders']);
+  });
+});
