@@ -91,7 +91,7 @@ const __omitProps2 = <T extends Record<string, any>, K extends keyof T>(input: T
   )
 );
 
-describe('omitProps', () => {
+describe.skip('omitProps', () => {
   bench('__omitProps1', () => {
     const obj1 = __omitProps1(TEST_OBJ, ['id', 'name']);
     const obj2 = __omitProps1(TEST_OBJ, ['email', 'address']);

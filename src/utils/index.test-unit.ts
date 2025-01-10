@@ -5,6 +5,7 @@ import {
   sortPrimitives,
   sortRecords,
   pickProps,
+  omitProps,
   delay,
   retryAsyncFunction,
 } from './index.js';
@@ -166,6 +167,43 @@ describe('Object Management Helpers', () => {
       [{ id: 1 }, []],
     ])('pickProps(%s)', (a, b) => {
       expect(() => pickProps(a, b)).toThrowError(ERRORS.INVALID_OR_EMPTY_ARRAY);
+    });
+  });
+
+
+  describe('omitProps', () => {
+    test('can omit a subset of properties from an object', () => {
+      expect(omitProps(TEST_OBJ, ['id', 'name'])).toStrictEqual({
+        email: TEST_OBJ.email,
+        address: TEST_OBJ.address,
+        orders: TEST_OBJ.orders,
+      });
+      expect(omitProps(TEST_OBJ, ['email', 'address', 'orders'])).toStrictEqual({
+        id: TEST_OBJ.id,
+        name: TEST_OBJ.name,
+      });
+    });
+
+    test('can omit all of the properties', () => {
+      expect(omitProps(TEST_OBJ, ['id', 'name', 'email', 'address', 'orders'])).toStrictEqual({});
+    });
+
+    test.each<Array<any>>([
+      [{}, ['id']],
+      [[], ['id']],
+      [undefined, ['id']],
+      [null, ['id']],
+      ['abc', ['id']],
+      [1, ['id']],
+    ])('omitProps(%s)', (a, b) => {
+      expect(() => omitProps(a, b)).toThrowError(ERRORS.INVALID_OR_EMPTY_OBJECT);
+    });
+
+    test.each<Array<any>>([
+      [{ id: 1 }, {}],
+      [{ id: 1 }, []],
+    ])('omitProps(%s)', (a, b) => {
+      expect(() => omitProps(a, b)).toThrowError(ERRORS.INVALID_OR_EMPTY_ARRAY);
     });
   });
 });
