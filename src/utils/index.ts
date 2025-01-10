@@ -201,6 +201,31 @@ const pickProps = <T extends Record<string, any>, K extends keyof T>(
   return Object.fromEntries(propKeys.map((key) => [key, input[key]])) as Pick<T, K>;
 };
 
+/**
+ * Omits a list of properties from an object and returns a new object (shallow) with only those
+ * keys that weren't omitted
+ * @param input
+ * @param propKeys
+ * @returns Omit<T, K>
+ * @throws
+ * - INVALID_OR_EMPTY_OBJECT: if the input is not a valid object or it is empty
+ * - INVALID_OR_EMPTY_ARRAY: if the keys to be omitted are not a valid array or it is empty
+ */
+const omitProps = <T extends Record<string, any>, K extends keyof T>(
+  input: T,
+  propKeys: K[],
+): Omit<T, K> => {
+  if (!isObjectValid(input)) {
+    throw new Error(encodeError('The input must be a valid and non-empty object.', ERRORS.INVALID_OR_EMPTY_OBJECT));
+  }
+  if (!isArrayValid(propKeys)) {
+    throw new Error(encodeError('The keys must be a valid and non-empty array of strings.', ERRORS.INVALID_OR_EMPTY_ARRAY));
+  }
+  return Object.fromEntries(
+    Object.entries(input).filter(([key]) => !propKeys.includes(key as K)),
+  ) as Omit<T, K>;
+};
+
 
 
 
@@ -267,6 +292,7 @@ export {
   // object management helpers
   shuffleArray,
   pickProps,
+  omitProps,
 
   // misc helpers
   delay,
