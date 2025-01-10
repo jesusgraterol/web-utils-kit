@@ -2,8 +2,8 @@ import { v4 as uuidv4, v7 as uuidv7 } from 'uuid';
 import { encodeError } from 'error-message-utils';
 import { IUUIDVersion } from '../shared/types.js';
 import { ERRORS } from '../shared/errors.js';
-import { ISortDirection } from './types.js';
 import { isArrayValid, isObjectValid } from '../validations/index.js';
+import { ISortDirection } from './types.js';
 
 /* ************************************************************************************************
  *                                           GENERATORS                                           *

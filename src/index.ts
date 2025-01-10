@@ -37,6 +37,8 @@ import {
   sortPrimitives,
   sortRecords,
   shuffleArray,
+  pickProps,
+  omitProps,
   delay,
   retryAsyncFunction,
 } from './utils/index.js';
@@ -87,6 +89,8 @@ export {
   sortPrimitives,
   sortRecords,
   shuffleArray,
+  pickProps,
+  omitProps,
   delay,
   retryAsyncFunction,
 };
