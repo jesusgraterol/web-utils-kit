@@ -240,6 +240,19 @@ describe('Object Management Helpers', () => {
     ])('isEqual(%o, %o) -> %s', (a, b, expected) => {
       expect(isEqual(a, b)).toBe(expected);
     });
+
+    test.each([
+      [[], [], true],
+      [[1, 2, 3], [1, 2, 3], true],
+      [[1, 2, 3], [3, 2, 1], false],
+      [[{ a: 1, b: 2 }], [{ b: 2, a: 1 }], true],
+      [[{ a: 1, b: 2 }], [{ b: 1, a: 2 }], false],
+      [[{ a: 1, b: 2 }, { a: 4, b: 6 }], [{ b: 2, a: 1 }, { b: 6, a: 4 }], true],
+      [[{ a: 2, c: { y: 1, x: 6, z: 2 }, b: 3 }], [{ c: { z: 2, x: 6, y: 1 }, b: 3, a: 2 }], true],
+      [[{ a: 2, c: { y: 1, x: 6, z: 2 }, b: 3 }], [{ c: { z: 2, x: 1, y: 1 }, b: 3, a: 2 }], false],
+    ])('isEqual(%o, %o) -> %s', (a, b, expected) => {
+      expect(isEqual(a, b)).toBe(expected);
+    });
   });
 });
 
