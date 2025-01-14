@@ -228,7 +228,7 @@ const omitProps = <T extends Record<string, any>, K extends keyof T>(
 };
 
 /**
- * Compares two objects and arrays deeply and returns true if they are equals.
+ * Compares two objects or arrays deeply and returns true if they are equals.
  * @param a
  * @param b
  * @returns boolean
