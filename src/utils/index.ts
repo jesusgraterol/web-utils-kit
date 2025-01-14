@@ -1,5 +1,6 @@
 import { v4 as uuidv4, v7 as uuidv7 } from 'uuid';
-import { encodeError } from 'error-message-utils';
+import stableStringify from 'json-stable-stringify';
+import { encodeError, extractMessage } from 'error-message-utils';
 import { IUUIDVersion } from '../shared/types.js';
 import { ERRORS } from '../shared/errors.js';
 import { isArrayValid, isObjectValid } from '../validations/index.js';
@@ -233,7 +234,7 @@ const omitProps = <T extends Record<string, any>, K extends keyof T>(
  * @returns boolean
  * @throws
  * - UNSUPPORTED_DATA_TYPE: if any of the values isn't an object or an array
- * - ..
+ * - UNABLE_TO_SERIALIZE_JSON: if any of the values contains data that cannot be serialized
  */
 const isEqual = (
   a: Record<string, any> | Array<any>,
@@ -245,7 +246,19 @@ const isEqual = (
   if (!isObjectValid(b, true) && !isArrayValid(b, true)) {
     throw new Error(encodeError('Value \'b\' must be an object or an array in order to be compared.', ERRORS.UNSUPPORTED_DATA_TYPE));
   }
-  return true;
+  let aVal: string;
+  let bVal: string;
+  try {
+    aVal = <string>stableStringify(a);
+  } catch (e) {
+    throw new Error(encodeError(`Value 'a' could not be serialized into a JSON string in order to be compared: ${extractMessage(e)}`, ERRORS.UNABLE_TO_SERIALIZE_JSON));
+  }
+  try {
+    bVal = <string>stableStringify(b);
+  } catch (e) {
+    throw new Error(encodeError(`Value 'b' could not be serialized into a JSON string in order to be compared: ${extractMessage(e)}`, ERRORS.UNABLE_TO_SERIALIZE_JSON));
+  }
+  return aVal === bVal;
 };
 
 

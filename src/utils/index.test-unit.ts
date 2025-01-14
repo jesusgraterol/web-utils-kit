@@ -6,9 +6,9 @@ import {
   sortRecords,
   pickProps,
   omitProps,
+  isEqual,
   delay,
   retryAsyncFunction,
-  isEqual,
 } from './index.js';
 import { ERRORS } from '../shared/errors.js';
 
@@ -223,8 +223,22 @@ describe('Object Management Helpers', () => {
       [true, {}],
       [null, []],
       [undefined, {}],
-    ])('it can only compare objects and arrays', (a, b) => {
+    ])('throws UNSUPPORTED_DATA_TYPE if any of the values isn\'t an object or an array', (a, b) => {
       expect(() => isEqual(a, b)).toThrowError(ERRORS.UNSUPPORTED_DATA_TYPE);
+    });
+
+    test.each([
+      [{ a: undefined }, { a: undefined }, true],
+      [{ a: undefined }, { }, true],
+      [{ a: 1 }, { a: 1 }, true],
+      [{ a: 1 }, { a: 2 }, false],
+      [{ a: 2 }, { a: 1 }, false],
+      [{ a: 2, c: 5, b: 3 }, { c: 5, b: 3, a: 2 }, true],
+      [{ a: 2, c: 5, b: 3 }, { c: 5, b: 3, a: 1 }, false],
+      [{ a: 2, c: { y: 1, x: 6, z: 2 }, b: 3 }, { c: { z: 2, x: 6, y: 1 }, b: 3, a: 2 }, true],
+      [{ a: 2, c: { y: 1, x: 6, z: 2 }, b: 3 }, { c: { z: 2, x: 5, y: 1 }, b: 3, a: 2 }, false],
+    ])('isEqual(%o, %o) -> %s', (a, b, expected) => {
+      expect(isEqual(a, b)).toBe(expected);
     });
   });
 });
