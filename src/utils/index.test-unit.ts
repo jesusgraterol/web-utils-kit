@@ -8,6 +8,7 @@ import {
   omitProps,
   delay,
   retryAsyncFunction,
+  isEqual,
 } from './index.js';
 import { ERRORS } from '../shared/errors.js';
 
@@ -171,6 +172,7 @@ describe('Object Management Helpers', () => {
   });
 
 
+
   describe('omitProps', () => {
     test('can omit a subset of properties from an object', () => {
       expect(omitProps(TEST_OBJ, ['id', 'name'])).toStrictEqual({
@@ -204,6 +206,25 @@ describe('Object Management Helpers', () => {
       [{ id: 1 }, []],
     ])('omitProps(%s)', (a, b) => {
       expect(() => omitProps(a, b)).toThrowError(ERRORS.INVALID_OR_EMPTY_ARRAY);
+    });
+  });
+
+
+
+  describe('isEqual', () => {
+    test.each<Array<any>>([
+      [{}, 'someString'],
+      [[], 1],
+      [{}, true],
+      [[], null],
+      [{}, undefined],
+      ['someString', {}],
+      [1, []],
+      [true, {}],
+      [null, []],
+      [undefined, {}],
+    ])('it can only compare objects and arrays', (a, b) => {
+      expect(() => isEqual(a, b)).toThrowError(ERRORS.UNSUPPORTED_DATA_TYPE);
     });
   });
 });

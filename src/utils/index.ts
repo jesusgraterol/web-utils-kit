@@ -226,6 +226,28 @@ const omitProps = <T extends Record<string, any>, K extends keyof T>(
   ) as Omit<T, K>;
 };
 
+/**
+ * Compares two objects and arrays deeply and returns true if they are equals.
+ * @param a
+ * @param b
+ * @returns boolean
+ * @throws
+ * - UNSUPPORTED_DATA_TYPE: if any of the values isn't an object or an array
+ * - ..
+ */
+const isEqual = (
+  a: Record<string, any> | Array<any>,
+  b: Record<string, any> | Array<any>,
+): boolean => {
+  if (!isObjectValid(a, true) && !isArrayValid(a, true)) {
+    throw new Error(encodeError('Value \'a\' must be an object or an array in order to be compared.', ERRORS.UNSUPPORTED_DATA_TYPE));
+  }
+  if (!isObjectValid(b, true) && !isArrayValid(b, true)) {
+    throw new Error(encodeError('Value \'b\' must be an object or an array in order to be compared.', ERRORS.UNSUPPORTED_DATA_TYPE));
+  }
+  return true;
+};
+
 
 
 
@@ -293,6 +315,7 @@ export {
   shuffleArray,
   pickProps,
   omitProps,
+  isEqual,
 
   // misc helpers
   delay,
