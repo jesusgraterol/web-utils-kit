@@ -43,8 +43,7 @@ Execute an asynchronous function persistently:
 import { retryAsyncFunction } from 'web-utils-kit';
 
 const res = await retryAsyncFunction(
-  fetch, 
-  ['https://api.example.com/user/1'], 
+  () => fetch('https://api.example.com/user/1')
   [3, 5]
 );
 await res.json();
@@ -552,9 +551,8 @@ await res.json();
   import { retryAsyncFunction } from 'web-utils-kit';
 
   const res = await retryAsyncFunction(
-    fetch, 
-    ['https://api.example.com/user/1'], 
-    [3, 5]
+    () => fetch('https://api.example.com/user/1'),
+    [3, 5],
   );
   await res.json();
   // {

@@ -288,7 +288,7 @@ describe('Misc Helpers', () => {
         .mockRejectedValueOnce(new Error('This is an error!'))
         .mockRejectedValueOnce(new Error('This is an error!'))
         .mockResolvedValueOnce(undefined);
-      retryAsyncFunction(fn, undefined, [3, 5]);
+      retryAsyncFunction(fn, [3, 5]);
       expect(fn).toHaveBeenCalledTimes(1);
 
       await vi.advanceTimersByTimeAsync(1000);
@@ -303,7 +303,7 @@ describe('Misc Helpers', () => {
 
     test('can invoke a function persistently until its out of attempts', async () => {
       const fn = vi.fn().mockRejectedValue(new Error('This is an error!'));
-      await expect(retryAsyncFunction(fn, undefined, [0, 0])).rejects.toThrowError('This is an error!');
+      await expect(retryAsyncFunction(fn, [0, 0])).rejects.toThrowError('This is an error!');
       expect(fn).toHaveBeenNthCalledWith(1);
       expect(fn).toHaveBeenNthCalledWith(2);
       expect(fn).toHaveBeenNthCalledWith(3);
@@ -312,7 +312,7 @@ describe('Misc Helpers', () => {
     test('can invoke a function persistently until its out of attempts with args', async () => {
       const fn = vi.fn().mockRejectedValue(new Error('This is an error!'));
       const args = ['abc', 1, true, [1, 2], { foo: 'bar' }];
-      await expect(retryAsyncFunction(fn, args, [0, 0, 0])).rejects.toThrowError('This is an error!');
+      await expect(retryAsyncFunction(() => fn(...args), [0, 0, 0])).rejects.toThrowError('This is an error!');
       expect(fn).toHaveBeenNthCalledWith(1, ...args);
       expect(fn).toHaveBeenNthCalledWith(2, ...args);
       expect(fn).toHaveBeenNthCalledWith(3, ...args);
@@ -325,7 +325,7 @@ describe('Misc Helpers', () => {
         .mockRejectedValueOnce(new Error('This is an error!'))
         .mockRejectedValueOnce(new Error('This is an error!'))
         .mockResolvedValueOnce(undefined);
-      await expect(retryAsyncFunction(fn, undefined, [0, 0])).resolves.toBeUndefined();
+      await expect(retryAsyncFunction(fn, [0, 0])).resolves.toBeUndefined();
       expect(fn).toHaveBeenNthCalledWith(1);
       expect(fn).toHaveBeenNthCalledWith(2);
       expect(fn).toHaveBeenNthCalledWith(3);
@@ -336,7 +336,7 @@ describe('Misc Helpers', () => {
         .fn()
         .mockRejectedValueOnce(new Error('This is an error!'))
         .mockResolvedValueOnce('Hello World!');
-      await expect(retryAsyncFunction(fn, undefined, [0, 0])).resolves.toBe('Hello World!');
+      await expect(retryAsyncFunction(fn, [0, 0])).resolves.toBe('Hello World!');
       expect(fn).toHaveBeenNthCalledWith(1);
       expect(fn).toHaveBeenNthCalledWith(2);
     });
@@ -348,7 +348,7 @@ describe('Misc Helpers', () => {
         .mockRejectedValueOnce(new Error('This is an error!'))
         .mockResolvedValueOnce(undefined);
       const args = ['abc', 1, true, [1, 2], { foo: 'bar' }];
-      await expect(retryAsyncFunction(fn, args, [0, 0])).resolves.toBeUndefined();
+      await expect(retryAsyncFunction(() => fn(...args), [0, 0])).resolves.toBeUndefined();
       expect(fn).toHaveBeenNthCalledWith(1, ...args);
       expect(fn).toHaveBeenNthCalledWith(2, ...args);
       expect(fn).toHaveBeenNthCalledWith(3, ...args);

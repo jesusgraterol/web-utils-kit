@@ -287,21 +287,17 @@ const delay = (seconds: number): Promise<void> => new Promise((resolve) => {
  * @returns Promise<T>
  */
 const retryAsyncFunction = async <T>(
-  func: (...args: any[]) => Promise<T>,
-  args?: any[],
+  func: () => Promise<T>,
   retryScheduleDuration: number[] = [3, 5],
 ): Promise<T> => {
   try {
-    if (args) {
-      return await func(...args);
-    }
     return await func();
   } catch (e) {
     if (retryScheduleDuration.length === 0) {
       throw e;
     }
     await delay(retryScheduleDuration[0]);
-    return retryAsyncFunction(func, args, retryScheduleDuration.slice(1));
+    return retryAsyncFunction(func, retryScheduleDuration.slice(1));
   }
 };
 
