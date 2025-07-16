@@ -116,6 +116,19 @@ const toSlug = (value: string): string =>
         .replace(/ +/g, '-')
     : '';
 
+/**
+ * Truncates a string to a specified length and appends an ellipsis if it exceeds that length.
+ * @param text
+ * @param maxLength
+ * @returns string
+ */
+const truncateText = (text: string, maxLength: number): string => {
+  if (text.length <= maxLength) {
+    return text;
+  }
+  return `${text.slice(0, maxLength - 3)}...`;
+};
+
 /* ************************************************************************************************
  *                                         MODULE EXPORTS                                         *
  ************************************************************************************************ */
@@ -127,4 +140,5 @@ export {
   capitalizeFirst,
   toTitleCase,
   toSlug,
+  truncateText,
 };

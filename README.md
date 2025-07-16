@@ -383,7 +383,21 @@ toSlug('HELLO WORLD!!@'); // 'hello-world'
 ````
 </details>
 
+<details>
+  <summary><code>truncateText</code></summary>
 
+  Truncates a string to a specified length and appends an ellipsis if it exceeds that length.
+  ```typescript
+  import { truncateText } from 'web-utils-kit';
+
+  truncateText('This is a message', 18); // 'This is a message'
+  truncateText('This is a message', 17); // 'This is a message'
+  truncateText('This is a message', 16); // 'This is a mes...'
+  truncateText('This is a message', 15); // 'This is a me...'
+
+````
+
+</details>
 
 ### Utils
 
@@ -391,12 +405,13 @@ toSlug('HELLO WORLD!!@'); // 'hello-world'
 <summary><code>generateUUID</code></summary>
 
 Generates a UUID based on a version.
+
 ```typescript
 import { generateUUID } from 'web-utils-kit';
 
 generateUUID(4); // '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d'
 generateUUID(7); // '01695553-c90c-705a-b56d-778dfbbd4bed'
-````
+```
 
 </details>
 

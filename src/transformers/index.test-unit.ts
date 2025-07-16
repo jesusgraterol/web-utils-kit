@@ -7,6 +7,7 @@ import {
   toTitleCase,
   toSlug,
   prettifyDate,
+  truncateText,
 } from './index.js';
 import { IDateTemplate, INumberFormatConfig } from './types.js';
 
@@ -105,5 +106,17 @@ describe('toSlug', () => {
     ['This Should work!!@', 'this-should-work'],
   ])('toSlug(%s) -> %s', (a, expected) => {
     expect(toSlug(a)).toBe(expected);
+  });
+});
+
+describe('truncateText', () => {
+  test.each([
+    ['This is a message', 18, 'This is a message'],
+    ['This is a message', 17, 'This is a message'],
+    ['This is a message', 16, 'This is a mes...'],
+    ['This is a message', 15, 'This is a me...'],
+    ['This is a message', 14, 'This is a m...'],
+  ])('truncateText(%s, %i) -> %s', (text, maxLength, expected) => {
+    expect(truncateText(text, maxLength)).toBe(expected);
   });
 });
