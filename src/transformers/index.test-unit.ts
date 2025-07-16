@@ -27,10 +27,6 @@ describe('prettifyNumber', () => {
   });
 });
 
-
-
-
-
 describe('prettifyDate', () => {
   test('', () => {
     const ts = 1733414720203;
@@ -50,10 +46,6 @@ describe('prettifyDate', () => {
   });
 });
 
-
-
-
-
 describe('prettifyFileSize', () => {
   test.each([
     [1000, 2, '1000 B'],
@@ -69,10 +61,6 @@ describe('prettifyFileSize', () => {
   });
 });
 
-
-
-
-
 describe('prettifyBadgeCount', () => {
   test.each([
     [0, undefined, undefined],
@@ -87,10 +75,6 @@ describe('prettifyBadgeCount', () => {
   });
 });
 
-
-
-
-
 describe('capitalizeFirst', () => {
   test.each([
     ['', ''],
@@ -101,10 +85,6 @@ describe('capitalizeFirst', () => {
     expect(capitalizeFirst(a)).toBe(expected);
   });
 });
-
-
-
-
 
 describe('toTitleCase', () => {
   test.each([
@@ -117,10 +97,6 @@ describe('toTitleCase', () => {
     expect(toTitleCase(a)).toBe(expected);
   });
 });
-
-
-
-
 
 describe('toSlug', () => {
   test.each([

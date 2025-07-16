@@ -17,36 +17,62 @@ describe('Generators', () => {
   describe('generateUUID', () => {
     test('can generate a valid uuid v4', () => {
       [
-        generateUUID(4), generateUUID(4), generateUUID(4), generateUUID(4), generateUUID(4),
-        generateUUID(4), generateUUID(4), generateUUID(4), generateUUID(4), generateUUID(4),
-        generateUUID(4), generateUUID(4), generateUUID(4), generateUUID(4), generateUUID(4),
+        generateUUID(4),
+        generateUUID(4),
+        generateUUID(4),
+        generateUUID(4),
+        generateUUID(4),
+        generateUUID(4),
+        generateUUID(4),
+        generateUUID(4),
+        generateUUID(4),
+        generateUUID(4),
+        generateUUID(4),
+        generateUUID(4),
+        generateUUID(4),
+        generateUUID(4),
+        generateUUID(4),
       ].forEach((uuid) => {
         expect(typeof uuid).toBe('string');
         expect(uuid.length).toBe(36);
         expect(isUUIDValid(uuid, 4)).toBe(true);
         expect(
-          /^[a-zA-Z0-9]{8}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{12}$/.test(uuid),
+          /^[a-zA-Z0-9]{8}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{12}$/.test(
+            uuid,
+          ),
         ).toBe(true);
       });
     });
 
     test('can generate a valid uuid v7', () => {
       [
-        generateUUID(7), generateUUID(7), generateUUID(7), generateUUID(7), generateUUID(7),
-        generateUUID(7), generateUUID(7), generateUUID(7), generateUUID(7), generateUUID(7),
-        generateUUID(7), generateUUID(7), generateUUID(7), generateUUID(7), generateUUID(7),
+        generateUUID(7),
+        generateUUID(7),
+        generateUUID(7),
+        generateUUID(7),
+        generateUUID(7),
+        generateUUID(7),
+        generateUUID(7),
+        generateUUID(7),
+        generateUUID(7),
+        generateUUID(7),
+        generateUUID(7),
+        generateUUID(7),
+        generateUUID(7),
+        generateUUID(7),
+        generateUUID(7),
       ].forEach((uuid) => {
         expect(typeof uuid).toBe('string');
         expect(uuid.length).toBe(36);
         expect(isUUIDValid(uuid, 7)).toBe(true);
         expect(
-          /^[a-zA-Z0-9]{8}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{12}$/.test(uuid),
+          /^[a-zA-Z0-9]{8}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{12}$/.test(
+            uuid,
+          ),
         ).toBe(true);
       });
     });
   });
-
-
 
   describe('generateRandomString', () => {
     test('can generate a random string of any length', () => {
@@ -63,8 +89,6 @@ describe('Generators', () => {
     });
   });
 
-
-
   describe('generateRandomFloat', () => {
     test.each([
       [1, 10],
@@ -78,8 +102,6 @@ describe('Generators', () => {
       expect(val).toBeLessThanOrEqual(max);
     });
   });
-
-
 
   describe('generateRandomInteger', () => {
     test.each([
@@ -96,9 +118,6 @@ describe('Generators', () => {
     });
   });
 });
-
-
-
 
 describe('Object management helpers', () => {
   describe('shuffleArray', () => {
@@ -119,7 +138,13 @@ describe('Object management helpers', () => {
       [1],
       ['a'],
       [new Set([1, 2, 3, 4, 5])],
-      [new Map([['a', 1], ['b', 2], ['c', 3]])],
+      [
+        new Map([
+          ['a', 1],
+          ['b', 2],
+          ['c', 3],
+        ]),
+      ],
     ])('shuffleArray(%o)', (arr) => {
       expect(() => shuffleArray(arr)).toThrowError(ERRORS.INVALID_OR_EMPTY_ARRAY);
     });

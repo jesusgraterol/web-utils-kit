@@ -61,10 +61,6 @@ const __DATE_TEMPLATE_CONFIGS: IDateTemplateConfigs = {
   },
 };
 
-
-
-
-
 /* ************************************************************************************************
  *                                         IMPLEMENTATION                                         *
  ************************************************************************************************ */
@@ -98,9 +94,8 @@ const prettifyNumber = (value: number, configuration?: Partial<INumberFormatConf
  * @param template
  * @returns string
  */
-const prettifyDate = (value: Date | number | string, template: IDateTemplate): string => (
-  getDateInstance(value).toLocaleString(undefined, __DATE_TEMPLATE_CONFIGS[template])
-);
+const prettifyDate = (value: Date | number | string, template: IDateTemplate): string =>
+  getDateInstance(value).toLocaleString(undefined, __DATE_TEMPLATE_CONFIGS[template]);
 
 /**
  * Formats a bytes value into a human readable format.
@@ -124,8 +119,8 @@ const prettifyFileSize = (value: number, decimalPlaces: number = 2): string => {
       bytes /= __FILE_SIZE_THRESHOLD;
       u += 1;
     } while (
-      Math.round(Math.abs(bytes) * r) / r
-        >= __FILE_SIZE_THRESHOLD && u < __FILE_SIZE_UNITS.length - 1
+      Math.round(Math.abs(bytes) * r) / r >= __FILE_SIZE_THRESHOLD &&
+      u < __FILE_SIZE_UNITS.length - 1
     );
 
     // finally, return the value and its unit
@@ -156,32 +151,29 @@ const prettifyBadgeCount = (value: number, maxValue: number = 9): string | undef
  * @param val
  * @returns string
  */
-const capitalizeFirst = (value: string): string => (
-  value.length > 0 ? `${value[0].toUpperCase()}${value.slice(1)}` : ''
-);
+const capitalizeFirst = (value: string): string =>
+  value.length > 0 ? `${value[0].toUpperCase()}${value.slice(1)}` : '';
 
 /**
  * Converts a string value into Title Case.
  * @param value
  * @returns string
  */
-const toTitleCase = (value: string): string => value.replace(
-  /\w\S*/g,
-  (text) => text.charAt(0).toUpperCase() + text.substring(1).toLowerCase(),
-);
+const toTitleCase = (value: string): string =>
+  value.replace(/\w\S*/g, (text) => text.charAt(0).toUpperCase() + text.substring(1).toLowerCase());
 
 /**
  * Converts a string value into a slug.
  * @param value
  * @returns string
  */
-const toSlug = (value: string): string => (
-  value.length > 0 ? value.toLowerCase().replace(/[^\w ]+/g, '').replace(/ +/g, '-') : ''
-);
-
-
-
-
+const toSlug = (value: string): string =>
+  value.length > 0
+    ? value
+        .toLowerCase()
+        .replace(/[^\w ]+/g, '')
+        .replace(/ +/g, '-')
+    : '';
 
 /* ************************************************************************************************
  *                                         MODULE EXPORTS                                         *

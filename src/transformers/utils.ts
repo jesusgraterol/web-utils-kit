@@ -30,14 +30,7 @@ const getDateInstance = (value: Date | number | string): Date => {
   return new Date(value);
 };
 
-
-
-
-
 /* ************************************************************************************************
  *                                         MODULE EXPORTS                                         *
  ************************************************************************************************ */
-export {
-  buildNumberFormatConfig,
-  getDateInstance,
-};
+export { buildNumberFormatConfig, getDateInstance };
