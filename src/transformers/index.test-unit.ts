@@ -8,7 +8,7 @@ import {
   toSlug,
   prettifyDate,
 } from './index.js';
-import { INumberFormatConfig } from './types.js';
+import { IDateTemplate, INumberFormatConfig } from './types.js';
 
 /* ************************************************************************************************
  *                                             TESTS                                              *
@@ -28,21 +28,19 @@ describe('prettifyNumber', () => {
 });
 
 describe('prettifyDate', () => {
-  test('', () => {
-    const ts = 1733414720203;
-    [
-      prettifyDate(ts, 'date-short'),
-      prettifyDate(ts, 'date-medium'),
-      prettifyDate(ts, 'date-long'),
-      prettifyDate(ts, 'time-short'),
-      prettifyDate(ts, 'time-medium'),
-      prettifyDate(ts, 'datetime-short'),
-      prettifyDate(ts, 'datetime-medium'),
-      prettifyDate(ts, 'datetime-long'),
-    ].forEach((dateString) => {
-      expect(dateString).toBeTypeOf('string');
-      expect(dateString.length).toBeGreaterThan(0);
-    });
+  test.each(<Array<[IDateTemplate]>>[
+    ['date-short'],
+    ['date-medium'],
+    ['date-long'],
+    ['time-short'],
+    ['time-medium'],
+    ['datetime-short'],
+    ['datetime-medium'],
+    ['datetime-long'],
+  ])('prettifyDate(%s) -> valid string', (template) => {
+    const res = prettifyDate(Date.now(), template);
+    expect(res).toBeTypeOf('string');
+    expect(res.length).toBeGreaterThan(0);
   });
 });
 
