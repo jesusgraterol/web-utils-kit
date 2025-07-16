@@ -1,65 +1,6 @@
-import { IDateTemplate, IDateTemplateConfigs, INumberFormatConfig } from './types.js';
+import { IDateTemplate, INumberFormatConfig } from './types.js';
+import { DATE_TEMPLATE_CONFIGS, FILE_SIZE_THRESHOLD, FILE_SIZE_UNITS } from './consts.js';
 import { buildNumberFormatConfig, getDateInstance } from './utils.js';
-
-/* ************************************************************************************************
- *                                           CONSTANTS                                            *
- ************************************************************************************************ */
-
-// values needed to format a file size value into a readable string
-const __FILE_SIZE_THRESHOLD: number = 1024;
-const __FILE_SIZE_UNITS: string[] = ['kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
-
-// the configurations that will be used to prettify dates
-const __DATE_TEMPLATE_CONFIGS: IDateTemplateConfigs = {
-  'date-short': {
-    day: '2-digit',
-    month: '2-digit',
-    year: 'numeric',
-  },
-  'date-medium': {
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric',
-  },
-  'date-long': {
-    weekday: 'long',
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric',
-  },
-  'time-short': {
-    hour: '2-digit',
-    minute: '2-digit',
-  },
-  'time-medium': {
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit',
-  },
-  'datetime-short': {
-    day: 'numeric',
-    month: '2-digit',
-    year: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-  },
-  'datetime-medium': {
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-  },
-  'datetime-long': {
-    weekday: 'long',
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit',
-  },
-};
 
 /* ************************************************************************************************
  *                                         IMPLEMENTATION                                         *
@@ -95,7 +36,7 @@ const prettifyNumber = (value: number, configuration?: Partial<INumberFormatConf
  * @returns string
  */
 const prettifyDate = (value: Date | number | string, template: IDateTemplate): string =>
-  getDateInstance(value).toLocaleString(undefined, __DATE_TEMPLATE_CONFIGS[template]);
+  getDateInstance(value).toLocaleString(undefined, DATE_TEMPLATE_CONFIGS[template]);
 
 /**
  * Formats a bytes value into a human readable format.
@@ -108,7 +49,7 @@ const prettifyFileSize = (value: number, decimalPlaces: number = 2): string => {
     let bytes = value;
 
     // if the value is tiny, return it in bytes
-    if (Math.abs(value) < __FILE_SIZE_THRESHOLD) {
+    if (Math.abs(value) < FILE_SIZE_THRESHOLD) {
       return `${value} B`;
     }
 
@@ -116,15 +57,15 @@ const prettifyFileSize = (value: number, decimalPlaces: number = 2): string => {
     let u = -1;
     const r = 10 ** decimalPlaces;
     do {
-      bytes /= __FILE_SIZE_THRESHOLD;
+      bytes /= FILE_SIZE_THRESHOLD;
       u += 1;
     } while (
-      Math.round(Math.abs(bytes) * r) / r >= __FILE_SIZE_THRESHOLD &&
-      u < __FILE_SIZE_UNITS.length - 1
+      Math.round(Math.abs(bytes) * r) / r >= FILE_SIZE_THRESHOLD &&
+      u < FILE_SIZE_UNITS.length - 1
     );
 
     // finally, return the value and its unit
-    return `${bytes.toFixed(decimalPlaces)} ${__FILE_SIZE_UNITS[u]}`;
+    return `${bytes.toFixed(decimalPlaces)} ${FILE_SIZE_UNITS[u]}`;
   }
   return '0 B';
 };
