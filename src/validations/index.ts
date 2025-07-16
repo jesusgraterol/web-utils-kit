@@ -75,15 +75,26 @@ const isArrayValid = (value: unknown, allowEmpty?: boolean): value is Array<any>
 
 /**
  * Verifies if a value is a valid email address.
+ * Important: when providing forbiddenExtensions, ensure to include the dot (.) at the beginning.
+ * For example, to forbid .con, use ['.con'].
  * @param value
+ * @param forbiddenExtensions?
  * @returns boolean
  */
-const isEmailValid = (value: unknown): value is string =>
-  isStringValid(value, 5, 200) &&
-  // eslint-disable-next-line no-useless-escape
-  /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)+$/.test(
-    value,
+const isEmailValid = (
+  value: unknown,
+  forbiddenExtensions: string[] = ['.con'],
+): value is string => {
+  if (!isStringValid(value, 5, 200)) {
+    return false;
+  }
+  const email = value.toLowerCase();
+  return (
+    /^[a-z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?(?:\.[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?)+$/.test(
+      email,
+    ) && !forbiddenExtensions.some((ext) => email.endsWith(ext))
   );
+};
 
 /**
  * Verifies if a slug meets the following requirements:

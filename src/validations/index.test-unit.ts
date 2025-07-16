@@ -232,20 +232,33 @@ describe('isArrayValid', () => {
 });
 
 describe('isEmailValid', () => {
-  test.each([
+  test.each(<Array<[string, string[] | undefined, boolean]>>[
     // valid
-    ['jesusgraterol@gmail.com', true],
-    ['hola@jesusgraterol.dev.com', true],
-    ['jesusgraterol.dev@protonmail.com', true],
+    ['jesusgraterol@gmail.com', undefined, true],
+    ['hola@jesusgraterol.dev.com', undefined, true],
+    ['jesusgraterol.dev@protonmail.com', undefined, true],
+    ['jesusgraterol.dev@protonmail.net', undefined, true],
+    ['jesusgraterol.dev@protonmail.con', ['.com'], true],
+    ['jesusgraterol.dev@protonmail.con', [], true],
 
     // invalid
-    ['jesusgraterol@gmail.', false],
-    ['jesusgraterol@gmail', false],
-    ['domain.com', false],
-    ['@domain.com', false],
-    ['asd@domain.comasdasdasdasdasdasdasdasdasdasdasdasdasdasdaasdasdfasdfadasdsd', false],
-  ])('isEmailValid(%s) -> %s', (a, expected) => {
-    expect(isEmailValid(a)).toBe(expected);
+    ['jesusgraterol@gmail.com', ['.con', '.com'], false],
+    ['jesusgraterol@gmail.con', ['.con', '.nen'], false],
+    ['jesusgraterol@gmail.nen', ['.con', '.nen'], false],
+    ['jesusgraterol@gmail.nen', ['.con', '.nen', '.ai'], false],
+    ['jesusgraterol@gmail.ai', ['.con', '.nen', '.ai'], false],
+    ['jesusgraterol@gmail.con', undefined, false],
+    ['jesusgraterol@gmail.', undefined, false],
+    ['jesusgraterol@gmail', undefined, false],
+    ['domain.com', undefined, false],
+    ['@domain.com', undefined, false],
+    [
+      'asd@domain.comasdasdasdasdasdasdasdasdasdasdasdasdasdasdaasdasdfasdfadasdsd',
+      undefined,
+      false,
+    ],
+  ])('isEmailValid(%s) -> %s', (value, forbiddenExtensions, expected) => {
+    expect(isEmailValid(value, forbiddenExtensions)).toBe(expected);
   });
 });
 
