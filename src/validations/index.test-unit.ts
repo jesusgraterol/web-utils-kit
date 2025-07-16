@@ -1,4 +1,5 @@
 import { describe, test, expect } from 'vitest';
+import { IUUIDVersion } from '../shared/types.js';
 import {
   isStringValid,
   isNumberValid,
@@ -17,7 +18,6 @@ import {
   isURLValid,
   isUUIDValid,
 } from './index.js';
-import { IUUIDVersion } from '../shared/types.js';
 
 /* ************************************************************************************************
  *                                             TESTS                                              *
@@ -645,7 +645,7 @@ describe('isURLValid', () => {
 });
 
 describe('isUUIDValid', () => {
-  test.each([
+  test.each(<Array<[unknown, IUUIDVersion, boolean]>>[
     // valid
     ['fcd089f1-6a2c-48b8-b2d7-9faebd1fdfb6', 4, true],
     ['876cce51-a546-4256-a067-5bc7cdc673ca', 4, true],
@@ -683,6 +683,6 @@ describe('isUUIDValid', () => {
     ['01695553-c90c-705a-b56d-778dfbbd4bed', 4, false],
     [true, 4, false],
   ])('isUUIDValid(%s, %d) -> %s', (a, b, expected) => {
-    expect(isUUIDValid(a, b as IUUIDVersion)).toBe(expected);
+    expect(isUUIDValid(a, b)).toBe(expected);
   });
 });
