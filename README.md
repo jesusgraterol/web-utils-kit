@@ -64,6 +64,7 @@ await res.json();
   isStringValid('abcde', 1, 5); // true
   isStringValid('abcdef', 1, 5); // false
   ```
+  <br/>
 </details>
 
 <details>
@@ -79,6 +80,7 @@ await res.json();
   isNumberValid(3, 3, 5); // true
   isNumberValid(6, 3, 5); // false
   ```
+  <br/>
 </details>
 
 <details>
@@ -92,6 +94,7 @@ await res.json();
   isIntegerValid(1); // true
   isIntegerValid(1.5); // false
   ```
+  <br/>
 </details>
 
 <details>
@@ -106,6 +109,7 @@ await res.json();
   isTimestampValid(14399999); // false
   isTimestampValid(Number.MIN_SAFE_INTEGER + 1); // false
   ```
+  <br/>
 </details>
 
 <details>
@@ -121,6 +125,7 @@ await res.json();
   isObjectValid({ auth: 123, isAdmin: true }); // true
   isObjectValid([0, 1, { foo: 'bar' }]); // false
   ```
+  <br/>
 </details>
 
 <details>
@@ -135,6 +140,7 @@ await res.json();
   isArrayValid([], true); // true
   isArrayValid({ auth: 123, isAdmin: true }); // false
   ```
+  <br/>
 </details>
 
 <details>
@@ -151,6 +157,7 @@ await res.json();
   // forbid certain extensions
   isEmailValid('jesusgraterol@gmail.con', ['.con']); // false
   ```
+  <br/>
 </details>
 
 <details>
@@ -169,6 +176,7 @@ await res.json();
   isSlugValid('hello-world', true); // true
   isSlugValid('jesus@graterol'); // false
   ```
+  <br/>
 </details>
 
 <details>
@@ -187,6 +195,7 @@ await res.json();
   isPasswordValid('zR<q%+r2C,&fy.SE&~.(REXTqe4K[?>G'); // true
   isPasswordValid('some-weak-password'); // false
   ```
+  <br/>
 </details>
 
 <details>
@@ -199,6 +208,7 @@ await res.json();
 
   isOTPSecretValid('NB2RGV2KAY2CMACD'); // true
   ```
+  <br/>
 </details>
 
 <details>
@@ -212,6 +222,7 @@ await res.json();
   isOTPTokenValid('123456'); // true
   isOTPTokenValid('1234567'); // false
   ```
+  <br/>
 </details>
 
 <details>
@@ -225,6 +236,7 @@ await res.json();
   isJWTValid('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTIzNDU2Nzg5LCJuYW1lIjoiSm9zZXBoIn0.OpOSSw7e485LOP5PrzScxHb7SR6sAOMRckfFwi4rp7o');
   // true
   ```
+  <br/>
 </details>
 
 <details>
@@ -239,6 +251,7 @@ await res.json();
   isAuthorizationHeaderValid('Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTIzNDU2Nzg5LCJuYW1lIjoiSm9zZXBoIn0.OpOSSw7e485LOP5PrzScxHb7SR6sAOMRckfFwi4rp7o');
   // true
   ```
+  <br/>
 </details>
 
 <details>
@@ -251,6 +264,7 @@ await res.json();
 
   isSemverValid('1.0.0'); // true
   ```
+  <br/>
 </details>
 
 <details>
@@ -264,6 +278,7 @@ await res.json();
   isURLValid('https://jesusgraterol.dev'); // true
   isURLValid('jesusgraterol.dev'); // false
   ```
+  <br/>
 </details>
 
 <details>
@@ -277,6 +292,7 @@ await res.json();
   isUUIDValid('9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d', 4); // true
   isUUIDValid('01695553-c90c-705a-b56d-778dfbbd4bed', 7); // true
   ```
+  <br/>
 </details>
 
 ### Transformers
@@ -295,6 +311,7 @@ await res.json();
   prettifyNumber(1000, { minimumFractionDigits: 2, prefix: '$' });
   // '$1,000.00'
   ```
+  <br/>
 </details>
 
 <details>
@@ -318,6 +335,7 @@ await res.json();
   prettifyDate(Date.now(), 'date-medium');
   // 'December 5, 2024'
   ```
+  <br/>
 </details>
 
 <details>
@@ -331,6 +349,7 @@ await res.json();
   prettifyFileSize(85545, 6); // '83.540039 kB'
   prettifyFileSize(79551423); // '75.87 MB'
   ```
+  <br/>
 </details>
 
 <details>
@@ -345,6 +364,7 @@ await res.json();
   prettifyBadgeCount(11); // '9+'
   prettifyBadgeCount(135, 99); // '99+'
   ```
+  <br/>
 </details>
 
 <details>
@@ -357,6 +377,7 @@ await res.json();
 
   capitalizeFirst('hello world'); // 'Hello world'
   ```
+  <br/>
 </details>
 
 <details>
@@ -369,6 +390,7 @@ await res.json();
 
   toTitleCase('hello world'); // 'Hello World'
   ```
+  <br/>
 </details>
 
 <details>
@@ -380,7 +402,8 @@ await res.json();
   import { toSlug } from 'web-utils-kit';
 
   toSlug('HELLO WORLD!!@'); // 'hello-world'
-```
+  ```
+  <br/>
 </details>
 
 <details>
@@ -396,6 +419,7 @@ await res.json();
   truncateText('This is a message', 16); // 'This is a mes...'
   truncateText('This is a message', 15); // 'This is a me...'
   ```
+  <br/>
 </details>
 
 <details>
@@ -409,6 +433,7 @@ await res.json();
   maskMiddle('01021234567890123456', 4); // '0102...3456'
   maskMiddle('01021234567890123456', 6, '********'); // '010212********123456'
   ```
+  <br/>
 </details>
 
 
@@ -425,6 +450,7 @@ await res.json();
   generateUUID(4); // '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d'
   generateUUID(7); // '01695553-c90c-705a-b56d-778dfbbd4bed'
   ```
+  <br/>
 </details>
 
 <details>
@@ -437,6 +463,7 @@ await res.json();
 
   generateRandomString(15); // 'IbnqwSPvZdXxVyS'
   ```
+  <br/>
 </details>
 
 
@@ -450,6 +477,7 @@ await res.json();
 
   generateRandomFloat(1, 100); // 67.551
   ```
+  <br/>
 </details>
 
 <details>
@@ -462,6 +490,7 @@ await res.json();
 
   generateRandomInteger(1, 100); // 71
   ```
+  <br/>
 </details>
 
 
@@ -476,6 +505,7 @@ await res.json();
   generateSequence(1, 10); // [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
   generateSequence(1, 10, 2); // [1, 3, 5, 7, 9]
   ```
+  <br/>
 </details>
 
 <details>
@@ -495,6 +525,7 @@ await res.json();
   ['a', 'b', 'c'].sort(sortPrimitives('desc'));
   // ['c', 'b', 'a']
   ```
+  <br/>
 </details>
 
 
@@ -515,6 +546,7 @@ await res.json();
   [{ v: 'a' }, { v: 'b' }, { v: 'c' }].sort(sortRecords('v', 'desc'));
   // [{ v: 'c' }, { v: 'b' }, { v: 'a' }]
   ```
+  <br/>
 </details>
 
 <details>
@@ -532,6 +564,7 @@ await res.json();
   shuffleArray([{ a: 1 }, { b: 2 }, { c: 3 }, { d: 4 }, { e: 5 }])
   // [ { c: 3 }, { d: 4 }, { a: 1 }, { b: 2 }, { e: 5 } ]
   ```
+  <br/>
 </details>
 
 
@@ -546,6 +579,7 @@ await res.json();
   pickProps({ a: 1, b: 2, c: 3, d: 4 }, ['b', 'd'])
   // { b: 2, d: 4 }
   ```
+  <br/>
 </details>
 
 <details>
@@ -559,6 +593,7 @@ await res.json();
   omitProps({ a: 1, b: 2, c: 3, d: 4 }, ['b', 'd'])
   // { a: 1, c: 3 }
   ```
+  <br/>
 </details>
 
 
@@ -575,6 +610,7 @@ await res.json();
   isEqual([{ a: 1, b: 2 }], [{ b: 2, a: 1 }]);
   // true
   ```
+  <br/>
 </details>
 
 <details>
@@ -588,6 +624,7 @@ await res.json();
   await delay(3);
   // ~3 seconds later
   ```
+  <br/>
 </details>
 
 
@@ -609,6 +646,7 @@ await res.json();
   //   nickname: 'PythonWiz333'
   // }
   ```
+  <br/>
 </details>
 
 <br/>
@@ -623,6 +661,7 @@ await res.json();
   ```typescript
   type IUUIDVersion = 4 | 7;
   ```
+  <br/>
 </details>
 
 <details>
@@ -633,6 +672,7 @@ await res.json();
   ```typescript
   type ISortDirection = 'asc' | 'desc';
   ```
+  <br/>
 </details>
 
 <details>
@@ -648,6 +688,7 @@ await res.json();
     suffix: string; // Default: ''
   };
   ```
+  <br/>
 </details>
 
 <details>
@@ -666,6 +707,7 @@ await res.json();
   ```typescript
   type IDateTemplate = 'date-short' | 'date-medium' | 'date-long' | 'time-short' | 'time-medium' | 'datetime-short' | 'datetime-medium' | 'datetime-long';
   ```
+  <br/>
 </details>
 
 <br/>
