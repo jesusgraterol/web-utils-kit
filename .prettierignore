@@ -27,9 +27,9 @@ yarn.lock
 pnpm-lock.yaml
 
 # miscellaneous
-coverage/         # Test coverage reports
-.DS_Store         # macOS system files
-*.min.js          # Minified JavaScript files
-public/           # Static assets (e.g., Next.js, Vite)
-tmp/              # Temporary files
-*.md              # Markdown files
+coverage/
+.DS_Store
+*.min.js
+public/
+tmp/
+*.md

@@ -129,6 +129,21 @@ const truncateText = (text: string, maxLength: number): string => {
   return `${text.slice(0, maxLength - 3)}...`;
 };
 
+/**
+ * Masks the middle of a string, keeping a specified number of visible characters at the start and
+ * end.
+ * @param text
+ * @param visibleChars
+ * @param mask?
+ * @returns string
+ */
+const maskMiddle = (text: string, visibleChars: number, mask: string = '...'): string => {
+  if (text.length <= visibleChars * 2) {
+    return text;
+  }
+  return `${text.slice(0, visibleChars)}${mask}${text.slice(-visibleChars)}`;
+};
+
 /* ************************************************************************************************
  *                                         MODULE EXPORTS                                         *
  ************************************************************************************************ */
@@ -141,4 +156,5 @@ export {
   toTitleCase,
   toSlug,
   truncateText,
+  maskMiddle,
 };

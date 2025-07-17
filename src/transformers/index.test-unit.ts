@@ -8,6 +8,7 @@ import {
   toSlug,
   prettifyDate,
   truncateText,
+  maskMiddle,
 } from './index.js';
 import { IDateTemplate, INumberFormatConfig } from './types.js';
 
@@ -118,5 +119,19 @@ describe('truncateText', () => {
     ['This is a message', 14, 'This is a m...'],
   ])('truncateText(%s, %i) -> %s', (text, maxLength, expected) => {
     expect(truncateText(text, maxLength)).toBe(expected);
+  });
+});
+
+describe('maskMiddle', () => {
+  test.each([
+    ['0102', 4, undefined, '0102'],
+    ['12345678', 4, undefined, '12345678'],
+    ['010201023', 4, undefined, '0102...1023'],
+    ['01021234567890123456', 4, undefined, '0102...3456'],
+    ['01021234567890123456', 6, '********', '010212********123456'],
+    ['bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh', 4, undefined, 'bc1q...0wlh'],
+    ['bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh', 6, '********', 'bc1qxy********hx0wlh'],
+  ])('maskMiddle(%s, %i, %s) -> %s', (text, visibleChars, mask, expected) => {
+    expect(maskMiddle(text, visibleChars, mask)).toBe(expected);
   });
 });
