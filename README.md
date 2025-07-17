@@ -54,6 +54,7 @@ await res.json();
 <details>
   <summary><code>isStringValid</code></summary>
   <br/>
+
   Verifies if a value is a valid string and its length is within a range (optional).
 
   ```typescript
@@ -70,6 +71,7 @@ await res.json();
 <details>
   <summary><code>isNumberValid</code></summary>
   <br/>
+
   Verifies if a value is a valid number and is within a range (optional). The minimum value defaults to `Number.MIN_SAFE_INTEGER` (-9007199254740991) while the maximum value defaults to `Number.MAX_SAFE_INTEGER` (9007199254740991).
 
   ```typescript
@@ -86,6 +88,7 @@ await res.json();
 <details>
   <summary><code>isIntegerValid</code></summary>
   <br/>
+
   Verifies if a value is a valid integer and is within a range (optional). If a range is not provided, it will use the properties `Number.MIN_SAFE_INTEGER` & `Number.MAX_SAFE_INTEGER`.
   
   ```typescript
@@ -100,6 +103,7 @@ await res.json();
 <details>
   <summary><code>isTimestampValid</code></summary>
   <br/>
+
   Verifies if a value is a valid unix timestamp in milliseconds. The smallest value is set for the beginning of the Unix epoch (January 1st, 1970 - 14400000) on the numeric limit established by JavaScript (9007199254740991).
 
   ```typescript
@@ -115,6 +119,7 @@ await res.json();
 <details>
   <summary><code>isObjectValid</code></summary>
   <br/>
+
   Verifies if a value is an actual object. It also validates if it has keys (optional).
 
   ```typescript
@@ -131,6 +136,7 @@ await res.json();
 <details>
   <summary><code>isArrayValid</code></summary>
   <br/>
+
   Verifies if a value is an array. It also validates if it has elements inside (optional).
 
   ```typescript
@@ -146,6 +152,7 @@ await res.json();
 <details>
   <summary><code>isEmailValid</code></summary>
   <br/>
+
   Verifies if a value is a valid email address.
 
   ```typescript
@@ -163,6 +170,7 @@ await res.json();
 <details>
   <summary><code>isSlugValid</code></summary>
   <br/>
+
   Verifies if a slug meets the following requirements:
   - Accepts any Alpha Characters (lower and upper case)
   - Accepts any digits
@@ -182,6 +190,7 @@ await res.json();
 <details>
   <summary><code>isPasswordValid</code></summary>
   <br/>
+
   Verifies if a password meets the following requirements:
    - Meets a length range (Defaults to 8 - 2048)
    - At least one uppercase letter
@@ -201,6 +210,7 @@ await res.json();
 <details>
   <summary><code>isOTPSecretValid</code></summary>
   <br/>
+
   Verifies if a value has the correct OTP Secret Format.
 
   ```typescript
@@ -214,6 +224,7 @@ await res.json();
 <details>
   <summary><code>isOTPTokenValid</code></summary>
   <br/>
+
   Verifies if a value has the correct OTP Token Format.
 
   ```typescript
@@ -228,6 +239,7 @@ await res.json();
 <details>
   <summary><code>isJWTValid</code></summary>
   <br/>
+
   Verifies if a value has a correct JWT Format: `[Base64-URL Encoded Header].[Base64-URL Encoded Payload].[Signature]`
 
   ```typescript
@@ -242,6 +254,7 @@ await res.json();
 <details>
   <summary><code>isAuthorizationHeaderValid</code></summary>
   <br/>
+
   Verifies if a value has a valid Authorization Header format based on the RFC6750. Example: 
   `Authorization: Bearer eyJhbGciOiJIUzI1NiIXVCJ9TJV...r7E20RMHrHDcEfxjoYZgeFONFh7HgQ`
 
@@ -257,6 +270,7 @@ await res.json();
 <details>
   <summary><code>isSemverValid</code></summary>
   <br/>
+
   Verifies if a value complies with semantic versioning.
 
   ```typescript
@@ -270,6 +284,7 @@ await res.json();
 <details>
   <summary><code>isURLValid</code></summary>
   <br/>
+
   Verifies if a value is a valid URL.
 
   ```typescript
@@ -284,6 +299,7 @@ await res.json();
 <details>
   <summary><code>isUUIDValid</code></summary>
   <br/>
+
   Verifies if a value is a valid UUID and that it matches a specific version.
 
   ```typescript
@@ -300,6 +316,7 @@ await res.json();
 <details>
   <summary><code>prettifyNumber</code></summary>
   <br/>
+
   Verifies if a value is a valid UUID and that it matches a specific version.
 
   ```typescript
@@ -317,6 +334,7 @@ await res.json();
 <details>
   <summary><code>prettifyDate</code></summary>
   <br/>
+
   Formats a date instance based on a template.
   - `date-short` -> 12/05/2024 (Default)
   - `date-medium` -> December 5, 2024
@@ -341,6 +359,7 @@ await res.json();
 <details>
   <summary><code>prettifyFileSize</code></summary>
   <br/>
+
   Formats a bytes value into a human readable format.
 
   ```typescript
@@ -355,6 +374,7 @@ await res.json();
 <details>
   <summary><code>prettifyBadgeCount</code></summary>
   <br/>
+
   Formats the number that will be inserted in a badge so it doesn't take too much space. If the current count is 0, it returns undefined as the badge shouldn't be displayed.
 
   ```typescript
@@ -370,6 +390,7 @@ await res.json();
 <details>
   <summary><code>capitalizeFirst</code></summary>
   <br/>
+
   Capitalizes the first letter of a string and returns the new value.
 
   ```typescript
@@ -383,6 +404,7 @@ await res.json();
 <details>
   <summary><code>toTitleCase</code></summary>
   <br/>
+
   Converts a string value into Title Case.
 
   ```typescript
@@ -396,6 +418,7 @@ await res.json();
 <details>
   <summary><code>toSlug</code></summary>
   <br/>
+
   Converts a string value into a slug.
 
   ```typescript
@@ -409,6 +432,7 @@ await res.json();
 <details>
   <summary><code>truncateText</code></summary>
   <br/>
+
   Truncates a string to a specified length and appends an ellipsis if it exceeds that length.
 
   ```typescript
@@ -425,6 +449,7 @@ await res.json();
 <details>
   <summary><code>maskMiddle</code></summary>
   <br/>
+
   Masks the middle of a string, keeping a specified number of visible characters at the start and end.
 
   ```typescript
@@ -442,6 +467,7 @@ await res.json();
 <details>
   <summary><code>generateUUID</code></summary>
   <br/>
+
   Generates a UUID based on a version.
 
   ```typescript
@@ -456,6 +482,7 @@ await res.json();
 <details>
   <summary><code>generateRandomString</code></summary>
   <br/>
+
   Generates a string from randomly picked characters based on the length.
 
   ```typescript
@@ -470,6 +497,7 @@ await res.json();
 <details>
   <summary><code>generateRandomFloat</code></summary>
   <br/>
+
   Generates a random number (decimal) constrained by the range.
 
   ```typescript
@@ -483,6 +511,7 @@ await res.json();
 <details>
   <summary><code>generateRandomInteger</code></summary>
   <br/>
+
   Generates a random number (integer) constrained by the range.
 
   ```typescript
@@ -497,6 +526,7 @@ await res.json();
 <details>
   <summary><code>generateSequence</code></summary>
   <br/>
+
   Generates a sequence of numbers within a range based on a number of steps.
 
   ```typescript
@@ -511,6 +541,7 @@ await res.json();
 <details>
   <summary><code>sortPrimitives</code></summary>
   <br/>
+
   Sorts a list of primitive values based on their type and a sort direction.
 
   ```typescript
@@ -532,6 +563,7 @@ await res.json();
 <details>
   <summary><code>sortRecords</code></summary>
   <br/>
+
   Sorts a list of record values by key based on their type and a sort direction.
 
   ```typescript
@@ -552,6 +584,7 @@ await res.json();
 <details>
   <summary><code>shuffleArray</code></summary>
   <br/>
+
   Creates a shallow copy of the input array and shuffles it, using a version of the Fisher-Yates algorithm.
 
   ```typescript
@@ -571,6 +604,7 @@ await res.json();
 <details>
   <summary><code>pickProps</code></summary>
   <br/>
+
   Picks a list of properties from an object and returns a new object (shallow) with the provided keys.
 
   ```typescript
@@ -585,6 +619,7 @@ await res.json();
 <details>
   <summary><code>omitProps</code></summary>
   <br/>
+  
   Omits a list of properties from an object and returns a new object (shallow) with only those keys that weren't omitted.
 
   ```typescript
@@ -600,6 +635,7 @@ await res.json();
 <details>
   <summary><code>isEqual</code></summary>
   <br/>
+
   Compares two objects or arrays deeply and returns true if they are equals.
 
   ```typescript
@@ -616,6 +652,7 @@ await res.json();
 <details>
   <summary><code>delay</code></summary>
   <br/>
+
   Creates an asynchronous delay that resolves once the provided seconds have passed.
 
   ```typescript
@@ -631,6 +668,7 @@ await res.json();
 <details>
   <summary><code>retryAsyncFunction</code></summary>
   <br/>
+
   Executes an asynchronous function persistently, retrying on error with incremental delays defined in retryScheduleDuration (seconds).
 
   ```typescript
@@ -656,6 +694,7 @@ await res.json();
 <details>
   <summary><code>IUUIDVersion</code></summary>
   <br/>
+
   The UUID versions supported by this library.
 
   ```typescript
@@ -667,6 +706,7 @@ await res.json();
 <details>
   <summary><code>ISortDirection</code></summary>
   <br/>
+
   The sort direction that can be applied to a list.
 
   ```typescript
@@ -678,6 +718,7 @@ await res.json();
 <details>
   <summary><code>INumberFormatConfig</code></summary>
   <br/>
+
   The configuration that will be used to prettify a number.
 
   ```typescript
@@ -694,6 +735,7 @@ await res.json();
 <details>
   <summary><code>IDateTemplate</code></summary>
   <br/>
+  
   A date can be prettified by choosing a template that meets the user's requirements.
   - `date-short` -> 12/05/2024 (Default)
   - `date-medium` -> December 5, 2024
