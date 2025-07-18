@@ -1,6 +1,6 @@
 import { describe, test, expect } from 'vitest';
 import { INumberFormatConfig } from './types.js';
-import { buildNumberFormatConfig, getDateInstance } from './utils.js';
+import { buildNumberFormatConfig, getDateInstance, sortJSONObjectKeys } from './utils.js';
 
 /* ************************************************************************************************
  *                                            HELPERS                                             *
@@ -50,5 +50,36 @@ describe('getDateInstance', () => {
     const instance = getDateInstance(a);
     expect(instance).toBeInstanceOf(Date);
     expect(instance.getTime()).toBe(1733412835329);
+  });
+});
+
+describe('sortJSONObjectKeys', () => {
+  test.each(<Array<[unknown, unknown]>>[
+    [123456, 123456],
+    ['Hello there!', 'Hello there!'],
+    [true, true],
+    [{}, {}],
+    [[], []],
+    [
+      { b: 2, a: 1 },
+      { a: 1, b: 2 },
+    ],
+    [
+      { b: 2, a: { 2: 'b', 1: 'a', 3: [1, 2, 3], 4: { z: 2, x: 5, y: true } } },
+      { a: { 1: 'a', 2: 'b', 3: [1, 2, 3], 4: { x: 5, y: true, z: 2 } }, b: 2 },
+    ],
+    [[{ b: 2, a: 1, c: 4 }], [{ a: 1, b: 2, c: 4 }]],
+    [
+      [
+        { b: 2, a: { 2: 'b', 1: 'a', 3: [1, 2, 3], 4: { z: 2, x: 5, y: true } } },
+        { b: 2, a: 1, c: [{ d: 5, c: [1, 2, 3] }] },
+      ],
+      [
+        { a: { 1: 'a', 2: 'b', 3: [1, 2, 3], 4: { x: 5, y: true, z: 2 } }, b: 2 },
+        { a: 1, b: 2, c: [{ c: [1, 2, 3], d: 5 }] },
+      ],
+    ],
+  ])('sortJSONObjectKeys(%j) -> %j', (value, expected) => {
+    expect(JSON.stringify(sortJSONObjectKeys(value))).toBe(JSON.stringify(expected));
   });
 });

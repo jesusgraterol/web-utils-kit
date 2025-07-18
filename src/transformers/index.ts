@@ -1,6 +1,9 @@
+import { encodeError, extractMessage } from 'error-message-utils';
+import { ERRORS } from '../shared/errors.js';
+import { isArrayValid, isObjectValid } from '../validations/index.js';
 import { IDateTemplate, INumberFormatConfig } from './types.js';
 import { DATE_TEMPLATE_CONFIGS, FILE_SIZE_THRESHOLD, FILE_SIZE_UNITS } from './consts.js';
-import { buildNumberFormatConfig, getDateInstance } from './utils.js';
+import { buildNumberFormatConfig, getDateInstance, sortJSONObjectKeys } from './utils.js';
 
 /* ************************************************************************************************
  *                                         IMPLEMENTATION                                         *
@@ -144,6 +147,36 @@ const maskMiddle = (text: string, visibleChars: number, mask: string = '...'): s
   return `${text.slice(0, visibleChars)}${mask}${text.slice(-visibleChars)}`;
 };
 
+/**
+ * Stringifies a JSON object in a deterministic way, ensuring that the keys are sorted and the
+ * output is consistent.
+ * @param value
+ * @returns string
+ * @throws
+ * - UNSUPPORTED_DATA_TYPE: if the provided value is not an object or an array
+ * - UNABLE_TO_SERIALIZE_JSON: if an error is thrown during stringification
+ */
+const stringifyJSONDeterministically = (value: object): string => {
+  if (!isObjectValid(value, true) && !isArrayValid(value, true)) {
+    throw new Error(
+      encodeError(
+        `The JSON value must be an object or an array in order to be stringified. Received: ${String(value)}`,
+        ERRORS.UNSUPPORTED_DATA_TYPE,
+      ),
+    );
+  }
+  try {
+    return JSON.stringify(sortJSONObjectKeys(value));
+  } catch (e) {
+    throw new Error(
+      encodeError(
+        `Failed to stringify the JSON value deterministically: ${extractMessage(e)}`,
+        ERRORS.UNABLE_TO_SERIALIZE_JSON,
+      ),
+    );
+  }
+};
+
 /* ************************************************************************************************
  *                                         MODULE EXPORTS                                         *
  ************************************************************************************************ */
@@ -157,4 +190,5 @@ export {
   toSlug,
   truncateText,
   maskMiddle,
+  stringifyJSONDeterministically,
 };
