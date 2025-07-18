@@ -461,6 +461,21 @@ await res.json();
   <br/>
 </details>
 
+<details>
+  <summary><code>stringifyJSONDeterministically</code></summary>
+  <br/>
+
+  Stringifies a JSON object in a deterministic way, ensuring that the keys are sorted and the output is consistent.
+
+  ```typescript
+  import { stringifyJSONDeterministically } from 'web-utils-kit';
+
+  stringifyJSONDeterministically({ c: 8, b: [{ z: 6, y: 5, x: 4 }, 7], a: 3 });
+  // '{"a":3,"b":[{"x":4,"y":5,"z":6},7],"c":8}'
+  ```
+  <br/>
+</details>
+
 
 ### Utils
 
