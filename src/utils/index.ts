@@ -1,10 +1,10 @@
 import { v4 as uuidv4, v7 as uuidv7 } from 'uuid';
-import stableStringify from 'json-stable-stringify';
-import { encodeError, extractMessage } from 'error-message-utils';
+import { encodeError } from 'error-message-utils';
 import { IUUIDVersion } from '../shared/types.js';
 import { ERRORS } from '../shared/errors.js';
 import { isArrayValid, isObjectValid } from '../validations/index.js';
 import { ISortDirection } from './types.js';
+import { stringifyJSONDeterministically } from '../transformers/index.js';
 
 /* ************************************************************************************************
  *                                           GENERATORS                                           *
@@ -262,47 +262,7 @@ const omitProps = <T extends Record<string, any>, K extends keyof T>(
 const isEqual = (
   a: Record<string, any> | Array<any>,
   b: Record<string, any> | Array<any>,
-): boolean => {
-  if (!isObjectValid(a, true) && !isArrayValid(a, true)) {
-    throw new Error(
-      encodeError(
-        "Value 'a' must be an object or an array in order to be compared.",
-        ERRORS.UNSUPPORTED_DATA_TYPE,
-      ),
-    );
-  }
-  if (!isObjectValid(b, true) && !isArrayValid(b, true)) {
-    throw new Error(
-      encodeError(
-        "Value 'b' must be an object or an array in order to be compared.",
-        ERRORS.UNSUPPORTED_DATA_TYPE,
-      ),
-    );
-  }
-  let aVal: string;
-  let bVal: string;
-  try {
-    aVal = <string>stableStringify(a);
-  } catch (e) {
-    throw new Error(
-      encodeError(
-        `Value 'a' could not be serialized into a JSON string in order to be compared: ${extractMessage(e)}`,
-        ERRORS.UNABLE_TO_SERIALIZE_JSON,
-      ),
-    );
-  }
-  try {
-    bVal = <string>stableStringify(b);
-  } catch (e) {
-    throw new Error(
-      encodeError(
-        `Value 'b' could not be serialized into a JSON string in order to be compared: ${extractMessage(e)}`,
-        ERRORS.UNABLE_TO_SERIALIZE_JSON,
-      ),
-    );
-  }
-  return aVal === bVal;
-};
+): boolean => stringifyJSONDeterministically(a) === stringifyJSONDeterministically(b);
 
 /* ************************************************************************************************
  *                                          MISC HELPERS                                          *
