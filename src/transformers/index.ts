@@ -168,7 +168,7 @@ const stringifyJSON = (value: NonNullable<object>): string => {
     }
     return result;
   } catch (e) {
-    if (decodeError(e).code !== ERRORS.UNSUPPORTED_DATA_TYPE) {
+    if (decodeError(e).code !== ERRORS.UNABLE_TO_SERIALIZE_JSON) {
       throw new Error(
         encodeError(
           `Failed to stringify the JSON value '${value}': ${extractMessage(e)}`,
@@ -202,12 +202,15 @@ const stringifyJSONDeterministically = (value: NonNullable<object>): string => {
   try {
     return stringifyJSON(sortJSONObjectKeys(value) as object);
   } catch (e) {
-    throw new Error(
-      encodeError(
-        `Failed to stringify the JSON value deterministically '${value}': ${extractMessage(e)}`,
-        ERRORS.UNABLE_TO_SERIALIZE_JSON,
-      ),
-    );
+    if (decodeError(e).code !== ERRORS.UNABLE_TO_SERIALIZE_JSON) {
+      throw new Error(
+        encodeError(
+          `Failed to stringify the JSON value deterministically '${value}': ${extractMessage(e)}`,
+          ERRORS.UNABLE_TO_SERIALIZE_JSON,
+        ),
+      );
+    }
+    throw e;
   }
 };
 
