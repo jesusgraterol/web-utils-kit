@@ -187,6 +187,7 @@ const stringifyJSON = (value: NonNullable<object>): string => {
  * @returns string
  * @throws
  * - UNSUPPORTED_DATA_TYPE: if the provided value is not an object or an array
+ * - UNABLE_TO_SERIALIZE_JSON: if the result of JSON.stringify is not a valid string
  * - UNABLE_TO_SERIALIZE_JSON: if an error is thrown during stringification
  */
 const stringifyJSONDeterministically = (value: NonNullable<object>): string => {
@@ -199,7 +200,7 @@ const stringifyJSONDeterministically = (value: NonNullable<object>): string => {
     );
   }
   try {
-    return JSON.stringify(sortJSONObjectKeys(value));
+    return stringifyJSON(sortJSONObjectKeys(value) as object);
   } catch (e) {
     throw new Error(
       encodeError(
