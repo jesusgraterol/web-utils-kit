@@ -1,4 +1,4 @@
-import { encodeError, extractMessage } from 'error-message-utils';
+import { decodeError, encodeError, extractMessage } from 'error-message-utils';
 import { ERRORS } from '../shared/errors.js';
 import { isArrayValid, isObjectValid } from '../validations/index.js';
 import { IDateTemplate, INumberFormatConfig } from './types.js';
@@ -148,6 +148,39 @@ const maskMiddle = (text: string, visibleChars: number, mask: string = '...'): s
 };
 
 /**
+ * Serializes a JSON object into a string.
+ * @param value
+ * @returns string
+ * @throws
+ * - UNABLE_TO_SERIALIZE_JSON: if the result of JSON.stringify is not a valid string
+ * - UNABLE_TO_SERIALIZE_JSON: if an error is thrown during stringification
+ */
+const stringifyJSON = (value: NonNullable<object>): string => {
+  try {
+    const result = JSON.stringify(value);
+    if (typeof result !== 'string' || !result.length) {
+      throw new Error(
+        encodeError(
+          `Stringifying the JSON value '${value}' produced an invalid result: ${result}.`,
+          ERRORS.UNABLE_TO_SERIALIZE_JSON,
+        ),
+      );
+    }
+    return result;
+  } catch (e) {
+    if (decodeError(e).code !== ERRORS.UNSUPPORTED_DATA_TYPE) {
+      throw new Error(
+        encodeError(
+          `Failed to stringify the JSON value '${value}': ${extractMessage(e)}`,
+          ERRORS.UNABLE_TO_SERIALIZE_JSON,
+        ),
+      );
+    }
+    throw e;
+  }
+};
+
+/**
  * Stringifies a JSON object in a deterministic way, ensuring that the keys are sorted and the
  * output is consistent.
  * @param value
@@ -156,11 +189,11 @@ const maskMiddle = (text: string, visibleChars: number, mask: string = '...'): s
  * - UNSUPPORTED_DATA_TYPE: if the provided value is not an object or an array
  * - UNABLE_TO_SERIALIZE_JSON: if an error is thrown during stringification
  */
-const stringifyJSONDeterministically = (value: object): string => {
+const stringifyJSONDeterministically = (value: NonNullable<object>): string => {
   if (!isObjectValid(value, true) && !isArrayValid(value, true)) {
     throw new Error(
       encodeError(
-        `The JSON value must be an object or an array in order to be stringified. Received: ${String(value)}`,
+        `The JSON value must be an object or an array in order to be stringified. Received: ${value}`,
         ERRORS.UNSUPPORTED_DATA_TYPE,
       ),
     );
@@ -170,7 +203,7 @@ const stringifyJSONDeterministically = (value: object): string => {
   } catch (e) {
     throw new Error(
       encodeError(
-        `Failed to stringify the JSON value deterministically: ${extractMessage(e)}`,
+        `Failed to stringify the JSON value deterministically '${value}': ${extractMessage(e)}`,
         ERRORS.UNABLE_TO_SERIALIZE_JSON,
       ),
     );
@@ -190,5 +223,6 @@ export {
   toSlug,
   truncateText,
   maskMiddle,
+  stringifyJSON,
   stringifyJSONDeterministically,
 };
