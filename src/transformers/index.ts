@@ -1,8 +1,11 @@
 import { decodeError, encodeError, extractMessage } from 'error-message-utils';
 import { ERRORS } from '../shared/errors.js';
-import { isArrayValid, isObjectValid } from '../validations/index.js';
 import { IDateTemplate, INumberFormatConfig } from './types.js';
 import { DATE_TEMPLATE_CONFIGS, FILE_SIZE_THRESHOLD, FILE_SIZE_UNITS } from './consts.js';
+import {
+  canJSONBeSerializedDeterministically,
+  validateJSONSerializationResult,
+} from './validations.js';
 import { buildNumberFormatConfig, getDateInstance, sortJSONObjectKeys } from './utils.js';
 
 /* ************************************************************************************************
@@ -158,14 +161,7 @@ const maskMiddle = (text: string, visibleChars: number, mask: string = '...'): s
 const stringifyJSON = (value: NonNullable<object>): string => {
   try {
     const result = JSON.stringify(value);
-    if (typeof result !== 'string' || !result.length) {
-      throw new Error(
-        encodeError(
-          `Stringifying the JSON value '${value}' produced an invalid result: ${result}.`,
-          ERRORS.UNABLE_TO_SERIALIZE_JSON,
-        ),
-      );
-    }
+    validateJSONSerializationResult(value, result);
     return result;
   } catch (e) {
     if (decodeError(e).code !== ERRORS.UNABLE_TO_SERIALIZE_JSON) {
@@ -191,14 +187,7 @@ const stringifyJSON = (value: NonNullable<object>): string => {
  * - UNABLE_TO_SERIALIZE_JSON: if an error is thrown during stringification
  */
 const stringifyJSONDeterministically = (value: NonNullable<object>): string => {
-  if (!isObjectValid(value, true) && !isArrayValid(value, true)) {
-    throw new Error(
-      encodeError(
-        `The JSON value must be an object or an array in order to be stringified. Received: ${value}`,
-        ERRORS.UNSUPPORTED_DATA_TYPE,
-      ),
-    );
-  }
+  canJSONBeSerializedDeterministically(value);
   try {
     return stringifyJSON(sortJSONObjectKeys(value) as object);
   } catch (e) {
