@@ -194,7 +194,7 @@ const stringifyJSON = <T>(value: T): string => {
  * - UNABLE_TO_SERIALIZE_JSON: if the result of JSON.stringify is not a valid string
  * - UNABLE_TO_SERIALIZE_JSON: if an error is thrown during stringification
  */
-const stringifyJSONDeterministically = (value: NonNullable<object>): string => {
+const stringifyJSONDeterministically = <T>(value: T): string => {
   canJSONBeSerialized(value);
   try {
     return stringifyJSON(sortJSONObjectKeys(value) as object);
