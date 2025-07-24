@@ -2,13 +2,16 @@ import { encodeError } from 'error-message-utils';
 import { ERRORS } from '../shared/errors.js';
 import { isArrayValid, isObjectValid } from '../validations/index.js';
 
+/* ************************************************************************************************
+ *                                             JSON                                               *
+ ************************************************************************************************ */
 /**
  * Checks if a JSON value can be serialized (JSON.stringify).
  * @param value
  * @throws
  * - UNSUPPORTED_DATA_TYPE: if the provided value is not an object or an array
  */
-const canJSONBeSerialized = (value: NonNullable<object>): void => {
+const canJSONBeSerialized = (value: unknown): void => {
   if (!isObjectValid(value, true) && !isArrayValid(value, true)) {
     throw new Error(
       encodeError(
@@ -26,7 +29,7 @@ const canJSONBeSerialized = (value: NonNullable<object>): void => {
  * @throws
  * - UNABLE_TO_SERIALIZE_JSON: if the result of JSON.stringify is not a valid string
  */
-const validateJSONSerializationResult = (value: NonNullable<object>, result: unknown): void => {
+const validateJSONSerializationResult = (value: unknown, result: unknown): void => {
   if (typeof result !== 'string' || !result.length) {
     throw new Error(
       encodeError(
@@ -76,6 +79,7 @@ const validateJSONDeserializationResult = (value: string, result: unknown): void
  *                                         MODULE EXPORTS                                         *
  ************************************************************************************************ */
 export {
+  // json
   canJSONBeSerialized,
   validateJSONSerializationResult,
   canJSONBeDeserialized,

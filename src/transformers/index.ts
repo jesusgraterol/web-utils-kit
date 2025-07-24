@@ -11,7 +11,7 @@ import {
 import { buildNumberFormatConfig, getDateInstance, sortJSONObjectKeys } from './utils.js';
 
 /* ************************************************************************************************
- *                                         IMPLEMENTATION                                         *
+ *                                            GENERAL                                             *
  ************************************************************************************************ */
 
 /**
@@ -152,6 +152,10 @@ const maskMiddle = (text: string, visibleChars: number, mask: string = '...'): s
   return `${text.slice(0, visibleChars)}${mask}${text.slice(-visibleChars)}`;
 };
 
+/* ************************************************************************************************
+ *                                             JSON                                               *
+ ************************************************************************************************ */
+
 /**
  * Serializes a JSON object with the JSON.stringify method.
  * @param value
@@ -161,7 +165,7 @@ const maskMiddle = (text: string, visibleChars: number, mask: string = '...'): s
  * - UNABLE_TO_SERIALIZE_JSON: if the result of JSON.stringify is not a valid string
  * - UNABLE_TO_SERIALIZE_JSON: if an error is thrown during stringification
  */
-const stringifyJSON = (value: NonNullable<object>): string => {
+const stringifyJSON = <T>(value: T): string => {
   try {
     canJSONBeSerialized(value);
     const result = JSON.stringify(value);
@@ -235,12 +239,31 @@ const parseJSON = <T>(value: string): T => {
   }
 };
 
-const toMS = (): number => 0;
+/**
+ * Creates a deep clone of the provided object.
+ * @param value
+ * @returns T
+ * @throws
+ * - UNABLE_TO_DEEP_CLONE: if the value cannot be serialized and deserialized
+ */
+const createDeepClone = <T>(value: T): T => {
+  try {
+    return parseJSON(stringifyJSON(value));
+  } catch (e) {
+    throw new Error(
+      encodeError(
+        `Failed to create a deep clone of the value '${value}': ${extractMessage(e)}`,
+        ERRORS.UNABLE_TO_DEEP_CLONE,
+      ),
+    );
+  }
+};
 
 /* ************************************************************************************************
  *                                         MODULE EXPORTS                                         *
  ************************************************************************************************ */
 export {
+  // general
   prettifyNumber,
   prettifyDate,
   prettifyFileSize,
@@ -250,8 +273,10 @@ export {
   toSlug,
   truncateText,
   maskMiddle,
+
+  // json
   stringifyJSON,
   stringifyJSONDeterministically,
   parseJSON,
-  toMS,
+  createDeepClone,
 };
