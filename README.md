@@ -491,6 +491,21 @@ await res.json();
   <br/>
 </details>
 
+<details>
+  <summary><code>parseJSON</code></summary>
+  <br/>
+
+  Deserializes a JSON string with the `JSON.parse` method.
+
+  ```typescript
+  import { parseJSON } from 'web-utils-kit';
+
+  parseJSON('{ c: 8, b: [{ z: 6, y: 5, x: 4 }, 7], a: 3 }');
+  // {"c":8,"b":[{"z":6,"y":5,"x":4},7],"a":3}
+  ```
+  <br/>
+</details>
+
 
 ### Utils
 

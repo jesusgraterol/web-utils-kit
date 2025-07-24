@@ -8,7 +8,7 @@ import { isArrayValid, isObjectValid } from '../validations/index.js';
  * @throws
  * - UNSUPPORTED_DATA_TYPE: if the provided value is not an object or an array
  */
-export const canJSONBeSerialized = (value: NonNullable<object>): void => {
+const canJSONBeSerialized = (value: NonNullable<object>): void => {
   if (!isObjectValid(value, true) && !isArrayValid(value, true)) {
     throw new Error(
       encodeError(
@@ -26,10 +26,7 @@ export const canJSONBeSerialized = (value: NonNullable<object>): void => {
  * @throws
  * - UNABLE_TO_SERIALIZE_JSON: if the result of JSON.stringify is not a valid string
  */
-export const validateJSONSerializationResult = (
-  value: NonNullable<object>,
-  result: unknown,
-): void => {
+const validateJSONSerializationResult = (value: NonNullable<object>, result: unknown): void => {
   if (typeof result !== 'string' || !result.length) {
     throw new Error(
       encodeError(
@@ -38,4 +35,49 @@ export const validateJSONSerializationResult = (
       ),
     );
   }
+};
+
+/**
+ * Checks if a JSON value can be deserialized (JSON.parse).
+ * @param value
+ * @throws
+ * - UNSUPPORTED_DATA_TYPE: if the provided value is not a non-empty string
+ */
+const canJSONBeDeserialized = (value: string): void => {
+  if (typeof value !== 'string' || !value.length) {
+    throw new Error(
+      encodeError(
+        `The JSON value must be a non-empty string in order to be parsed. Received: ${value}`,
+        ERRORS.UNSUPPORTED_DATA_TYPE,
+      ),
+    );
+  }
+};
+
+/**
+ * Validates the result of a JSON deserialization operation (JSON.parse).
+ * @param value
+ * @param result
+ * @throws
+ * - UNABLE_TO_DESERIALIZE_JSON: if the result of JSON.parse is not a valid object or array
+ */
+const validateJSONDeserializationResult = (value: string, result: unknown): void => {
+  if (!isObjectValid(result, true) && !isArrayValid(result, true)) {
+    throw new Error(
+      encodeError(
+        `Parsing the JSON value '${value}' produced an invalid result: ${result}.`,
+        ERRORS.UNABLE_TO_DESERIALIZE_JSON,
+      ),
+    );
+  }
+};
+
+/* ************************************************************************************************
+ *                                         MODULE EXPORTS                                         *
+ ************************************************************************************************ */
+export {
+  canJSONBeSerialized,
+  validateJSONSerializationResult,
+  canJSONBeDeserialized,
+  validateJSONDeserializationResult,
 };

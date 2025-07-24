@@ -2,7 +2,12 @@ import { decodeError, encodeError, extractMessage } from 'error-message-utils';
 import { ERRORS } from '../shared/errors.js';
 import { IDateTemplate, INumberFormatConfig } from './types.js';
 import { DATE_TEMPLATE_CONFIGS, FILE_SIZE_THRESHOLD, FILE_SIZE_UNITS } from './consts.js';
-import { canJSONBeSerialized, validateJSONSerializationResult } from './validations.js';
+import {
+  canJSONBeSerialized,
+  validateJSONSerializationResult,
+  canJSONBeDeserialized,
+  validateJSONDeserializationResult,
+} from './validations.js';
 import { buildNumberFormatConfig, getDateInstance, sortJSONObjectKeys } from './utils.js';
 
 /* ************************************************************************************************
@@ -152,6 +157,7 @@ const maskMiddle = (text: string, visibleChars: number, mask: string = '...'): s
  * @param value
  * @returns string
  * @throws
+ * - UNSUPPORTED_DATA_TYPE: if the provided value is not an object or an array
  * - UNABLE_TO_SERIALIZE_JSON: if the result of JSON.stringify is not a valid string
  * - UNABLE_TO_SERIALIZE_JSON: if an error is thrown during stringification
  */
@@ -201,6 +207,36 @@ const stringifyJSONDeterministically = (value: NonNullable<object>): string => {
   }
 };
 
+/**
+ * Deserializes a JSON string with the JSON.parse method.
+ * @param value
+ * @returns T
+ * @throws
+ * - UNSUPPORTED_DATA_TYPE: if the provided value is not a non-empty string
+ * - UNABLE_TO_DESERIALIZE_JSON: if the result of JSON.parse is not a valid object or array
+ * - UNABLE_TO_DESERIALIZE_JSON: if an error is thrown during parsing
+ */
+const parseJSON = <T>(value: string): T => {
+  canJSONBeDeserialized(value);
+  try {
+    const result = JSON.parse(value);
+    validateJSONDeserializationResult(value, result);
+    return result;
+  } catch (e) {
+    if (decodeError(e).code !== ERRORS.UNABLE_TO_DESERIALIZE_JSON) {
+      throw new Error(
+        encodeError(
+          `Failed to parse the JSON value '${value}': ${extractMessage(e)}`,
+          ERRORS.UNABLE_TO_DESERIALIZE_JSON,
+        ),
+      );
+    }
+    throw e;
+  }
+};
+
+const toMS = (): number => 0;
+
 /* ************************************************************************************************
  *                                         MODULE EXPORTS                                         *
  ************************************************************************************************ */
@@ -216,4 +252,6 @@ export {
   maskMiddle,
   stringifyJSON,
   stringifyJSONDeterministically,
+  parseJSON,
+  toMS,
 };

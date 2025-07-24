@@ -11,8 +11,9 @@ import {
   prettifyDate,
   truncateText,
   maskMiddle,
-  stringifyJSONDeterministically,
   stringifyJSON,
+  stringifyJSONDeterministically,
+  parseJSON,
 } from './index.js';
 
 /* ************************************************************************************************
@@ -181,5 +182,29 @@ describe('stringifyJSONDeterministically', () => {
     [{ b: { a: 1 }, c: { a: 1 } }, '{"b":{"a":1},"c":{"a":1}}'],
   ])('stringifyJSONDeterministically(%j) -> %s', (value, expected) => {
     expect(stringifyJSONDeterministically(value)).toBe(expected);
+  });
+});
+
+describe('parseJSON', () => {
+  test.each([[undefined], [null], [''], [true], [123], [NaN]])(
+    'parseJSON(%s) -> throws UNSUPPORTED_DATA_TYPE',
+    (value) => {
+      expect(() => parseJSON(value as any)).toThrowError(ERRORS.UNSUPPORTED_DATA_TYPE);
+    },
+  );
+  test.each([['hello world']])('parseJSON(%s) -> throws UNABLE_TO_DESERIALIZE_JSON', (value) => {
+    expect(() => parseJSON(value as any)).toThrowError(ERRORS.UNABLE_TO_DESERIALIZE_JSON);
+  });
+
+  test.each([
+    ['{"c":6,"b":[4,5],"a":3,"z":null}', { c: 6, b: [4, 5], a: 3, z: null }],
+    ['{"a":3}', { a: 3 }],
+    ['[4,null,6]', [4, null, 6]],
+    ['{"a":3,"z":""}', { a: 3, z: '' }],
+    ['[4,"",6]', [4, '', 6]],
+    ['{"c":8,"b":[{"z":6,"y":5,"x":4},7],"a":3}', { c: 8, b: [{ z: 6, y: 5, x: 4 }, 7], a: 3 }],
+    ['{"b":{"x":1},"a":{"x":1}}', { b: { x: 1 }, a: { x: 1 } }],
+  ])('parseJSON(%s) -> %o', (value, expected) => {
+    expect(parseJSON(value)).toStrictEqual(expected);
   });
 });
