@@ -506,6 +506,26 @@ await res.json();
   <br/>
 </details>
 
+<details>
+  <summary><code>createDeepClone</code></summary>
+  <br/>
+
+  Creates a deep clone of an object by using the `JSON.stringify` and `JSON.parse` methods.
+
+  ```typescript
+  import { createDeepClone } from 'web-utils-kit';
+
+  const a = { a: 'Hello', b: { c: 'World' } };
+  const b = createDeepClone(a);
+
+  b.b.c = 'Universe';
+
+  console.log(a.b.c); // 'World'
+  console.log(b.b.c); // 'Universe'
+  ```
+  <br/>
+</details>
+
 
 ### Utils
 

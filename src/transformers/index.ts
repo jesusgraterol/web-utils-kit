@@ -240,7 +240,7 @@ const parseJSON = <T>(value: string): T => {
 };
 
 /**
- * Creates a deep clone of the provided object.
+ * Creates a deep clone of an object by using the JSON.stringify and JSON.parse methods.
  * @param value
  * @returns T
  * @throws

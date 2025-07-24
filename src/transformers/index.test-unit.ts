@@ -14,6 +14,7 @@ import {
   stringifyJSON,
   stringifyJSONDeterministically,
   parseJSON,
+  createDeepClone,
 } from './index.js';
 
 /* ************************************************************************************************
@@ -206,5 +207,24 @@ describe('parseJSON', () => {
     ['{"b":{"x":1},"a":{"x":1}}', { b: { x: 1 }, a: { x: 1 } }],
   ])('parseJSON(%s) -> %o', (value, expected) => {
     expect(parseJSON(value)).toStrictEqual(expected);
+  });
+});
+
+describe('createDeepClone', () => {
+  test.each([[undefined], [null], [''], [true], [123], [NaN], ['hello world']])(
+    'createDeepClone(%o) -> throws UNABLE_TO_DEEP_CLONE',
+    (value) => {
+      expect(() => createDeepClone(value as any)).toThrowError(ERRORS.UNABLE_TO_DEEP_CLONE);
+    },
+  );
+
+  test('Can mutate properties without affecting the original', () => {
+    const a = { a: 'Hello', b: { c: 'World' } };
+    const b = createDeepClone(a);
+    expect(b).toStrictEqual(a);
+
+    b.b.c = 'Universe';
+    expect(a.b.c).toBe('World');
+    expect(b.b.c).toBe('Universe');
   });
 });
