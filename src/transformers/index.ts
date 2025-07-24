@@ -2,10 +2,7 @@ import { decodeError, encodeError, extractMessage } from 'error-message-utils';
 import { ERRORS } from '../shared/errors.js';
 import { IDateTemplate, INumberFormatConfig } from './types.js';
 import { DATE_TEMPLATE_CONFIGS, FILE_SIZE_THRESHOLD, FILE_SIZE_UNITS } from './consts.js';
-import {
-  canJSONBeSerializedDeterministically,
-  validateJSONSerializationResult,
-} from './validations.js';
+import { canJSONBeSerialized, validateJSONSerializationResult } from './validations.js';
 import { buildNumberFormatConfig, getDateInstance, sortJSONObjectKeys } from './utils.js';
 
 /* ************************************************************************************************
@@ -160,6 +157,7 @@ const maskMiddle = (text: string, visibleChars: number, mask: string = '...'): s
  */
 const stringifyJSON = (value: NonNullable<object>): string => {
   try {
+    canJSONBeSerialized(value);
     const result = JSON.stringify(value);
     validateJSONSerializationResult(value, result);
     return result;
@@ -187,7 +185,7 @@ const stringifyJSON = (value: NonNullable<object>): string => {
  * - UNABLE_TO_SERIALIZE_JSON: if an error is thrown during stringification
  */
 const stringifyJSONDeterministically = (value: NonNullable<object>): string => {
-  canJSONBeSerializedDeterministically(value);
+  canJSONBeSerialized(value);
   try {
     return stringifyJSON(sortJSONObjectKeys(value) as object);
   } catch (e) {

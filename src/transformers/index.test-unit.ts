@@ -1,4 +1,6 @@
 import { describe, test, expect } from 'vitest';
+import { ERRORS } from '../shared/errors.js';
+import { IDateTemplate, INumberFormatConfig } from './types.js';
 import {
   prettifyNumber,
   prettifyFileSize,
@@ -10,9 +12,8 @@ import {
   truncateText,
   maskMiddle,
   stringifyJSONDeterministically,
+  stringifyJSON,
 } from './index.js';
-import { IDateTemplate, INumberFormatConfig } from './types.js';
-import { ERRORS } from '../shared/errors.js';
 
 /* ************************************************************************************************
  *                                             TESTS                                              *
@@ -135,6 +136,28 @@ describe('maskMiddle', () => {
     ['bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh', 6, '********', 'bc1qxy********hx0wlh'],
   ])('maskMiddle(%s, %i, %s) -> %s', (text, visibleChars, mask, expected) => {
     expect(maskMiddle(text, visibleChars, mask)).toBe(expected);
+  });
+});
+
+describe('stringifyJSON', () => {
+  test.each([[undefined], [null], [''], ['hello world'], [true], [123], [NaN]])(
+    'stringifyJSON(%o) -> throws UNSUPPORTED_DATA_TYPE',
+    (value) => {
+      expect(() => stringifyJSON(value as any)).toThrowError(ERRORS.UNSUPPORTED_DATA_TYPE);
+    },
+  );
+
+  test.skip.each([
+    [{ c: 6, b: [4, 5], a: 3, z: null }, '{"a":3,"b":[4,5],"c":6,"z":null}'],
+    [{ a: 3, z: undefined }, '{"a":3}'],
+    [[4, undefined, 6], '[4,null,6]'],
+    [{ a: 3, z: '' }, '{"a":3,"z":""}'],
+    [[4, '', 6], '[4,"",6]'],
+    [{ c: 8, b: [{ z: 6, y: 5, x: 4 }, 7], a: 3 }, '{"a":3,"b":[{"x":4,"y":5,"z":6},7],"c":8}'],
+    [{ b: { x: 1 }, a: { x: 1 } }, '{"a":{"x":1},"b":{"x":1}}'],
+    [{ b: { a: 1 }, c: { a: 1 } }, '{"b":{"a":1},"c":{"a":1}}'],
+  ])('stringifyJSONDeterministically(%j) -> %s', (value, expected) => {
+    expect(stringifyJSONDeterministically(value)).toBe(expected);
   });
 });
 
