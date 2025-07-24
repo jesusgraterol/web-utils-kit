@@ -462,6 +462,21 @@ await res.json();
 </details>
 
 <details>
+  <summary><code>stringifyJSON</code></summary>
+  <br/>
+
+  Serializes a JSON object with the `JSON.stringify` method.
+
+  ```typescript
+  import { stringifyJSON } from 'web-utils-kit';
+
+  stringifyJSON({ c: 8, b: [{ z: 6, y: 5, x: 4 }, 7], a: 3 });
+  // '{"c":8,"b":[{"z":6,"y":5,"x":4},7],"a":3}'
+  ```
+  <br/>
+</details>
+
+<details>
   <summary><code>stringifyJSONDeterministically</code></summary>
   <br/>
 

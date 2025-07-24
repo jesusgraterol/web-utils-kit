@@ -147,17 +147,16 @@ describe('stringifyJSON', () => {
     },
   );
 
-  test.skip.each([
-    [{ c: 6, b: [4, 5], a: 3, z: null }, '{"a":3,"b":[4,5],"c":6,"z":null}'],
+  test.each([
+    [{ c: 6, b: [4, 5], a: 3, z: null }, '{"c":6,"b":[4,5],"a":3,"z":null}'],
     [{ a: 3, z: undefined }, '{"a":3}'],
     [[4, undefined, 6], '[4,null,6]'],
     [{ a: 3, z: '' }, '{"a":3,"z":""}'],
     [[4, '', 6], '[4,"",6]'],
-    [{ c: 8, b: [{ z: 6, y: 5, x: 4 }, 7], a: 3 }, '{"a":3,"b":[{"x":4,"y":5,"z":6},7],"c":8}'],
-    [{ b: { x: 1 }, a: { x: 1 } }, '{"a":{"x":1},"b":{"x":1}}'],
-    [{ b: { a: 1 }, c: { a: 1 } }, '{"b":{"a":1},"c":{"a":1}}'],
-  ])('stringifyJSONDeterministically(%j) -> %s', (value, expected) => {
-    expect(stringifyJSONDeterministically(value)).toBe(expected);
+    [{ c: 8, b: [{ z: 6, y: 5, x: 4 }, 7], a: 3 }, '{"c":8,"b":[{"z":6,"y":5,"x":4},7],"a":3}'],
+    [{ b: { x: 1 }, a: { x: 1 } }, '{"b":{"x":1},"a":{"x":1}}'],
+  ])('stringifyJSON(%j) -> %s', (value, expected) => {
+    expect(stringifyJSON(value)).toBe(expected);
   });
 });
 

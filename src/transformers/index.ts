@@ -148,7 +148,7 @@ const maskMiddle = (text: string, visibleChars: number, mask: string = '...'): s
 };
 
 /**
- * Serializes a JSON object into a string.
+ * Serializes a JSON object with the JSON.stringify method.
  * @param value
  * @returns string
  * @throws
