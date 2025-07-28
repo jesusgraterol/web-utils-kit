@@ -9,7 +9,7 @@ The `web-utils-kit` package provides a collection of well-tested and thoroughly 
 Install the package:
 
 ```bash
-npm install -S web-utils-kit
+npm i -S web-utils-kit
 ```
 
 ## Examples
@@ -860,25 +860,3 @@ npm run test:bench
 ## License
 
 [MIT](https://choosealicense.com/licenses/mit/)
-
-<br/>
-
-## Deployment
-
-Install dependencies:
-
-```bash
-npm install
-```
-
-Build the library:
-
-```bash
-npm start
-```
-
-Publish to `npm`:
-
-```bash
-npm publish
-```

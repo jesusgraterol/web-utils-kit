@@ -2,9 +2,9 @@ import { v4 as uuidv4, v7 as uuidv7 } from 'uuid';
 import { encodeError } from 'error-message-utils';
 import { IUUIDVersion } from '../shared/types.js';
 import { ERRORS } from '../shared/errors.js';
-import { isArrayValid, isObjectValid } from '../validations/index.js';
-import { ISortDirection } from './types.js';
 import { stringifyJSONDeterministically } from '../transformers/index.js';
+import { ISortDirection } from './types.js';
+import { canArrayBeShuffled, validateObjectAndKeys } from './validations.js';
 
 /* ************************************************************************************************
  *                                           GENERATORS                                           *
@@ -166,14 +166,7 @@ const sortRecords =
  * - INVALID_OR_EMPTY_ARRAY: if the input is not array or it is empty
  */
 const shuffleArray = <T>(input: Array<T>): Array<T> => {
-  if (!Array.isArray(input) || input.length <= 1) {
-    throw new Error(
-      encodeError(
-        'For an array to be shuffled it must contain at least 2 items.',
-        ERRORS.INVALID_OR_EMPTY_ARRAY,
-      ),
-    );
-  }
+  canArrayBeShuffled(input);
   const arr = input.slice();
   for (let i = arr.length - 1; i > 0; i -= 1) {
     const j = Math.floor(Math.random() * (i + 1));
@@ -196,22 +189,7 @@ const pickProps = <T extends Record<string, any>, K extends keyof T>(
   input: T,
   propKeys: K[],
 ): Pick<T, K> => {
-  if (!isObjectValid(input)) {
-    throw new Error(
-      encodeError(
-        'The input must be a valid and non-empty object.',
-        ERRORS.INVALID_OR_EMPTY_OBJECT,
-      ),
-    );
-  }
-  if (!isArrayValid(propKeys)) {
-    throw new Error(
-      encodeError(
-        'The keys must be a valid and non-empty array of strings.',
-        ERRORS.INVALID_OR_EMPTY_ARRAY,
-      ),
-    );
-  }
+  validateObjectAndKeys(input, propKeys);
   return Object.fromEntries(propKeys.map((key) => [key, input[key]])) as Pick<T, K>;
 };
 
@@ -229,22 +207,7 @@ const omitProps = <T extends Record<string, any>, K extends keyof T>(
   input: T,
   propKeys: K[],
 ): Omit<T, K> => {
-  if (!isObjectValid(input)) {
-    throw new Error(
-      encodeError(
-        'The input must be a valid and non-empty object.',
-        ERRORS.INVALID_OR_EMPTY_OBJECT,
-      ),
-    );
-  }
-  if (!isArrayValid(propKeys)) {
-    throw new Error(
-      encodeError(
-        'The keys must be a valid and non-empty array of strings.',
-        ERRORS.INVALID_OR_EMPTY_ARRAY,
-      ),
-    );
-  }
+  validateObjectAndKeys(input, propKeys);
   return Object.fromEntries(
     Object.entries(input).filter(([key]) => !propKeys.includes(key as K)),
   ) as Omit<T, K>;
