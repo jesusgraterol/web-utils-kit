@@ -1,3 +1,4 @@
+import { isArrayValid, isObjectValid } from '../validations/index.js';
 import { INumberFormatConfig } from './types.js';
 
 /* ************************************************************************************************
@@ -30,14 +31,31 @@ const getDateInstance = (value: Date | number | string): Date => {
   return new Date(value);
 };
 
-
-
-
+/**
+ * Recursively sorts the keys of a JSON object. If the value is not an object or an array, it
+ * returns the value as is.
+ * @param val
+ * @returns unknown
+ */
+const sortJSONObjectKeys = (val: unknown): unknown => {
+  if (isArrayValid(val)) {
+    return val.map(sortJSONObjectKeys);
+  }
+  if (isObjectValid(val)) {
+    return Object.keys(val)
+      .sort()
+      .reduce(
+        (sorted: Record<string, unknown>, key: string) => ({
+          ...sorted,
+          [key]: sortJSONObjectKeys(val[key]),
+        }),
+        {},
+      );
+  }
+  return val;
+};
 
 /* ************************************************************************************************
  *                                         MODULE EXPORTS                                         *
  ************************************************************************************************ */
-export {
-  buildNumberFormatConfig,
-  getDateInstance,
-};
+export { buildNumberFormatConfig, getDateInstance, sortJSONObjectKeys };

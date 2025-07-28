@@ -40,10 +40,6 @@ const TEST_OBJ = {
   ],
 };
 
-
-
-
-
 /* ************************************************************************************************
  *                                             TESTS                                              *
  ************************************************************************************************ */
@@ -59,10 +55,6 @@ describe('Generators', () => {
     });
   });
 });
-
-
-
-
 
 describe('Sorting Utils', () => {
   test.each(<Array<[(number | string)[], ISortDirection, (number | string)[]]>>[
@@ -81,8 +73,16 @@ describe('Sorting Utils', () => {
     [['a', 'b', 'c'], 'desc', ['c', 'b', 'a']],
     [['Blue', 'Humpback', 'Beluga'], 'asc', ['Beluga', 'Blue', 'Humpback']],
     [['Blue', 'Humpback', 'Beluga'], 'desc', ['Humpback', 'Blue', 'Beluga']],
-    [['The', 'Magnetic', 'Edward', 'Sharpe', 'Zeros', 'And'], 'asc', ['And', 'Edward', 'Magnetic', 'Sharpe', 'The', 'Zeros']],
-    [['The', 'Magnetic', 'Edward', 'Sharpe', 'Zeros', 'And'], 'desc', ['Zeros', 'The', 'Sharpe', 'Magnetic', 'Edward', 'And']],
+    [
+      ['The', 'Magnetic', 'Edward', 'Sharpe', 'Zeros', 'And'],
+      'asc',
+      ['And', 'Edward', 'Magnetic', 'Sharpe', 'The', 'Zeros'],
+    ],
+    [
+      ['The', 'Magnetic', 'Edward', 'Sharpe', 'Zeros', 'And'],
+      'desc',
+      ['Zeros', 'The', 'Sharpe', 'Magnetic', 'Edward', 'And'],
+    ],
   ])('sortPrimitives(%o, %s) -> %o', (a, b, expected) => {
     const arr = a.slice();
     arr.sort(sortPrimitives(b));
@@ -104,16 +104,68 @@ describe('Sorting Utils', () => {
     // numeric values
     [[{ v: 1 }, { v: 2 }, { v: 3 }], 'asc', [{ v: 1 }, { v: 2 }, { v: 3 }]],
     [[{ v: 1 }, { v: 2 }, { v: 3 }], 'desc', [{ v: 3 }, { v: 2 }, { v: 1 }]],
-    [[{ v: 21 }, { v: 37 }, { v: 45 }, { v: -12 }, { v: 13 }, { v: 37 }], 'asc', [{ v: -12 }, { v: 13 }, { v: 21 }, { v: 37 }, { v: 37 }, { v: 45 }]],
-    [[{ v: 21 }, { v: 37 }, { v: 45 }, { v: -12 }, { v: 13 }, { v: 37 }], 'desc', [{ v: 45 }, { v: 37 }, { v: 37 }, { v: 21 }, { v: 13 }, { v: -12 }]],
+    [
+      [{ v: 21 }, { v: 37 }, { v: 45 }, { v: -12 }, { v: 13 }, { v: 37 }],
+      'asc',
+      [{ v: -12 }, { v: 13 }, { v: 21 }, { v: 37 }, { v: 37 }, { v: 45 }],
+    ],
+    [
+      [{ v: 21 }, { v: 37 }, { v: 45 }, { v: -12 }, { v: 13 }, { v: 37 }],
+      'desc',
+      [{ v: 45 }, { v: 37 }, { v: 37 }, { v: 21 }, { v: 13 }, { v: -12 }],
+    ],
 
     // string values
     [[{ v: 'a' }, { v: 'b' }, { v: 'c' }], 'asc', [{ v: 'a' }, { v: 'b' }, { v: 'c' }]],
     [[{ v: 'a' }, { v: 'b' }, { v: 'c' }], 'desc', [{ v: 'c' }, { v: 'b' }, { v: 'a' }]],
-    [[{ v: 'Blue' }, { v: 'Humpback' }, { v: 'Beluga' }], 'asc', [{ v: 'Beluga' }, { v: 'Blue' }, { v: 'Humpback' }]],
-    [[{ v: 'Blue' }, { v: 'Humpback' }, { v: 'Beluga' }], 'desc', [{ v: 'Humpback' }, { v: 'Blue' }, { v: 'Beluga' }]],
-    [[{ v: 'The' }, { v: 'Magnetic' }, { v: 'Edward' }, { v: 'Sharpe' }, { v: 'Zeros' }, { v: 'And' }], 'asc', [{ v: 'And' }, { v: 'Edward' }, { v: 'Magnetic' }, { v: 'Sharpe' }, { v: 'The' }, { v: 'Zeros' }]],
-    [[{ v: 'The' }, { v: 'Magnetic' }, { v: 'Edward' }, { v: 'Sharpe' }, { v: 'Zeros' }, { v: 'And' }], 'desc', [{ v: 'Zeros' }, { v: 'The' }, { v: 'Sharpe' }, { v: 'Magnetic' }, { v: 'Edward' }, { v: 'And' }]],
+    [
+      [{ v: 'Blue' }, { v: 'Humpback' }, { v: 'Beluga' }],
+      'asc',
+      [{ v: 'Beluga' }, { v: 'Blue' }, { v: 'Humpback' }],
+    ],
+    [
+      [{ v: 'Blue' }, { v: 'Humpback' }, { v: 'Beluga' }],
+      'desc',
+      [{ v: 'Humpback' }, { v: 'Blue' }, { v: 'Beluga' }],
+    ],
+    [
+      [
+        { v: 'The' },
+        { v: 'Magnetic' },
+        { v: 'Edward' },
+        { v: 'Sharpe' },
+        { v: 'Zeros' },
+        { v: 'And' },
+      ],
+      'asc',
+      [
+        { v: 'And' },
+        { v: 'Edward' },
+        { v: 'Magnetic' },
+        { v: 'Sharpe' },
+        { v: 'The' },
+        { v: 'Zeros' },
+      ],
+    ],
+    [
+      [
+        { v: 'The' },
+        { v: 'Magnetic' },
+        { v: 'Edward' },
+        { v: 'Sharpe' },
+        { v: 'Zeros' },
+        { v: 'And' },
+      ],
+      'desc',
+      [
+        { v: 'Zeros' },
+        { v: 'The' },
+        { v: 'Sharpe' },
+        { v: 'Magnetic' },
+        { v: 'Edward' },
+        { v: 'And' },
+      ],
+    ],
   ])('sortRecords(%o, %s) -> %o', (a, b, expected) => {
     const arr = a.slice();
     arr.sort(sortRecords('v', b));
@@ -126,13 +178,11 @@ describe('Sorting Utils', () => {
     [[{ v: 1 }, { v: 2 }, { v: '3' }]],
     [[{ v: [1] }, { v: [2] }, { v: '3' }]],
   ])('sortRecords(%o, %s) -> Error: MIXED_OR_UNSUPPORTED_DATA_TYPES', (a) => {
-    expect(() => a.sort(sortRecords('v', 'asc'))).toThrowError(ERRORS.MIXED_OR_UNSUPPORTED_DATA_TYPES);
+    expect(() => a.sort(sortRecords('v', 'asc'))).toThrowError(
+      ERRORS.MIXED_OR_UNSUPPORTED_DATA_TYPES,
+    );
   });
 });
-
-
-
-
 
 describe('Object Management Helpers', () => {
   describe('pickProps', () => {
@@ -149,7 +199,9 @@ describe('Object Management Helpers', () => {
     });
 
     test('can pick all of the properties', () => {
-      expect(pickProps(TEST_OBJ, ['id', 'name', 'email', 'address', 'orders'])).toStrictEqual(TEST_OBJ);
+      expect(pickProps(TEST_OBJ, ['id', 'name', 'email', 'address', 'orders'])).toStrictEqual(
+        TEST_OBJ,
+      );
     });
 
     test.each<Array<any>>([
@@ -170,8 +222,6 @@ describe('Object Management Helpers', () => {
       expect(() => pickProps(a, b)).toThrowError(ERRORS.INVALID_OR_EMPTY_ARRAY);
     });
   });
-
-
 
   describe('omitProps', () => {
     test('can omit a subset of properties from an object', () => {
@@ -209,8 +259,6 @@ describe('Object Management Helpers', () => {
     });
   });
 
-
-
   describe('isEqual', () => {
     test.each<Array<any>>([
       [{}, 'someString'],
@@ -223,13 +271,13 @@ describe('Object Management Helpers', () => {
       [true, {}],
       [null, []],
       [undefined, {}],
-    ])('throws UNSUPPORTED_DATA_TYPE if any of the values isn\'t an object or an array', (a, b) => {
+    ])("throws UNSUPPORTED_DATA_TYPE if any of the values isn't an object or an array", (a, b) => {
       expect(() => isEqual(a, b)).toThrowError(ERRORS.UNSUPPORTED_DATA_TYPE);
     });
 
     test.each([
       [{ a: undefined }, { a: undefined }, true],
-      [{ a: undefined }, { }, true],
+      [{ a: undefined }, {}, true],
       [{ a: 1 }, { a: 1 }, true],
       [{ a: 1 }, { a: 2 }, false],
       [{ a: 2 }, { a: 1 }, false],
@@ -247,7 +295,17 @@ describe('Object Management Helpers', () => {
       [[1, 2, 3], [3, 2, 1], false],
       [[{ a: 1, b: 2 }], [{ b: 2, a: 1 }], true],
       [[{ a: 1, b: 2 }], [{ b: 1, a: 2 }], false],
-      [[{ a: 1, b: 2 }, { a: 4, b: 6 }], [{ b: 2, a: 1 }, { b: 6, a: 4 }], true],
+      [
+        [
+          { a: 1, b: 2 },
+          { a: 4, b: 6 },
+        ],
+        [
+          { b: 2, a: 1 },
+          { b: 6, a: 4 },
+        ],
+        true,
+      ],
       [[{ a: 2, c: { y: 1, x: 6, z: 2 }, b: 3 }], [{ c: { z: 2, x: 6, y: 1 }, b: 3, a: 2 }], true],
       [[{ a: 2, c: { y: 1, x: 6, z: 2 }, b: 3 }], [{ c: { z: 2, x: 1, y: 1 }, b: 3, a: 2 }], false],
     ])('isEqual(%o, %o) -> %s', (a, b, expected) => {
@@ -255,10 +313,6 @@ describe('Object Management Helpers', () => {
     });
   });
 });
-
-
-
-
 
 describe('Misc Helpers', () => {
   afterEach(() => {
@@ -275,7 +329,6 @@ describe('Misc Helpers', () => {
       await vi.advanceTimersByTimeAsync(5000);
       expect(mockFn).not.toHaveBeenCalled();
 
-
       await vi.advanceTimersByTimeAsync(6000);
       expect(mockFn).toHaveBeenCalledOnce();
     });
@@ -284,7 +337,8 @@ describe('Misc Helpers', () => {
   describe('retryAsyncFunction', () => {
     test('can invoke a function persistently until its out of attempts (w/ delay)', async () => {
       vi.useFakeTimers();
-      const fn = vi.fn()
+      const fn = vi
+        .fn()
         .mockRejectedValueOnce(new Error('This is an error!'))
         .mockRejectedValueOnce(new Error('This is an error!'))
         .mockResolvedValueOnce(undefined);
@@ -312,7 +366,9 @@ describe('Misc Helpers', () => {
     test('can invoke a function persistently until its out of attempts with args', async () => {
       const fn = vi.fn().mockRejectedValue(new Error('This is an error!'));
       const args = ['abc', 1, true, [1, 2], { foo: 'bar' }];
-      await expect(retryAsyncFunction(() => fn(...args), [0, 0, 0])).rejects.toThrowError('This is an error!');
+      await expect(retryAsyncFunction(() => fn(...args), [0, 0, 0])).rejects.toThrowError(
+        'This is an error!',
+      );
       expect(fn).toHaveBeenNthCalledWith(1, ...args);
       expect(fn).toHaveBeenNthCalledWith(2, ...args);
       expect(fn).toHaveBeenNthCalledWith(3, ...args);

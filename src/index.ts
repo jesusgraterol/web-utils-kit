@@ -26,6 +26,12 @@ import {
   capitalizeFirst,
   toTitleCase,
   toSlug,
+  truncateText,
+  maskMiddle,
+  stringifyJSON,
+  stringifyJSONDeterministically,
+  parseJSON,
+  createDeepClone,
 } from './transformers/index.js';
 import { ISortDirection } from './utils/types.js';
 import {
@@ -78,6 +84,12 @@ export {
   capitalizeFirst,
   toTitleCase,
   toSlug,
+  truncateText,
+  maskMiddle,
+  stringifyJSON,
+  stringifyJSONDeterministically,
+  parseJSON,
+  createDeepClone,
 
   // utils
   type ISortDirection,

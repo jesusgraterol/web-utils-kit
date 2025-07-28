@@ -30,26 +30,19 @@ const TEST_OBJ = {
   ],
 };
 
-
-
-
-
 /* ************************************************************************************************
  *                                           pickProps                                            *
  ************************************************************************************************ */
 
-const __pickProps1 = <T extends Record<string, any>, K extends keyof T>(input: T, keys: K[]): Pick<T, K> => (
-  keys.reduce(
-    (result, key) => ({ ...result, [key]: input[key] }),
-    {} as Pick<T, K>,
-  )
-);
+const __pickProps1 = <T extends Record<string, any>, K extends keyof T>(
+  input: T,
+  keys: K[],
+): Pick<T, K> => keys.reduce((result, key) => ({ ...result, [key]: input[key] }), {} as Pick<T, K>);
 
-const __pickProps2 = <T extends Record<string, any>, K extends keyof T>(input: T, keys: K[]): Pick<T, K> => (
-  Object.fromEntries(
-    keys.map((key) => [key, input[key]]),
-  ) as Pick<T, K>
-);
+const __pickProps2 = <T extends Record<string, any>, K extends keyof T>(
+  input: T,
+  keys: K[],
+): Pick<T, K> => Object.fromEntries(keys.map((key) => [key, input[key]])) as Pick<T, K>;
 
 describe.skip('pickProps', () => {
   bench('__pickProps1', () => {
@@ -65,21 +58,23 @@ describe.skip('pickProps', () => {
   });
 });
 
-
-
-
-
 /* ************************************************************************************************
  *                                           omitProps                                            *
  ************************************************************************************************ */
 
-const __omitProps1 = <T extends Record<string, any>, K extends keyof T>(input: T, keys: K[]): Omit<T, K> => (
-  Object.fromEntries(
-    Object.entries(input).filter(([key]) => !keys.includes(key as K)),
-  ) as Omit<T, K>
-);
+const __omitProps1 = <T extends Record<string, any>, K extends keyof T>(
+  input: T,
+  keys: K[],
+): Omit<T, K> =>
+  Object.fromEntries(Object.entries(input).filter(([key]) => !keys.includes(key as K))) as Omit<
+    T,
+    K
+  >;
 
-const __omitProps2 = <T extends Record<string, any>, K extends keyof T>(input: T, keys: K[]): Omit<T, K> => (
+const __omitProps2 = <T extends Record<string, any>, K extends keyof T>(
+  input: T,
+  keys: K[],
+): Omit<T, K> =>
   Object.entries(input).reduce(
     (previous, [key, value]) => {
       if (keys.includes(key as K)) {
@@ -88,8 +83,7 @@ const __omitProps2 = <T extends Record<string, any>, K extends keyof T>(input: T
       return { ...previous, [key]: value };
     },
     {} as Omit<T, K>,
-  )
-);
+  );
 
 describe.skip('omitProps', () => {
   bench('__omitProps1', () => {

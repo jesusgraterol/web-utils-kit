@@ -1,5 +1,3 @@
-
-
 /* ************************************************************************************************
  *                                             TYPES                                              *
  ************************************************************************************************ */
@@ -27,8 +25,15 @@ type INumberFormatConfig = {
  * - datetime-medium: Apr 29, 1453, 12:00:00 AM
  * - datetime-long: Friday, April 29th, 1453 at 12:00:00 AM
  */
-type IDateTemplate = 'date-short' | 'date-medium' | 'date-long' | 'time-short' | 'time-medium' |
-'datetime-short' | 'datetime-medium' | 'datetime-long';
+type IDateTemplate =
+  | 'date-short'
+  | 'date-medium'
+  | 'date-long'
+  | 'time-short'
+  | 'time-medium'
+  | 'datetime-short'
+  | 'datetime-medium'
+  | 'datetime-long';
 
 /**
  * Date Template Configs
@@ -45,22 +50,21 @@ type IDateTemplateConfigs = {
     hour?: 'numeric' | '2-digit' | undefined;
     minute?: 'numeric' | '2-digit' | undefined;
     second?: 'numeric' | '2-digit' | undefined;
-    timeZoneName?: 'short' | 'long' | 'shortOffset' | 'longOffset' | 'shortGeneric' | 'longGeneric' | undefined;
+    timeZoneName?:
+      | 'short'
+      | 'long'
+      | 'shortOffset'
+      | 'longOffset'
+      | 'shortGeneric'
+      | 'longGeneric'
+      | undefined;
     formatMatcher?: 'best fit' | 'basic' | undefined;
     hour12?: boolean | undefined;
     timeZone?: string | undefined;
-  }
+  };
 };
-
-
-
-
 
 /* ************************************************************************************************
  *                                         MODULE EXPORTS                                         *
  ************************************************************************************************ */
-export type {
-  INumberFormatConfig,
-  IDateTemplate,
-  IDateTemplateConfigs,
-};
+export type { INumberFormatConfig, IDateTemplate, IDateTemplateConfigs };

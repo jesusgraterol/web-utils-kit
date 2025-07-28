@@ -1,10 +1,10 @@
 import { v4 as uuidv4, v7 as uuidv7 } from 'uuid';
-import stableStringify from 'json-stable-stringify';
-import { encodeError, extractMessage } from 'error-message-utils';
+import { encodeError } from 'error-message-utils';
 import { IUUIDVersion } from '../shared/types.js';
 import { ERRORS } from '../shared/errors.js';
-import { isArrayValid, isObjectValid } from '../validations/index.js';
+import { stringifyJSONDeterministically } from '../transformers/index.js';
 import { ISortDirection } from './types.js';
+import { canArrayBeShuffled, validateObjectAndKeys } from './validations.js';
 
 /* ************************************************************************************************
  *                                           GENERATORS                                           *
@@ -58,9 +58,8 @@ const generateRandomFloat = (min: number, max: number): number => {
  * @param max
  * @returns number
  */
-const generateRandomInteger = (min: number, max: number): number => (
-  Math.floor(generateRandomFloat(min, max))
-);
+const generateRandomInteger = (min: number, max: number): number =>
+  Math.floor(generateRandomFloat(min, max));
 
 /**
  * Generates a sequence of numbers within a range based on a number of steps.
@@ -69,13 +68,8 @@ const generateRandomInteger = (min: number, max: number): number => (
  * @param step?
  * @returns number[]
  */
-const generateSequence = (start: number, stop: number, step: number = 1): number[] => (
-  Array.from({ length: (stop - start) / step + 1 }, (_, i) => start + i * step)
-);
-
-
-
-
+const generateSequence = (start: number, stop: number, step: number = 1): number[] =>
+  Array.from({ length: (stop - start) / step + 1 }, (_, i) => start + i * step);
 
 /* ************************************************************************************************
  *                                         SORTING UTILS                                          *
@@ -107,9 +101,8 @@ const __sortStringValues = (a: string, b: string, direction: ISortDirection): nu
  * @param direction
  * @returns number
  */
-const __sortNumberValues = (a: number, b: number, direction: ISortDirection): number => (
-  direction === 'asc' ? a - b : b - a
-);
+const __sortNumberValues = (a: number, b: number, direction: ISortDirection): number =>
+  direction === 'asc' ? a - b : b - a;
 
 /**
  * Sorts a list of primitive values based on their type and a sort direction.
@@ -118,17 +111,22 @@ const __sortNumberValues = (a: number, b: number, direction: ISortDirection): nu
  * @throws
  * - MIXED_OR_UNSUPPORTED_DATA_TYPES: if the values are mixed or are different to string | number
  */
-const sortPrimitives = (
-  direction: ISortDirection,
-) => <T extends string | number>(a: T, b: T): number => {
-  if (typeof a === 'string' && typeof b === 'string') {
-    return __sortStringValues(a, b, direction);
-  }
-  if (typeof a === 'number' && typeof b === 'number') {
-    return __sortNumberValues(a, b, direction);
-  }
-  throw new Error(encodeError(`Unable to sort list of primitive values as they can only be string | number and must not be mixed. Received: ${typeof a}, ${typeof b}`, ERRORS.MIXED_OR_UNSUPPORTED_DATA_TYPES));
-};
+const sortPrimitives =
+  (direction: ISortDirection) =>
+  <T extends string | number>(a: T, b: T): number => {
+    if (typeof a === 'string' && typeof b === 'string') {
+      return __sortStringValues(a, b, direction);
+    }
+    if (typeof a === 'number' && typeof b === 'number') {
+      return __sortNumberValues(a, b, direction);
+    }
+    throw new Error(
+      encodeError(
+        `Unable to sort list of primitive values as they can only be string | number and must not be mixed. Received: ${typeof a}, ${typeof b}`,
+        ERRORS.MIXED_OR_UNSUPPORTED_DATA_TYPES,
+      ),
+    );
+  };
 
 /**
  * Sorts a list of record values by key based on their type and a sort direction.
@@ -138,22 +136,22 @@ const sortPrimitives = (
  * @throws
  * - MIXED_OR_UNSUPPORTED_DATA_TYPES: if the values are mixed or are different to string | number
  */
-const sortRecords = (
-  key: string,
-  direction: ISortDirection,
-) => <T extends Record<string, any>>(a: T, b: T): number => {
-  if (typeof a[key] === 'string' && typeof b[key] === 'string') {
-    return __sortStringValues(a[key], b[key], direction);
-  }
-  if (typeof a[key] === 'number' && typeof b[key] === 'number') {
-    return __sortNumberValues(a[key], b[key], direction);
-  }
-  throw new Error(encodeError(`Unable to sort list of record values as they can only be string | number and must not be mixed. Received: ${typeof a[key]}, ${typeof b[key]}`, ERRORS.MIXED_OR_UNSUPPORTED_DATA_TYPES));
-};
-
-
-
-
+const sortRecords =
+  (key: string, direction: ISortDirection) =>
+  <T extends Record<string, any>>(a: T, b: T): number => {
+    if (typeof a[key] === 'string' && typeof b[key] === 'string') {
+      return __sortStringValues(a[key], b[key], direction);
+    }
+    if (typeof a[key] === 'number' && typeof b[key] === 'number') {
+      return __sortNumberValues(a[key], b[key], direction);
+    }
+    throw new Error(
+      encodeError(
+        `Unable to sort list of record values as they can only be string | number and must not be mixed. Received: ${typeof a[key]}, ${typeof b[key]}`,
+        ERRORS.MIXED_OR_UNSUPPORTED_DATA_TYPES,
+      ),
+    );
+  };
 
 /* ************************************************************************************************
  *                                    OBJECT MANAGEMENT HELPERS                                   *
@@ -168,9 +166,7 @@ const sortRecords = (
  * - INVALID_OR_EMPTY_ARRAY: if the input is not array or it is empty
  */
 const shuffleArray = <T>(input: Array<T>): Array<T> => {
-  if (!Array.isArray(input) || input.length <= 1) {
-    throw new Error(encodeError('For an array to be shuffled it must contain at least 2 items.', ERRORS.INVALID_OR_EMPTY_ARRAY));
-  }
+  canArrayBeShuffled(input);
   const arr = input.slice();
   for (let i = arr.length - 1; i > 0; i -= 1) {
     const j = Math.floor(Math.random() * (i + 1));
@@ -193,12 +189,7 @@ const pickProps = <T extends Record<string, any>, K extends keyof T>(
   input: T,
   propKeys: K[],
 ): Pick<T, K> => {
-  if (!isObjectValid(input)) {
-    throw new Error(encodeError('The input must be a valid and non-empty object.', ERRORS.INVALID_OR_EMPTY_OBJECT));
-  }
-  if (!isArrayValid(propKeys)) {
-    throw new Error(encodeError('The keys must be a valid and non-empty array of strings.', ERRORS.INVALID_OR_EMPTY_ARRAY));
-  }
+  validateObjectAndKeys(input, propKeys);
   return Object.fromEntries(propKeys.map((key) => [key, input[key]])) as Pick<T, K>;
 };
 
@@ -216,12 +207,7 @@ const omitProps = <T extends Record<string, any>, K extends keyof T>(
   input: T,
   propKeys: K[],
 ): Omit<T, K> => {
-  if (!isObjectValid(input)) {
-    throw new Error(encodeError('The input must be a valid and non-empty object.', ERRORS.INVALID_OR_EMPTY_OBJECT));
-  }
-  if (!isArrayValid(propKeys)) {
-    throw new Error(encodeError('The keys must be a valid and non-empty array of strings.', ERRORS.INVALID_OR_EMPTY_ARRAY));
-  }
+  validateObjectAndKeys(input, propKeys);
   return Object.fromEntries(
     Object.entries(input).filter(([key]) => !propKeys.includes(key as K)),
   ) as Omit<T, K>;
@@ -239,31 +225,7 @@ const omitProps = <T extends Record<string, any>, K extends keyof T>(
 const isEqual = (
   a: Record<string, any> | Array<any>,
   b: Record<string, any> | Array<any>,
-): boolean => {
-  if (!isObjectValid(a, true) && !isArrayValid(a, true)) {
-    throw new Error(encodeError('Value \'a\' must be an object or an array in order to be compared.', ERRORS.UNSUPPORTED_DATA_TYPE));
-  }
-  if (!isObjectValid(b, true) && !isArrayValid(b, true)) {
-    throw new Error(encodeError('Value \'b\' must be an object or an array in order to be compared.', ERRORS.UNSUPPORTED_DATA_TYPE));
-  }
-  let aVal: string;
-  let bVal: string;
-  try {
-    aVal = <string>stableStringify(a);
-  } catch (e) {
-    throw new Error(encodeError(`Value 'a' could not be serialized into a JSON string in order to be compared: ${extractMessage(e)}`, ERRORS.UNABLE_TO_SERIALIZE_JSON));
-  }
-  try {
-    bVal = <string>stableStringify(b);
-  } catch (e) {
-    throw new Error(encodeError(`Value 'b' could not be serialized into a JSON string in order to be compared: ${extractMessage(e)}`, ERRORS.UNABLE_TO_SERIALIZE_JSON));
-  }
-  return aVal === bVal;
-};
-
-
-
-
+): boolean => stringifyJSONDeterministically(a) === stringifyJSONDeterministically(b);
 
 /* ************************************************************************************************
  *                                          MISC HELPERS                                          *
@@ -274,9 +236,10 @@ const isEqual = (
  * @param seconds
  * @returns Promise<void>
  */
-const delay = (seconds: number): Promise<void> => new Promise((resolve) => {
-  setTimeout(resolve, Math.round(seconds * 1000));
-});
+const delay = (seconds: number): Promise<void> =>
+  new Promise((resolve) => {
+    setTimeout(resolve, Math.round(seconds * 1000));
+  });
 
 /**
  * Executes an asynchronous function persistently, retrying on error with incremental delays
@@ -300,10 +263,6 @@ const retryAsyncFunction = async <T>(
     return retryAsyncFunction(func, retryScheduleDuration.slice(1));
   }
 };
-
-
-
-
 
 /* ************************************************************************************************
  *                                         MODULE EXPORTS                                         *
