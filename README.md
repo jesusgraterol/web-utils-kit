@@ -117,6 +117,23 @@ await res.json();
 </details>
 
 <details>
+  <summary><code>isNumeric</code></summary>
+  <br/>
+
+  Verifies if a value is a valid numeric string.
+
+  ```typescript
+  import { isNumeric } from 'web-utils-kit';
+
+  isNumeric('14400000'); // true
+  isNumeric('123.55'); // true
+  isNumeric('6,555.85'); // false
+  isNumeric('Hello world!'); // false
+  ```
+  <br/>
+</details>
+
+<details>
   <summary><code>isObjectValid</code></summary>
   <br/>
 

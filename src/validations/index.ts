@@ -53,6 +53,14 @@ const isIntegerValid = (value: unknown, min?: number, max?: number): value is nu
 const isTimestampValid = (value: unknown): value is number => isIntegerValid(value, 14400000);
 
 /**
+ * Verifies if a value is a valid numeric string.
+ * @param value
+ * @returns boolean
+ */
+const isNumeric = (value: string): boolean =>
+  typeof value === 'string' && /^[+-]?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(value);
+
+/**
  * Verifies if a value is an actual object. It also validates if it has keys (optional).
  * @param value
  * @param allowEmpty?
@@ -216,6 +224,7 @@ export {
   isNumberValid,
   isIntegerValid,
   isTimestampValid,
+  isNumeric,
   isObjectValid,
   isArrayValid,
   isEmailValid,

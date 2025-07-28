@@ -5,6 +5,7 @@ import {
   isNumberValid,
   isIntegerValid,
   isTimestampValid,
+  isNumeric,
   isObjectValid,
   isArrayValid,
   isEmailValid,
@@ -160,6 +161,47 @@ describe('isTimestampValid', () => {
     [14400000.5, false],
   ])('isTimestampValid(%s) -> %s', (a, expected) => {
     expect(isTimestampValid(a)).toBe(expected);
+  });
+});
+
+describe('isNumeric', () => {
+  test.each([
+    // valid
+    ['14400000', true],
+    [String(Number.MAX_SAFE_INTEGER), true],
+    [String(Date.now()), true],
+    ['1562851996000', true],
+    ['123.', true],
+    ['123.55', true],
+    ['123.558545', true],
+
+    // invalid
+    [undefined, false],
+    [null, false],
+    [{}, false],
+    [[], false],
+    ['a', false],
+    ['JESUSGRATEROL@', false],
+    ['Jes15-Gratero_.!', false],
+    ['@@', false],
+    ['Jes15-Gratero_.as', false],
+    ['jesu()', false],
+    ['asdjkhxaslkdj546512asdkasd', false],
+    ['', false],
+    [' ', false],
+    ['   ', false],
+    [123, false],
+    [true, false],
+    [14300000, false],
+    [Number.MAX_SAFE_INTEGER + 1, false],
+    [14400000.5, false],
+    [' 123', false],
+    [' 123 ', false],
+    ['123.12.1', false],
+    ['123,12', false],
+    ['1,423.85', false],
+  ])('isNumeric(%s) -> %s', (a, expected) => {
+    expect(isNumeric(a as any)).toBe(expected);
   });
 });
 
