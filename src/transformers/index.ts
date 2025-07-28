@@ -244,7 +244,7 @@ const parseJSON = <T>(value: string): T => {
  * @param value
  * @returns T
  * @throws
- * - UNABLE_TO_DEEP_CLONE: if the value cannot be serialized and deserialized
+ * - UNABLE_TO_CREATE_DEEP_CLONE: if the value cannot be serialized and deserialized
  */
 const createDeepClone = <T>(value: T): T => {
   try {
@@ -253,7 +253,7 @@ const createDeepClone = <T>(value: T): T => {
     throw new Error(
       encodeError(
         `Failed to create a deep clone of the value '${value}': ${extractMessage(e)}`,
-        ERRORS.UNABLE_TO_DEEP_CLONE,
+        ERRORS.UNABLE_TO_CREATE_DEEP_CLONE,
       ),
     );
   }

@@ -212,9 +212,9 @@ describe('parseJSON', () => {
 
 describe('createDeepClone', () => {
   test.each([[undefined], [null], [''], [true], [123], [NaN], ['hello world']])(
-    'createDeepClone(%o) -> throws UNABLE_TO_DEEP_CLONE',
+    'createDeepClone(%o) -> throws UNABLE_TO_CREATE_DEEP_CLONE',
     (value) => {
-      expect(() => createDeepClone(value as any)).toThrowError(ERRORS.UNABLE_TO_DEEP_CLONE);
+      expect(() => createDeepClone(value as any)).toThrowError(ERRORS.UNABLE_TO_CREATE_DEEP_CLONE);
     },
   );
 
