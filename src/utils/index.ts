@@ -3,9 +3,10 @@ import { encodeError } from 'error-message-utils';
 import { IUUIDVersion } from '../shared/types.js';
 import { ERRORS } from '../shared/errors.js';
 import { stringifyJSONDeterministically } from '../transformers/index.js';
-import { ISortDirection } from './types.js';
+import { IFilterByQueryOptions, ISortDirection } from './types.js';
 import { canArrayBeShuffled, validateObjectAndKeys } from './validations.js';
 import { buildNormalizedQueryTokens, normalizeItemValue } from './transformers.js';
+import { calculateItemScoreByQuery } from './utils.js';
 
 /* ************************************************************************************************
  *                                           GENERATORS                                           *
@@ -233,12 +234,59 @@ const isEqual = (
  ************************************************************************************************ */
 
 /**
- * Filters an array of primitives based on a given query and returns a shallow copy.
+ * Calculates the score of an item based on how many query tokens it contains and their lengths.
+ * @param item
+ * @param queryTokens
+ * @param queryProp
+ * @returns number
+ */
+const __calculateItemScoreByQuery = <T>(
+  item: T,
+  queryTokens: string[],
+  queryProp: keyof T | undefined,
+): number =>
+  calculateItemScoreByQuery(
+    normalizeItemValue(typeof queryProp === 'string' ? item[queryProp] : item),
+    queryTokens,
+  );
+
+/**
+ * Calculates the score of each item based on how many query tokens it contains and their lengths.
+ * Then sorts the items by score in descending order and returns a filtered list of items
+ * that have a score greater than 0.
  * @param items
- * @param query
+ * @param queryTokens
+ * @param queryProp
+ * @param limit
  * @returns T[]
  */
-const filterByQuery = <T>(items: T[], query: string): T[] => {
+const __rankItemsByQuery = <T>(
+  items: T[],
+  queryTokens: string[],
+  queryProp: keyof T | undefined,
+  limit: number | undefined,
+): T[] => {
+  const scoredItems = items.map((item) => ({
+    item,
+    score: __calculateItemScoreByQuery(item, queryTokens, queryProp),
+  }));
+  scoredItems.sort((a, b) => b.score - a.score);
+  return scoredItems
+    .filter(({ score }) => score > 0)
+    .map(({ item }) => item)
+    .slice(0, limit);
+};
+
+/**
+ * Filters an array of primitives based on a given query and returns a shallow copy.
+ * @IMPORTANT Providing the queryProp makes the query very efficient as it only attempts to match
+ * the value of that property, instead of the whole item.
+ * @param items
+ * @param query
+ * @param options?
+ * @returns T[]
+ */
+const filterByQuery = <T>(items: T[], query: string, options?: IFilterByQueryOptions<T>): T[] => {
   if (!items.length || !query) {
     return items;
   }
@@ -249,18 +297,8 @@ const filterByQuery = <T>(items: T[], query: string): T[] => {
     return items;
   }
 
-  // map each item to its score
-  const scoredItems = items.map((item) => {
-    const itemValue = normalizeItemValue(item);
-    const score = queryTokens.reduce((acc, token) => acc + (itemValue.includes(token) ? 1 : 0), 0);
-    return { item, score };
-  });
-
-  // sort by score descending
-  scoredItems.sort((a, b) => b.score - a.score);
-
-  // return only items, filtered to those with at least one match
-  return scoredItems.filter(({ score }) => score > 0).map(({ item }) => item);
+  // calculate the score for each item and sort them descendingly (by relevance)
+  return __rankItemsByQuery(items, queryTokens, options?.queryProp, options?.limit);
 };
 
 /* ************************************************************************************************

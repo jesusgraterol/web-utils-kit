@@ -33,7 +33,7 @@ import {
   parseJSON,
   createDeepClone,
 } from './transformers/index.js';
-import { ISortDirection } from './utils/types.js';
+import { ISortDirection, IFilterByQueryOptions } from './utils/types.js';
 import {
   generateUUID,
   generateRandomString,
@@ -94,6 +94,7 @@ export {
 
   // utils
   type ISortDirection,
+  type IFilterByQueryOptions,
   generateUUID,
   generateRandomString,
   generateRandomFloat,
