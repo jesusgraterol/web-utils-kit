@@ -5,6 +5,7 @@ import { ERRORS } from '../shared/errors.js';
 import { stringifyJSONDeterministically } from '../transformers/index.js';
 import { ISortDirection } from './types.js';
 import { canArrayBeShuffled, validateObjectAndKeys } from './validations.js';
+import { buildNormalizedQueryTokens, normalizeItemValue } from './transformers.js';
 
 /* ************************************************************************************************
  *                                           GENERATORS                                           *
@@ -228,6 +229,41 @@ const isEqual = (
 ): boolean => stringifyJSONDeterministically(a) === stringifyJSONDeterministically(b);
 
 /* ************************************************************************************************
+ *                                            FILTERS                                             *
+ ************************************************************************************************ */
+
+/**
+ * Filters an array of primitives based on a given query and returns a shallow copy.
+ * @param items
+ * @param query
+ * @returns T[]
+ */
+const filterByQuery = <T>(items: T[], query: string): T[] => {
+  if (!items.length || !query) {
+    return items;
+  }
+
+  // build the query tokens
+  const queryTokens = buildNormalizedQueryTokens(query);
+  if (!queryTokens.length) {
+    return items;
+  }
+
+  // map each item to its score
+  const scoredItems = items.map((item) => {
+    const itemValue = normalizeItemValue(item);
+    const score = queryTokens.reduce((acc, token) => acc + (itemValue.includes(token) ? 1 : 0), 0);
+    return { item, score };
+  });
+
+  // sort by score descending
+  scoredItems.sort((a, b) => b.score - a.score);
+
+  // return only items, filtered to those with at least one match
+  return scoredItems.filter(({ score }) => score > 0).map(({ item }) => item);
+};
+
+/* ************************************************************************************************
  *                                          MISC HELPERS                                          *
  ************************************************************************************************ */
 
@@ -284,6 +320,9 @@ export {
   pickProps,
   omitProps,
   isEqual,
+
+  // filters
+  filterByQuery,
 
   // misc helpers
   delay,

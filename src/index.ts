@@ -45,6 +45,7 @@ import {
   shuffleArray,
   pickProps,
   omitProps,
+  filterByQuery,
   delay,
   retryAsyncFunction,
 } from './utils/index.js';
@@ -103,6 +104,7 @@ export {
   shuffleArray,
   pickProps,
   omitProps,
+  filterByQuery,
   delay,
   retryAsyncFunction,
 };
