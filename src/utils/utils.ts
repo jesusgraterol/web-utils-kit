@@ -1,17 +1,27 @@
+import { normalizeItemValue } from './transformers.js';
+
 /* ************************************************************************************************
  *                                         IMPLEMENTATION                                         *
  ************************************************************************************************ */
 
 /**
- * Calculates the score of an item based on how many query tokens it contains.
- * @param itemValue
+ * Applies the filter to the items based on the query tokens and returns a filtered list.
+ * @param items
  * @param queryTokens
- * @returns number
+ * @param queryProp
+ * @returns T[]
  */
-const calculateItemScoreByQuery = (itemValue: string, queryTokens: string[]): number =>
-  queryTokens.reduce((acc, token) => acc + (itemValue.includes(token) ? token.length : 0), 0);
+const filterItemsByQueryTokens = <T>(
+  items: T[],
+  queryTokens: string[],
+  queryProp: keyof T | undefined,
+): T[] =>
+  items.filter((item) => {
+    const itemValue = normalizeItemValue(typeof queryProp === 'string' ? item[queryProp] : item);
+    return queryTokens.some((token) => itemValue.includes(token));
+  });
 
 /* ************************************************************************************************
  *                                         MODULE EXPORTS                                         *
  ************************************************************************************************ */
-export { calculateItemScoreByQuery };
+export { filterItemsByQueryTokens };
