@@ -33,7 +33,7 @@ import {
   parseJSON,
   createDeepClone,
 } from './transformers/index.js';
-import { ISortDirection } from './utils/types.js';
+import { ISortDirection, IFilterByQueryOptions } from './utils/types.js';
 import {
   generateUUID,
   generateRandomString,
@@ -45,6 +45,7 @@ import {
   shuffleArray,
   pickProps,
   omitProps,
+  filterByQuery,
   delay,
   retryAsyncFunction,
 } from './utils/index.js';
@@ -93,6 +94,7 @@ export {
 
   // utils
   type ISortDirection,
+  type IFilterByQueryOptions,
   generateUUID,
   generateRandomString,
   generateRandomFloat,
@@ -103,6 +105,7 @@ export {
   shuffleArray,
   pickProps,
   omitProps,
+  filterByQuery,
   delay,
   retryAsyncFunction,
 };

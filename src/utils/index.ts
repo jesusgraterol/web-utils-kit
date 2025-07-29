@@ -3,8 +3,10 @@ import { encodeError } from 'error-message-utils';
 import { IUUIDVersion } from '../shared/types.js';
 import { ERRORS } from '../shared/errors.js';
 import { stringifyJSONDeterministically } from '../transformers/index.js';
-import { ISortDirection } from './types.js';
+import { IFilterByQueryOptions, ISortDirection } from './types.js';
 import { canArrayBeShuffled, validateObjectAndKeys } from './validations.js';
+import { buildNormalizedQueryTokens } from './transformers.js';
+import { filterItemsByQueryTokens } from './utils.js';
 
 /* ************************************************************************************************
  *                                           GENERATORS                                           *
@@ -228,6 +230,34 @@ const isEqual = (
 ): boolean => stringifyJSONDeterministically(a) === stringifyJSONDeterministically(b);
 
 /* ************************************************************************************************
+ *                                            FILTERS                                             *
+ ************************************************************************************************ */
+
+/**
+ * Filters an array of primitives based on a given query and returns a shallow copy.
+ * @IMPORTANT Providing the queryProp makes the query very efficient as it only attempts to match
+ * the value of that property, instead of the whole item.
+ * @param items
+ * @param query
+ * @param options?
+ * @returns T[]
+ */
+const filterByQuery = <T>(items: T[], query: string, options?: IFilterByQueryOptions<T>): T[] => {
+  if (!items.length || !query) {
+    return items;
+  }
+
+  // build the query tokens
+  const queryTokens = buildNormalizedQueryTokens(query);
+  if (!queryTokens.length) {
+    return items;
+  }
+
+  // apply the filter to the items based on the query and provided options
+  return filterItemsByQueryTokens(items, queryTokens, options?.queryProp).slice(0, options?.limit);
+};
+
+/* ************************************************************************************************
  *                                          MISC HELPERS                                          *
  ************************************************************************************************ */
 
@@ -284,6 +314,9 @@ export {
   pickProps,
   omitProps,
   isEqual,
+
+  // filters
+  filterByQuery,
 
   // misc helpers
   delay,

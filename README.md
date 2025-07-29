@@ -731,6 +731,44 @@ await res.json();
   <br/>
 </details>
 
+
+<details>
+  <summary><code>filterByQuery</code></summary>
+  <br/>
+
+  Filters an array of primitives based on a given query and returns a shallow copy.
+  **IMPORTANT:** Providing the queryProp makes the query very efficient as it only attempts to match the value of that property, instead of the whole item.
+
+  ```typescript
+  import { filterByQuery } from 'web-utils-kit';
+
+  filterByQuery(
+    [
+      { id: 1, name: 'Alice' },
+      { id: 2, name: 'Bob' },
+      { id: 3, name: 'Chalie' },
+      { id: 4, name: 'David' },
+    ],
+    'ali',
+    { queryProp: 'name' }
+  );
+  // [
+  //   { id: 1, name: 'Alice' },
+  //   { id: 3, name: 'Chalie' },
+  // ]
+
+  filterByQuery(
+    [
+      { a: { x: 'Hello', y: ['yak', 123], p: { a: { b: 'croatoan' } }, z: { foo: 'bar' } } },
+      { a: { x: 'Bye', y: ['Kok', 456], p: { a: { b: ['xaax'] } }, z: { foo: 'Haj' } } },
+    ],
+    'croatoan'
+  );
+  // [{ a: { x: 'Hello', y: ['yak', 123], p: { a: { b: 'croatoan' } }, z: { foo: 'bar' } } }]
+  ```
+  <br/>
+</details>
+
 <details>
   <summary><code>delay</code></summary>
   <br/>
