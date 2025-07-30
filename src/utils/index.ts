@@ -254,7 +254,11 @@ const filterByQuery = <T>(items: T[], query: string, options?: IFilterByQueryOpt
   }
 
   // apply the filter to the items based on the query and provided options
-  return filterItemsByQueryTokens(items, queryTokens, options?.queryProp).slice(0, options?.limit);
+  const result = filterItemsByQueryTokens(items, queryTokens, options?.queryProp);
+  if (typeof options?.limit === 'number') {
+    return result.slice(0, options.limit);
+  }
+  return result;
 };
 
 /* ************************************************************************************************
