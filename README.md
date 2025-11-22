@@ -684,6 +684,30 @@ await res.json();
 
 
 <details>
+  <summary><code>splitArrayIntoBatches</code></summary>
+  <br/>
+
+  Splits an array into smaller arrays (batches) of a given size.
+
+  ```typescript
+  import { splitArrayIntoBatches } from 'web-utils-kit';
+
+  splitArrayIntoBatches(
+    [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+    3
+  )
+  // [
+  //   [1, 2, 3],
+  //   [4, 5, 6],
+  //   [7, 8, 9],
+  //   [10],
+  // ]
+  ```
+  <br/>
+</details>
+
+
+<details>
   <summary><code>pickProps</code></summary>
   <br/>
 
