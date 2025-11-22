@@ -32,6 +32,7 @@ import {
   stringifyJSONDeterministically,
   parseJSON,
   createDeepClone,
+  pruneJSON,
 } from './transformers/index.js';
 import { ISortDirection, IFilterByQueryOptions } from './utils/types.js';
 import {
@@ -91,6 +92,7 @@ export {
   stringifyJSONDeterministically,
   parseJSON,
   createDeepClone,
+  pruneJSON,
 
   // utils
   type ISortDirection,

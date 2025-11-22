@@ -543,6 +543,32 @@ await res.json();
   <br/>
 </details>
 
+<details>
+  <summary><code>pruneJSON</code></summary>
+  <br/>
+
+  Removes `null`, `undefined`, empty objects (`{}`), and empty arrays (`[]`) from the given data recursively.
+
+  ```typescript
+  import { pruneJSON } from 'web-utils-kit';
+
+  pruneJSON({
+    a: { b: { c: { d: {} }, x: undefined } },
+    z: null,
+    y: [[], [null, { foo: { x: { a: null } } }], {}],
+  });
+  // null
+
+  pruneJSON({
+    a: { b: { c: { d: { z: undefined, x: [], p: { a: 1 } } }, x: undefined } },
+    z: null,
+    y: [[], [null, { foo: { x: { a: null } } }], {}],
+  })
+  // { a: { b: { c: { d: { p: { a: 1 } } } } } }
+  ```
+  <br/>
+</details>
+
 
 ### Utils
 

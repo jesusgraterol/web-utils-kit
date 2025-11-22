@@ -265,7 +265,7 @@ const createDeepClone = <T>(value: T): T => {
  * @param value
  * @returns T | null
  */
-export const pruneJSON = <T extends IJSONValue>(value: T): T | null => {
+const pruneJSON = <T extends IJSONValue>(value: T): T | null => {
   if (value === null || value === undefined) {
     return null;
   }
@@ -324,4 +324,5 @@ export {
   stringifyJSONDeterministically,
   parseJSON,
   createDeepClone,
+  pruneJSON,
 };
