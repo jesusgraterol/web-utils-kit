@@ -15,6 +15,7 @@ import {
   stringifyJSONDeterministically,
   parseJSON,
   createDeepClone,
+  pruneJSON,
 } from './index.js';
 
 /* ************************************************************************************************
@@ -226,5 +227,42 @@ describe('createDeepClone', () => {
     b.b.c = 'Universe';
     expect(a.b.c).toBe('World');
     expect(b.b.c).toBe('Universe');
+  });
+});
+
+describe('pruneJSON', () => {
+  test.each([
+    [null, null],
+    [undefined, null],
+    [123, 123],
+    ['hello', 'hello'],
+    [[], null],
+    [{}, null],
+    [
+      { a: null, b: undefined, c: {}, d: [], e: 0, f: '', g: { h: null, i: 5 }, j: [null, 6] },
+      { e: 0, f: '', g: { i: 5 }, j: [6] },
+    ],
+    [
+      [null, undefined, {}, [], 0, '', { a: null, b: 3 }, [null, 4]],
+      [0, '', { b: 3 }, [4]],
+    ],
+    [
+      {
+        a: { b: { c: { d: {} }, x: undefined } },
+        z: null,
+        y: [[], [null, { foo: { x: { a: null } } }], {}],
+      },
+      null,
+    ],
+    [
+      {
+        a: { b: { c: { d: { z: undefined, x: [], p: { a: 1 } } }, x: undefined } },
+        z: null,
+        y: [[], [null, { foo: { x: { a: null } } }], {}],
+      },
+      { a: { b: { c: { d: { p: { a: 1 } } } } } },
+    ],
+  ])('pruneJSON(%o) -> %o', (input, expected) => {
+    expect(pruneJSON(input as any)).toStrictEqual(expected);
   });
 });

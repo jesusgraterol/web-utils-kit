@@ -2,6 +2,7 @@ import { v4 as uuidv4, v7 as uuidv7 } from 'uuid';
 import { encodeError } from 'error-message-utils';
 import { IUUIDVersion } from '../shared/types.js';
 import { ERRORS } from '../shared/errors.js';
+import { isIntegerValid } from '../validations/index.js';
 import { stringifyJSONDeterministically } from '../transformers/index.js';
 import { IFilterByQueryOptions, ISortDirection } from './types.js';
 import { canArrayBeShuffled, validateObjectAndKeys } from './validations.js';
@@ -175,6 +176,38 @@ const shuffleArray = <T>(input: Array<T>): Array<T> => {
     [arr[i], arr[j]] = [arr[j], arr[i]];
   }
   return arr;
+};
+
+/**
+ * Splits an array into smaller arrays (batches) of a given size.
+ * @param items
+ * @param batchSize
+ * @returns Array<T[]>
+ * @throws
+ * - INVALID_BATCH_SIZE: if the batch size is not a valid integer greater than 0
+ */
+export const splitArrayIntoBatches = <T>(items: T[], batchSize: number): Array<T[]> => {
+  // return an empty array if there are no items
+  if (!items.length) {
+    return [];
+  }
+
+  // ensure the batch size is a valid integer greater than zero
+  if (!isIntegerValid(batchSize, 1)) {
+    throw new Error(
+      encodeError(
+        `In order to split an array into batches, the batch size must be an integer greater than 0. Received: ${batchSize}`,
+        ERRORS.INVALID_BATCH_SIZE,
+      ),
+    );
+  }
+
+  // split the items into batches
+  const out: Array<T[]> = [];
+  for (let i = 0; i < items.length; i += batchSize) {
+    out.push(items.slice(i, i + batchSize));
+  }
+  return out;
 };
 
 /**

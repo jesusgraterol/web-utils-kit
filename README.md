@@ -543,6 +543,32 @@ await res.json();
   <br/>
 </details>
 
+<details>
+  <summary><code>pruneJSON</code></summary>
+  <br/>
+
+  Removes `null`, `undefined`, empty objects (`{}`), and empty arrays (`[]`) from the given data recursively.
+
+  ```typescript
+  import { pruneJSON } from 'web-utils-kit';
+
+  pruneJSON({
+    a: { b: { c: { d: {} }, x: undefined } },
+    z: null,
+    y: [[], [null, { foo: { x: { a: null } } }], {}],
+  });
+  // null
+
+  pruneJSON({
+    a: { b: { c: { d: { z: undefined, x: [], p: { a: 1 } } }, x: undefined } },
+    z: null,
+    y: [[], [null, { foo: { x: { a: null } } }], {}],
+  })
+  // { a: { b: { c: { d: { p: { a: 1 } } } } } }
+  ```
+  <br/>
+</details>
+
 
 ### Utils
 
@@ -678,6 +704,30 @@ await res.json();
   // ['d', 'j', 'c', 'a', 'g', 'e', 'b', 'f', 'i', 'h']
   shuffleArray([{ a: 1 }, { b: 2 }, { c: 3 }, { d: 4 }, { e: 5 }])
   // [ { c: 3 }, { d: 4 }, { a: 1 }, { b: 2 }, { e: 5 } ]
+  ```
+  <br/>
+</details>
+
+
+<details>
+  <summary><code>splitArrayIntoBatches</code></summary>
+  <br/>
+
+  Splits an array into smaller arrays (batches) of a given size.
+
+  ```typescript
+  import { splitArrayIntoBatches } from 'web-utils-kit';
+
+  splitArrayIntoBatches(
+    [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+    3
+  )
+  // [
+  //   [1, 2, 3],
+  //   [4, 5, 6],
+  //   [7, 8, 9],
+  //   [10],
+  // ]
   ```
   <br/>
 </details>

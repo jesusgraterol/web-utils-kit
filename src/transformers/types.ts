@@ -3,6 +3,12 @@
  ************************************************************************************************ */
 
 /**
+ * JSON Value
+ * A value that can be represented in JSON format.
+ */
+type IJSONValue = string | number | boolean | null | IJSONValue[] | { [key: string]: IJSONValue };
+
+/**
  * Number Format Configuration
  * The configuration that will be used to prettify a number.
  */
@@ -67,4 +73,4 @@ type IDateTemplateConfigs = {
 /* ************************************************************************************************
  *                                         MODULE EXPORTS                                         *
  ************************************************************************************************ */
-export type { INumberFormatConfig, IDateTemplate, IDateTemplateConfigs };
+export type { IJSONValue, INumberFormatConfig, IDateTemplate, IDateTemplateConfigs };

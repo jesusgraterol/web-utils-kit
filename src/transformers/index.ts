@@ -1,6 +1,7 @@
 import { decodeError, encodeError, extractMessage } from 'error-message-utils';
 import { ERRORS } from '../shared/errors.js';
-import { IDateTemplate, INumberFormatConfig } from './types.js';
+import { isObjectValid } from '../validations/index.js';
+import { IDateTemplate, IJSONValue, INumberFormatConfig } from './types.js';
 import { DATE_TEMPLATE_CONFIGS, FILE_SIZE_THRESHOLD, FILE_SIZE_UNITS } from './consts.js';
 import {
   canJSONBeSerialized,
@@ -259,6 +260,50 @@ const createDeepClone = <T>(value: T): T => {
   }
 };
 
+/**
+ * Removes null, undefined, empty objects, and empty arrays from the given data recursively.
+ * @param value
+ * @returns T | null
+ */
+const pruneJSON = <T extends IJSONValue>(value: T): T | null => {
+  if (value === null || value === undefined) {
+    return null;
+  }
+
+  if (Array.isArray(value)) {
+    const cleanedArray = value
+      .map((item) => pruneJSON(item))
+      .filter((item) => {
+        if (item === null || item === undefined) return false;
+        if (Array.isArray(item)) return item.length > 0;
+        if (isObjectValid(item, true)) return Object.keys(item).length > 0;
+        return true;
+      });
+
+    // if after cleaning it has no items, return null
+    return cleanedArray.length > 0 ? (cleanedArray as T) : null;
+  }
+
+  if (isObjectValid(value, true)) {
+    const cleanedObj: Record<string, IJSONValue> = {};
+
+    Object.entries(value).forEach(([key, val]) => {
+      const cleanedVal = pruneJSON(val);
+
+      if (cleanedVal === null || cleanedVal === undefined) return;
+      if (Array.isArray(cleanedVal) && cleanedVal.length === 0) return;
+      if (isObjectValid(cleanedVal, true) && !isObjectValid(cleanedVal)) return;
+
+      cleanedObj[key] = cleanedVal;
+    });
+
+    // if after cleaning it has no keys, return null
+    return Object.keys(cleanedObj).length > 0 ? (cleanedObj as T) : null;
+  }
+
+  return value;
+};
+
 /* ************************************************************************************************
  *                                         MODULE EXPORTS                                         *
  ************************************************************************************************ */
@@ -279,4 +324,5 @@ export {
   stringifyJSONDeterministically,
   parseJSON,
   createDeepClone,
+  pruneJSON,
 };

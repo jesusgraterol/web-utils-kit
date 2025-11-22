@@ -67,7 +67,7 @@ const isNumeric = (value: string): boolean =>
  * @returns boolean
  */
 const isObjectValid = (value: unknown, allowEmpty?: boolean): value is Record<string, any> =>
-  Boolean(value) &&
+  value !== null &&
   typeof value === 'object' &&
   !Array.isArray(value) &&
   (allowEmpty || Object.keys(value as object).length > 0);
