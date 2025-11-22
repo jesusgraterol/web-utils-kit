@@ -4,6 +4,7 @@ import {
   generateSequence,
   sortPrimitives,
   sortRecords,
+  splitArrayIntoBatches,
   pickProps,
   omitProps,
   isEqual,
@@ -186,6 +187,45 @@ describe('Sorting Utils', () => {
 });
 
 describe('Object Management Helpers', () => {
+  describe('splitArrayIntoBatches', () => {
+    test.each([
+      [[1, 2, 3], -1],
+      [[1, 2, 3], 0],
+      [[1, 2, 3], 2.5],
+      [[1, 2, 3], NaN],
+    ])('splitArrayIntoBatches(%o, %s) throws INVALID_BATCH_SIZE', (a, b) => {
+      expect(() => splitArrayIntoBatches(a, b)).toThrowError(ERRORS.INVALID_BATCH_SIZE);
+    });
+
+    test('passing an empty array returns an empty array', () => {
+      expect(splitArrayIntoBatches([], 5)).toEqual([]);
+    });
+
+    test.each([
+      [[1, 2, 3], 10, [[1, 2, 3]]],
+      [
+        [1, 2, 3, 4, 5, 6, 7, 8, 9],
+        3,
+        [
+          [1, 2, 3],
+          [4, 5, 6],
+          [7, 8, 9],
+        ],
+      ],
+      [[1, 2, 3, 4, 5, 6, 7, 8, 9], 4, [[1, 2, 3, 4], [5, 6, 7, 8], [9]]],
+      [[1, 2, 3, 4, 5, 6, 7, 8, 9], 2, [[1, 2], [3, 4], [5, 6], [7, 8], [9]]],
+      [[1, 2, 3, 4, 5, 6, 7, 8, 9], 10, [[1, 2, 3, 4, 5, 6, 7, 8, 9]]],
+    ])('splitArrayIntoBatches(%o, %i) -> %o', (a, b, expected) => {
+      expect(splitArrayIntoBatches(a, b)).toStrictEqual(expected);
+    });
+
+    test('can split an array regardless of its content', () => {
+      expect(
+        splitArrayIntoBatches([{ foo: 'bar' }, [1, 2, 3], 'string', 123, true, null, undefined], 3),
+      ).toStrictEqual([[{ foo: 'bar' }, [1, 2, 3], 'string'], [123, true, null], [undefined]]);
+    });
+  });
+
   describe('pickProps', () => {
     test('can pick a subset of properties from an object', () => {
       expect(pickProps(TEST_OBJ, ['id', 'name'])).toStrictEqual({
