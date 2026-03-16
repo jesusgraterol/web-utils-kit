@@ -26,9 +26,7 @@ jobs:
         run: npm run build
 
       - name: 🚀 Publish to npm
-        run: npm publish
-        env:
-          NPM_CONFIG_PROVENANCE: true
+        run: npm publish --provenance --access public
 
       - name: 🏷️ Extract version from package.json
         id: extract_version
