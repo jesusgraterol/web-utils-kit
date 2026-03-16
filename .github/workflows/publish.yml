@@ -30,7 +30,7 @@ jobs:
         run: npm run build
 
       - name: 🚀 Publish to npm
-        run: npm publish --access public
+        run: npm publish
 
       - name: 🏷️ Extract version from package.json
         id: extract_version
