@@ -479,6 +479,24 @@ await res.json();
 </details>
 
 <details>
+  <summary><code>applySubstitutions</code></summary>
+  <br/>
+
+  Applies substitutions to a string based on a provided object. The string can contain placeholders in the format of `{{key}}`, which will be replaced by the corresponding value from the substitutions object. If a placeholder does not have a corresponding key in the substitutions object, it will remain unchanged in the output string.
+
+  ```typescript
+  import { applySubstitutions } from 'web-utils-kit';
+
+  applySubstitutions('Hello, {{name}}! You have {{count}} new messages.', {
+    name: 'John',
+    count: 5,
+  }); 
+  // 'Hello, John! You have 5 new messages.'
+  ```
+  <br/>
+</details>
+
+<details>
   <summary><code>stringifyJSON</code></summary>
   <br/>
 
