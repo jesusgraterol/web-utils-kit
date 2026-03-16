@@ -933,6 +933,9 @@ await res.json();
 ## Running the Tests
 
 ```bash
+# integration & unit tests
+npm run test
+
 # integration tests
 npm run test:integration
 
