@@ -153,6 +153,21 @@ const maskMiddle = (text: string, visibleChars: number, mask: string = '...'): s
   return `${text.slice(0, visibleChars)}${mask}${text.slice(-visibleChars)}`;
 };
 
+/**
+ * Applies substitutions to a string based on a provided object. The string can contain placeholders
+ * in the format of {{key}}, which will be replaced by the corresponding value from the substitutions
+ * object. If a placeholder does not have a corresponding key in the substitutions object, it will
+ * remain unchanged in the output string.
+ * @param input The input string containing placeholders in the format of {{key}}.
+ * @param substitutions? An object containing key-value pairs for substitutions. The keys should
+ * match the placeholders in the input string, without the curly braces.
+ * @returns string
+ */
+const applySubstitutions = (input: string, substitutions: Record<string, unknown> = {}): string =>
+  input.replace(/{{(.*?)}}/g, (match, key) =>
+    key in substitutions ? String(substitutions[key]) : match,
+  );
+
 /* ************************************************************************************************
  *                                             JSON                                               *
  ************************************************************************************************ */
@@ -318,6 +333,7 @@ export {
   toSlug,
   truncateText,
   maskMiddle,
+  applySubstitutions,
 
   // json
   stringifyJSON,

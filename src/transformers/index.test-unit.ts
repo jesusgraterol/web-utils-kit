@@ -11,6 +11,7 @@ import {
   prettifyDate,
   truncateText,
   maskMiddle,
+  applySubstitutions,
   stringifyJSON,
   stringifyJSONDeterministically,
   parseJSON,
@@ -139,6 +140,72 @@ describe('maskMiddle', () => {
     ['bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh', 6, '********', 'bc1qxy********hx0wlh'],
   ])('maskMiddle(%s, %i, %s) -> %s', (text, visibleChars, mask, expected) => {
     expect(maskMiddle(text, visibleChars, mask)).toBe(expected);
+  });
+});
+
+describe('applySubstitutions', () => {
+  test('replaces placeholders with corresponding values', () => {
+    expect(
+      applySubstitutions('Hello, {{name}}! You have {{count}} new messages.', {
+        name: 'John',
+        count: 5,
+      }),
+    ).toBe('Hello, John! You have 5 new messages.');
+  });
+
+  test('leaves placeholders unchanged if no corresponding value is found', () => {
+    expect(
+      applySubstitutions('Hello, {{name}}! You have {{count}} new messages.', {
+        name: 'John',
+      }),
+    ).toBe('Hello, John! You have {{count}} new messages.');
+  });
+
+  test('the keys in the substitutions object are case-sensitive', () => {
+    expect(
+      applySubstitutions('Hello, {{name}}! You have {{count}} new messages.', {
+        Name: 'John',
+        COUNT: 5,
+      }),
+    ).toBe('Hello, {{name}}! You have {{count}} new messages.');
+  });
+
+  test('handles empty input string', () => {
+    expect(applySubstitutions('', { name: 'John' })).toBe('');
+  });
+
+  test('handles input string with no placeholders', () => {
+    expect(applySubstitutions('Hello, world!', { name: 'John' })).toBe('Hello, world!');
+  });
+
+  test('handles empty substitutions object', () => {
+    expect(applySubstitutions('Hello, {{name}}! You have {{count}} new messages.')).toBe(
+      'Hello, {{name}}! You have {{count}} new messages.',
+    );
+  });
+
+  test('handles placeholders with no corresponding keys in substitutions object', () => {
+    expect(
+      applySubstitutions('Hello, {{name}}! You have {{count}} new messages.', {
+        age: 30,
+        city: 'New York',
+      }),
+    ).toBe('Hello, {{name}}! You have {{count}} new messages.');
+  });
+
+  test('handles multiple occurrences of the same placeholder', () => {
+    expect(applySubstitutions('Hello, {{name}}! Your name is {{name}}.', { name: 'John' })).toBe(
+      'Hello, John! Your name is John.',
+    );
+  });
+
+  test('handles placeholders with special characters in keys', () => {
+    expect(
+      applySubstitutions('Hello, {{user-name}}! Your email is {{user.email}}.', {
+        'user-name': 'John',
+        'user.email': 'john@example.com',
+      }),
+    ).toBe('Hello, John! Your email is john@example.com.');
   });
 });
 

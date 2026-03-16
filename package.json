@@ -1,13 +1,13 @@
 {
   "name": "web-utils-kit",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "description": "The web-utils-kit package provides a collection of well-tested and thoroughly documented utility functions for various web development needs. Each function adheres to a strict coding style and best practices to ensure consistency and maintainability.",
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "ts-lib-builder --tsconfig=tsconfig.build.json",
-    "test": "echo \"Error: tests are executed with  npm run test:(e2e|integration|unit|bench)\" && exit 1",
+    "test": "npm run test:unit && npm run test:integration",
     "test:e2e": "vitest run --config=vitest.test-e2e.config.ts",
     "test:integration": "vitest run --config vitest.test-integration.config.ts",
     "test:unit": "vitest run --config vitest.test-unit.config.ts",
