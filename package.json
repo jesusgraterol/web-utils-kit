@@ -1,6 +1,6 @@
 {
   "name": "web-utils-kit",
-  "version": "1.0.11",
+  "version": "1.0.12",
   "description": "The web-utils-kit package provides a collection of well-tested and thoroughly documented utility functions for various web development needs. Each function adheres to a strict coding style and best practices to ensure consistency and maintainability.",
   "type": "module",
   "main": "dist/index.js",
@@ -17,8 +17,8 @@
     "watch-test:unit": "vitest --config vitest.test-unit.config.ts"
   },
   "repository": {
-    "type": "repo",
-    "url": "https://github.com/jesusgraterol/web-utils-kit"
+    "type": "git",
+    "url": "git@github.com:jesusgraterol/web-utils-kit.git"
   },
   "keywords": [
     "web",
@@ -31,9 +31,9 @@
   "author": "Jesus Graterol",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/jesusgraterol/webdev-utils/issues"
+    "url": "https://github.com/jesusgraterol/web-utils-kit/issues"
   },
-  "homepage": "https://github.com/jesusgraterol/webdev-utils#readme",
+  "homepage": "https://github.com/jesusgraterol/web-utils-kit#readme",
   "devDependencies": {
     "@types/node": "22.10.1",
     "@typescript-eslint/eslint-plugin": "7.18.0",
