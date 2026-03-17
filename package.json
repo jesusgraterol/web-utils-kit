@@ -1,6 +1,6 @@
 {
   "name": "web-utils-kit",
-  "version": "1.0.15",
+  "version": "1.0.16",
   "description": "The web-utils-kit package provides a collection of well-tested and thoroughly documented utility functions for various web development needs. Each function adheres to a strict coding style and best practices to ensure consistency and maintainability.",
   "type": "module",
   "main": "dist/index.js",
@@ -41,12 +41,12 @@
     "eslint-config-airbnb-typescript": "18.0.0",
     "eslint-config-prettier": "10.1.5",
     "prettier": "3.6.2",
-    "ts-lib-builder": "1.0.7",
+    "ts-lib-builder": "1.0.8",
     "typescript": "5.7.2",
     "vitest": "3.2.4"
   },
   "dependencies": {
-    "error-message-utils": "1.1.5",
+    "error-message-utils": "1.1.6",
     "uuid": "11.0.3"
   }
 }
