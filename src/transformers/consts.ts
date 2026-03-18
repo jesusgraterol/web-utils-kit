@@ -1,11 +1,11 @@
 import { IDateTemplateConfigs } from './types.js';
 
 // values needed to format a file size value into a readable string
-const FILE_SIZE_THRESHOLD: number = 1024;
-const FILE_SIZE_UNITS: string[] = ['kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+export const FILE_SIZE_THRESHOLD: number = 1024;
+export const FILE_SIZE_UNITS: string[] = ['kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
 
 // the configurations that will be used to prettify dates
-const DATE_TEMPLATE_CONFIGS: IDateTemplateConfigs = {
+export const DATE_TEMPLATE_CONFIGS: IDateTemplateConfigs = {
   'date-short': {
     day: '2-digit',
     month: '2-digit',
@@ -55,8 +55,3 @@ const DATE_TEMPLATE_CONFIGS: IDateTemplateConfigs = {
     second: '2-digit',
   },
 };
-
-/* ************************************************************************************************
- *                                         MODULE EXPORTS                                         *
- ************************************************************************************************ */
-export { FILE_SIZE_THRESHOLD, FILE_SIZE_UNITS, DATE_TEMPLATE_CONFIGS };

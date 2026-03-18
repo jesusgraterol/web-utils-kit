@@ -1,23 +1,37 @@
 /* ************************************************************************************************
- *                                             TYPES                                              *
+ *                                            GENERAL                                             *
  ************************************************************************************************ */
 
 /**
  * JSON Value
  * A value that can be represented in JSON format.
  */
-type IJSONValue = string | number | boolean | null | IJSONValue[] | { [key: string]: IJSONValue };
+export type IJSONValue =
+  | string
+  | number
+  | boolean
+  | null
+  | IJSONValue[]
+  | { [key: string]: IJSONValue };
+
+/* ************************************************************************************************
+ *                                            NUMBERS                                             *
+ ************************************************************************************************ */
 
 /**
  * Number Format Configuration
  * The configuration that will be used to prettify a number.
  */
-type INumberFormatConfig = {
+export type INumberFormatConfig = {
   minimumFractionDigits: number; // Default: 0
   maximumFractionDigits: number; // Default: 2
   prefix: string; // Default: ''
   suffix: string; // Default: ''
 };
+
+/* ************************************************************************************************
+ *                                             DATES                                              *
+ ************************************************************************************************ */
 
 /**
  * Date Template
@@ -31,7 +45,7 @@ type INumberFormatConfig = {
  * - datetime-medium: Apr 29, 1453, 12:00:00 AM
  * - datetime-long: Friday, April 29th, 1453 at 12:00:00 AM
  */
-type IDateTemplate =
+export type IDateTemplate =
   | 'date-short'
   | 'date-medium'
   | 'date-long'
@@ -45,7 +59,7 @@ type IDateTemplate =
  * Date Template Configs
  * The options that will be combined in order to provide a format that can meet any requirement.
  */
-type IDateTemplateConfigs = {
+export type IDateTemplateConfigs = {
   [key in IDateTemplate]: {
     localeMatcher?: 'best fit' | 'lookup' | undefined;
     weekday?: 'long' | 'short' | 'narrow' | undefined;
@@ -69,8 +83,3 @@ type IDateTemplateConfigs = {
     timeZone?: string | undefined;
   };
 };
-
-/* ************************************************************************************************
- *                                         MODULE EXPORTS                                         *
- ************************************************************************************************ */
-export type { IJSONValue, INumberFormatConfig, IDateTemplate, IDateTemplateConfigs };

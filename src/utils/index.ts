@@ -15,10 +15,10 @@ import { filterItemsByQueryTokens } from './utils.js';
 
 /**
  * Generates a UUID based on a version.
- * @param version
- * @returns string
+ * @param version The version of the UUID to be generated.
+ * @returns A UUID string of the specified version.
  */
-const generateUUID = (version: IUUIDVersion): string => {
+export const generateUUID = (version: IUUIDVersion): string => {
   if (version === 7) {
     return uuidv7();
   }
@@ -27,11 +27,11 @@ const generateUUID = (version: IUUIDVersion): string => {
 
 /**
  * Generates a string from randomly picked characters based on the length.
- * @param length
- * @param characters?
- * @returns string
+ * @param length The length of the random string to be generated.
+ * @param characters? A string of characters to pick from when generating the random string. Defaults to 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'.
+ * @returns A randomly generated string of the specified length.
  */
-const generateRandomString = (
+export const generateRandomString = (
   length: number,
   characters: string = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789',
 ): string => {
@@ -46,32 +46,33 @@ const generateRandomString = (
 
 /**
  * Generates a random number (decimal) constrained by the range.
- * @param min
- * @param max
- * @returns number
+ * @param min The minimum value of the range.
+ * @param max The maximum value of the range.
+ * @returns A randomly generated decimal number within the specified range.
  */
-const generateRandomFloat = (min: number, max: number): number => {
+export const generateRandomFloat = (min: number, max: number): number => {
   const value = Math.random() * (max - min + 1) + min;
   return value > max ? max : value;
 };
 
 /**
  * Generates a random number (integer) constrained by the range.
- * @param min
- * @param max
- * @returns number
+ * @param min The minimum value of the range.
+ * @param max The maximum value of the range.
+ * @returns A randomly generated integer number within the specified range.
  */
-const generateRandomInteger = (min: number, max: number): number =>
+export const generateRandomInteger = (min: number, max: number): number =>
   Math.floor(generateRandomFloat(min, max));
 
 /**
  * Generates a sequence of numbers within a range based on a number of steps.
- * @param start
- * @param stop
- * @param step?
- * @returns number[]
+ * @param start The starting value of the sequence.
+ * @param stop The ending value of the sequence.
+ * @param step? The step value to increment the sequence. Defaults to 1.
+ * @returns An array of numbers representing the sequence.
+
  */
-const generateSequence = (start: number, stop: number, step: number = 1): number[] =>
+export const generateSequence = (start: number, stop: number, step: number = 1): number[] =>
   Array.from({ length: (stop - start) / step + 1 }, (_, i) => start + i * step);
 
 /* ************************************************************************************************
@@ -80,10 +81,10 @@ const generateSequence = (start: number, stop: number, step: number = 1): number
 
 /**
  * Orders two string values based on a sorting direction.
- * @param a
- * @param b
- * @param direction
- * @returns number
+ * @param a The first string value to compare.
+ * @param b The second string value to compare.
+ * @param direction The direction to sort the values.
+ * @returns A number indicating the sort order.
  */
 const __sortStringValues = (a: string, b: string, direction: ISortDirection): number => {
   const _a = a.toLocaleLowerCase();
@@ -99,22 +100,22 @@ const __sortStringValues = (a: string, b: string, direction: ISortDirection): nu
 
 /**
  * Orders two number values based on a sorting direction.
- * @param a
- * @param b
- * @param direction
- * @returns number
+ * @param a The first number value to compare.
+ * @param b The second number value to compare.
+ * @param direction The direction to sort the values.
+ * @returns A number indicating the sort order.
  */
 const __sortNumberValues = (a: number, b: number, direction: ISortDirection): number =>
   direction === 'asc' ? a - b : b - a;
 
 /**
  * Sorts a list of primitive values based on their type and a sort direction.
- * @param direction
- * @returns <T extends string | number>(a: T, b: T): number
+ * @param direction The direction to sort the values.
+ * @returns A number indicating the sort order based on the primitive type.
  * @throws
  * - MIXED_OR_UNSUPPORTED_DATA_TYPES: if the values are mixed or are different to string | number
  */
-const sortPrimitives =
+export const sortPrimitives =
   (direction: ISortDirection) =>
   <T extends string | number>(a: T, b: T): number => {
     if (typeof a === 'string' && typeof b === 'string') {
@@ -133,13 +134,13 @@ const sortPrimitives =
 
 /**
  * Sorts a list of record values by key based on their type and a sort direction.
- * @param key
- * @param direction
- * @returns <T extends string | number>(a: T, b: T): number
+ * @param key The key of the record to sort by.
+ * @param direction The direction to sort the values.
+ * @returns A number indicating the sort order based on the primitive type.
  * @throws
  * - MIXED_OR_UNSUPPORTED_DATA_TYPES: if the values are mixed or are different to string | number
  */
-const sortRecords =
+export const sortRecords =
   (key: string, direction: ISortDirection) =>
   <T extends Record<string, any>>(a: T, b: T): number => {
     if (typeof a[key] === 'string' && typeof b[key] === 'string') {
@@ -163,12 +164,12 @@ const sortRecords =
 /**
  * Creates a shallow copy of the input array and shuffles it, using a version of the Fisher-Yates
  * algorithm.
- * @param input
- * @returns Array<T>
+ * @param input The array to be shuffled.
+ * @returns A new array with the values of the input array in a random order.
  * @throws
  * - INVALID_OR_EMPTY_ARRAY: if the input is not array or it is empty
  */
-const shuffleArray = <T>(input: Array<T>): Array<T> => {
+export const shuffleArray = <T>(input: Array<T>): Array<T> => {
   canArrayBeShuffled(input);
   const arr = input.slice();
   for (let i = arr.length - 1; i > 0; i -= 1) {
@@ -180,9 +181,9 @@ const shuffleArray = <T>(input: Array<T>): Array<T> => {
 
 /**
  * Splits an array into smaller arrays (batches) of a given size.
- * @param items
- * @param batchSize
- * @returns Array<T[]>
+ * @param items The array to be split into batches.
+ * @param batchSize The size of each batch.
+ * @returns An array of arrays, where each inner array is a batch of the specified size.
  * @throws
  * - INVALID_BATCH_SIZE: if the batch size is not a valid integer greater than 0
  */
@@ -213,14 +214,14 @@ export const splitArrayIntoBatches = <T>(items: T[], batchSize: number): Array<T
 /**
  * Picks a list of properties from an object and returns a new object (shallow) with the provided
  * keys.
- * @param input
- * @param propKeys
- * @returns Pick<T, K>
+ * @param input The object from which to pick properties.
+ * @param propKeys The keys of the properties to pick.
+ * @returns A new object containing only the picked properties.
  * @throws
  * - INVALID_OR_EMPTY_OBJECT: if the input is not a valid object or it is empty
  * - INVALID_OR_EMPTY_ARRAY: if the keys to be picked are not a valid array or it is empty
  */
-const pickProps = <T extends Record<string, any>, K extends keyof T>(
+export const pickProps = <T extends Record<string, any>, K extends keyof T>(
   input: T,
   propKeys: K[],
 ): Pick<T, K> => {
@@ -231,14 +232,14 @@ const pickProps = <T extends Record<string, any>, K extends keyof T>(
 /**
  * Omits a list of properties from an object and returns a new object (shallow) with only those
  * keys that weren't omitted
- * @param input
- * @param propKeys
- * @returns Omit<T, K>
+ * @param input The object from which to omit properties.
+ * @param propKeys The keys of the properties to omit.
+ * @returns A new object containing only the properties that were not omitted.
  * @throws
  * - INVALID_OR_EMPTY_OBJECT: if the input is not a valid object or it is empty
  * - INVALID_OR_EMPTY_ARRAY: if the keys to be omitted are not a valid array or it is empty
  */
-const omitProps = <T extends Record<string, any>, K extends keyof T>(
+export const omitProps = <T extends Record<string, any>, K extends keyof T>(
   input: T,
   propKeys: K[],
 ): Omit<T, K> => {
@@ -249,15 +250,15 @@ const omitProps = <T extends Record<string, any>, K extends keyof T>(
 };
 
 /**
- * Compares two objects or arrays deeply and returns true if they are equals.
- * @param a
- * @param b
- * @returns boolean
+ * Compares two objects or arrays deeply and returns true if they are equal.
+ * @param a The first object or array to compare.
+ * @param b The second object or array to compare.
+ * @returns A boolean indicating whether the two values are equal.
  * @throws
  * - UNSUPPORTED_DATA_TYPE: if any of the values isn't an object or an array
  * - UNABLE_TO_SERIALIZE_JSON: if any of the values contains data that cannot be serialized
  */
-const isEqual = (
+export const isEqual = (
   a: Record<string, any> | Array<any>,
   b: Record<string, any> | Array<any>,
 ): boolean => stringifyJSONDeterministically(a) === stringifyJSONDeterministically(b);
@@ -270,12 +271,16 @@ const isEqual = (
  * Filters an array of primitives based on a given query and returns a shallow copy.
  * @IMPORTANT Providing the queryProp makes the query very efficient as it only attempts to match
  * the value of that property, instead of the whole item.
- * @param items
- * @param query
- * @param options?
- * @returns T[]
+ * @param items The array of items to be filtered by the query.
+ * @param query The query string to filter the items by.
+ * @param options? The options to filter the items by query.
+ * @returns A new array containing the items that match the query based on the provided options.
  */
-const filterByQuery = <T>(items: T[], query: string, options?: IFilterByQueryOptions<T>): T[] => {
+export const filterByQuery = <T>(
+  items: T[],
+  query: string,
+  options?: IFilterByQueryOptions<T>,
+): T[] => {
   if (!items.length || !query) {
     return items;
   }
@@ -300,10 +305,10 @@ const filterByQuery = <T>(items: T[], query: string, options?: IFilterByQueryOpt
 
 /**
  * Creates an asynchronous delay that resolves once the provided seconds have passed.
- * @param seconds
- * @returns Promise<void>
+ * @param seconds The number of seconds to delay before the promise resolves.
+ * @returns A promise that resolves after the specified number of seconds has passed.
  */
-const delay = (seconds: number): Promise<void> =>
+export const delay = (seconds: number): Promise<void> =>
   new Promise((resolve) => {
     setTimeout(resolve, Math.round(seconds * 1000));
   });
@@ -311,12 +316,11 @@ const delay = (seconds: number): Promise<void> =>
 /**
  * Executes an asynchronous function persistently, retrying on error with incremental delays
  * defined in retryScheduleDuration (seconds).
- * @param func
- * @param args?
- * @param retryScheduleDuration?
- * @returns Promise<T>
+ * @param func The asynchronous function to be executed persistently.
+ * @param retryScheduleDuration? An array of numbers representing the delay (in seconds) between each retry attempt. Defaults to [3, 5].
+ * @returns A promise that resolves with the result of the asynchronous function or rejects with the last encountered error.
  */
-const retryAsyncFunction = async <T>(
+export const retryAsyncFunction = async <T>(
   func: () => Promise<T>,
   retryScheduleDuration: number[] = [3, 5],
 ): Promise<T> => {
@@ -329,33 +333,4 @@ const retryAsyncFunction = async <T>(
     await delay(retryScheduleDuration[0]);
     return retryAsyncFunction(func, retryScheduleDuration.slice(1));
   }
-};
-
-/* ************************************************************************************************
- *                                         MODULE EXPORTS                                         *
- ************************************************************************************************ */
-export {
-  // generators
-  generateUUID,
-  generateRandomString,
-  generateRandomFloat,
-  generateRandomInteger,
-  generateSequence,
-
-  // sorting utils
-  sortPrimitives,
-  sortRecords,
-
-  // object management helpers
-  shuffleArray,
-  pickProps,
-  omitProps,
-  isEqual,
-
-  // filters
-  filterByQuery,
-
-  // misc helpers
-  delay,
-  retryAsyncFunction,
 };

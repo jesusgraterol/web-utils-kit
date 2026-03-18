@@ -1,23 +1,19 @@
 import { isArrayValid, isObjectValid } from '../validations/index.js';
 
-/* ************************************************************************************************
- *                                         IMPLEMENTATION                                         *
- ************************************************************************************************ */
-
 /**
  * Builds an array of normalized query tokens from a given query string.
- * @param query
- * @returns string[]
+ * @param query The query string to be normalized and tokenized.
+ * @returns A normalized array of query tokens.
  */
-const buildNormalizedQueryTokens = (query: string): string[] =>
+export const buildNormalizedQueryTokens = (query: string): string[] =>
   query.toLowerCase().split(' ').filter(Boolean);
 
 /**
  * Stringifies a value so it can be compared in a case-insensitive manner.
- * @param value
- * @returns string
+ * @param value The value to be normalized.
+ * @returns A normalized string representation of the value.
  */
-const normalizeItemValue = (value: unknown): string => {
+export const normalizeItemValue = (value: unknown): string => {
   if (typeof value === 'string') {
     return value.toLowerCase();
   }
@@ -29,8 +25,3 @@ const normalizeItemValue = (value: unknown): string => {
   }
   return value !== null && value !== undefined ? String(value).toLowerCase() : '';
 };
-
-/* ************************************************************************************************
- *                                         MODULE EXPORTS                                         *
- ************************************************************************************************ */
-export { buildNormalizedQueryTokens, normalizeItemValue };
