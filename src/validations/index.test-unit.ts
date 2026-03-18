@@ -20,10 +20,6 @@ import {
   isUUIDValid,
 } from './index.js';
 
-/* ************************************************************************************************
- *                                             TESTS                                              *
- ************************************************************************************************ */
-
 describe('isStringValid', () => {
   test.each([
     // essential
@@ -308,15 +304,13 @@ describe('isSlugValid', () => {
   test.each([
     // valid
     ['jesusgraterol', undefined, undefined, true],
-    ['JESUSGRATEROL', undefined, undefined, true],
-    ['Jes15-Graterol_.', undefined, undefined, true],
+    ['jes15-graterol', undefined, undefined, true],
     ['je', undefined, undefined, true],
     ['15', undefined, undefined, true],
-    ['xD', undefined, undefined, true],
-    ['Herassio-.', undefined, undefined, true],
-    ['PythonWiz333', undefined, undefined, true],
-    ['restAPI12.-_', undefined, undefined, true],
-    ['__', undefined, undefined, true],
+    ['xd', undefined, undefined, true],
+    ['herassio-test', undefined, undefined, true],
+    ['pythonwiz333', undefined, undefined, true],
+    ['restapi12', undefined, undefined, true],
 
     // ranges
     ['j', 2, 5, false],
@@ -331,7 +325,13 @@ describe('isSlugValid', () => {
     [null, undefined, undefined, false],
     [{}, undefined, undefined, false],
     [[], undefined, undefined, false],
+    ['__', undefined, undefined, false],
     ['a', undefined, undefined, false],
+    ['-bad-slug', undefined, undefined, false],
+    ['bad-slug-', undefined, undefined, false],
+    ['PythonWiz333', undefined, undefined, false],
+    ['Herassio-.', undefined, undefined, false],
+    ['JESUSGRATEROL', undefined, undefined, false],
     ['JESUSGRATEROL@', undefined, undefined, false],
     ['Jes15-Gratero_.!', undefined, undefined, false],
     ['@@', undefined, undefined, false],

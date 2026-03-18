@@ -107,7 +107,7 @@ export const isEmailValid = (
 
 /**
  * Verifies if a slug meets the following requirements:
- * - Accepts any Alpha Characters (lower and upper case)
+ * - Accepts any lowercase alpha characters
  * - Accepts any digits
  * - Accepts - , . and/or _
  * - Meets a length range (Defaults to 2 - 16)
@@ -121,7 +121,7 @@ export const isSlugValid = (
   minLength: number = 2,
   maxLength: number = 16,
 ): value is string =>
-  isStringValid(value, minLength, maxLength) && /^[a-zA-Z0-9\-._]+$/.test(value);
+  isStringValid(value, minLength, maxLength) && /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(value);
 
 /**
  * Verifies if a password meets the following requirements:

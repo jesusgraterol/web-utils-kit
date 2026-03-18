@@ -116,16 +116,27 @@ export const toTitleCase = (value: string): string =>
   value.replace(/\w\S*/g, (text) => text.charAt(0).toUpperCase() + text.substring(1).toLowerCase());
 
 /**
- * Converts a string value into a slug.
+ * Converts a string value into a slug, meeting the following requirements:
+ * - lowercase
+ * - removes accents/diacritics
+ * - replaces spaces and separators with "-"
+ * - removes invalid URL characters
+ * - collapses repeated "-"
+ * - trims leading/trailing "-"
  * @param value The string value to convert.
  * @returns A string converted to a slug.
  */
 export const toSlug = (value: string): string =>
   value.length > 0
     ? value
+        .normalize('NFKD') // separate accents from letters
+        .replace(/[\u0300-\u036f]/g, '') // remove diacritics
         .toLowerCase()
-        .replace(/[^\w ]+/g, '')
-        .replace(/ +/g, '-')
+        .trim()
+        .replace(/['’]/g, '') // remove apostrophes
+        .replace(/[^a-z0-9]+/g, '-') // replace non-alphanumeric runs with "-"
+        .replace(/-+/g, '-') // collapse multiple "-"
+        .replace(/^-|-$/g, '') // trim "-" from start/end
     : '';
 
 /**
