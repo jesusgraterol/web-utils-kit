@@ -2,17 +2,13 @@ import { encodeError } from 'error-message-utils';
 import { ERRORS } from '../shared/errors.js';
 import { isArrayValid, isObjectValid } from '../validations/index.js';
 
-/* ************************************************************************************************
- *                                         IMPLEMENTATION                                         *
- ************************************************************************************************ */
-
 /**
  * Checks if a list can be shuffled.
  * @param input The array to check.
  * @throws
  * - INVALID_OR_EMPTY_ARRAY: If the input is not an array or has less than 2 items.
  */
-const canArrayBeShuffled = (input: unknown[]): void => {
+export const canArrayBeShuffled = (input: unknown[]): void => {
   if (!Array.isArray(input) || input.length <= 1) {
     throw new Error(
       encodeError(
@@ -25,13 +21,13 @@ const canArrayBeShuffled = (input: unknown[]): void => {
 
 /**
  * Validates the input object and the keys to be picked/omitted.
- * @param input
- * @param propKeys
+ * @param input The object to be validated.
+ * @param propKeys The keys to be picked/omitted, which must be a non-empty array of strings.
  * @throws
  * - INVALID_OR_EMPTY_OBJECT: If the input is not a valid object or is empty.
  * - INVALID_OR_EMPTY_ARRAY: If the keys are not a valid array or are empty.
  */
-const validateObjectAndKeys = (input: unknown, propKeys: unknown): void => {
+export const validateObjectAndKeys = (input: unknown, propKeys: unknown): void => {
   if (!isObjectValid(input)) {
     throw new Error(
       encodeError(
@@ -49,8 +45,3 @@ const validateObjectAndKeys = (input: unknown, propKeys: unknown): void => {
     );
   }
 };
-
-/* ************************************************************************************************
- *                                         MODULE EXPORTS                                         *
- ************************************************************************************************ */
-export { canArrayBeShuffled, validateObjectAndKeys };

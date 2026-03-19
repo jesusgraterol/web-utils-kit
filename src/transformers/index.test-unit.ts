@@ -1,6 +1,7 @@
 import { describe, test, expect } from 'vitest';
+import { encodeError } from 'error-message-utils';
 import { ERRORS } from '../shared/errors.js';
-import { IDateTemplate, INumberFormatConfig } from './types.js';
+import { IDateTemplate, INumberFormatConfig, ITimeString } from './types.js';
 import {
   prettifyNumber,
   prettifyFileSize,
@@ -12,16 +13,13 @@ import {
   truncateText,
   maskMiddle,
   applySubstitutions,
+  toMS,
   stringifyJSON,
   stringifyJSONDeterministically,
   parseJSON,
   createDeepClone,
   pruneJSON,
 } from './index.js';
-
-/* ************************************************************************************************
- *                                             TESTS                                              *
- ************************************************************************************************ */
 
 describe('prettifyNumber', () => {
   test.each(<Array<[number, Partial<INumberFormatConfig> | undefined, string]>>[
@@ -107,13 +105,36 @@ describe('toTitleCase', () => {
 
 describe('toSlug', () => {
   test.each([
-    ['', ''],
     ['hello world', 'hello-world'],
     ['hello - world', 'hello-world'],
+    ['Hello World', 'hello-world'],
     ['HELLO WORLD', 'hello-world'],
+    ['---Hello World', 'hello-world'],
+    ['Hello World---', 'hello-world'],
+    ['@@@Hello World!!!', 'hello-world'],
+    ['Hello 🌎 World 🚀', 'hello-world'],
     ['This Should work!!@', 'this-should-work'],
+    ['Cómo crear un blog en 2026', 'como-crear-un-blog-en-2026'],
+    ['  Node.js & TypeScript: Best Practices!  ', 'node-js-typescript-best-practices'],
+    ['¡Hola Mundo!', 'hola-mundo'],
+    ['¿Cómo estás?', 'como-estas'],
+    ['À la carte', 'a-la-carte'],
+    ['Æther & Œuvre', 'ther-uvre'],
+    ['Lina’s article', 'linas-article'],
+    ['already---valid---slug', 'already-valid-slug'],
+    ['hello_world_test', 'hello-world-test'],
+    ['blog\\posts\\typescript', 'blog-posts-typescript'],
   ])('toSlug(%s) -> %s', (a, expected) => {
     expect(toSlug(a)).toBe(expected);
+  });
+
+  test.each(['', '!!!@@@###', '--__--', '@-@'])('toSlug(%s) -> throws', (a) => {
+    expect(() => toSlug(a)).toThrowError(
+      encodeError(
+        `Failed to slugify the string '${a}': the resulting slug is empty.`,
+        ERRORS.UNABLE_TO_SLUGIFY_STRING,
+      ),
+    );
   });
 });
 
@@ -206,6 +227,88 @@ describe('applySubstitutions', () => {
         'user.email': 'john@example.com',
       }),
     ).toBe('Hello, John! Your email is john@example.com.');
+  });
+});
+
+describe('toMS', () => {
+  test.each<[ITimeString, number]>([
+    ['1 millisecond', 1],
+    ['100 millisecond', 100],
+    ['100 milliseconds', 100],
+    ['1 second', 1000],
+    ['10 second', 10000],
+    ['10 seconds', 10000],
+    ['1 minute', 60000],
+    ['10 minute', 600000],
+    ['10 minutes', 600000],
+    ['1 hour', 3600000],
+    ['10 hour', 36000000],
+    ['10 hours', 36000000],
+    ['1 day', 86400000],
+    ['10 day', 864000000],
+    ['10 days', 864000000],
+    ['1 week', 604800000],
+    ['10 week', 6048000000],
+    ['10 weeks', 6048000000],
+    ['1 month', 2629800000],
+    ['10 month', 26298000000],
+    ['10 months', 26298000000],
+    ['1 year', 31557600000],
+    ['10 year', 315576000000],
+    ['10 years', 315576000000],
+    ['53 years', 1672552800000],
+    ['53 months', 139379400000],
+    ['53 weeks', 32054400000],
+    ['53 days', 4579200000],
+    ['53 hours', 190800000],
+    ['53 minutes', 3180000],
+    ['53 seconds', 53000],
+    ['53 milliseconds', 53],
+  ])('toMS(%s) -> %i', (input, expected) => {
+    expect(toMS(input)).toBe(expected);
+  });
+
+  test.each([
+    '',
+    '100',
+    '1x',
+    '1hour',
+    '2dys',
+    '3week',
+    '1second',
+    '100milliseconds',
+    '1monthss',
+    '1yearz',
+    '1.5hr',
+    '1   s   ',
+    '.5 msec',
+    '-100 ms',
+    '-1.5 hr',
+    '-10.5 h',
+    '-.5 h',
+    '53 millisecondss',
+    '17 msecs ',
+    '1 sec ',
+    '1 min ',
+    '1 hr ',
+    '2 days ',
+    '1 week ',
+    ' 1 day',
+    '1 day ',
+    ' 1 day ',
+    '53 YeArS',
+    '53 WeEkS',
+    '53 DaYS',
+    '53 HoUrs',
+    '53 MiLliSeCondS',
+    '0 day',
+    '0 days',
+    '-2 days',
+    '2.1 days',
+    '0.5 years',
+    '2  days',
+  ])('toMS(%s) -> throws', (input) => {
+    expect(() => toMS(input as any)).toThrowError(ERRORS.INVALID_TIME_STRING);
   });
 });
 

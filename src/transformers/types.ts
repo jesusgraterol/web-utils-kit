@@ -1,23 +1,21 @@
 /* ************************************************************************************************
- *                                             TYPES                                              *
+ *                                            NUMBERS                                             *
  ************************************************************************************************ */
-
-/**
- * JSON Value
- * A value that can be represented in JSON format.
- */
-type IJSONValue = string | number | boolean | null | IJSONValue[] | { [key: string]: IJSONValue };
 
 /**
  * Number Format Configuration
  * The configuration that will be used to prettify a number.
  */
-type INumberFormatConfig = {
+export type INumberFormatConfig = {
   minimumFractionDigits: number; // Default: 0
   maximumFractionDigits: number; // Default: 2
   prefix: string; // Default: ''
   suffix: string; // Default: ''
 };
+
+/* ************************************************************************************************
+ *                                             DATES                                              *
+ ************************************************************************************************ */
 
 /**
  * Date Template
@@ -31,7 +29,7 @@ type INumberFormatConfig = {
  * - datetime-medium: Apr 29, 1453, 12:00:00 AM
  * - datetime-long: Friday, April 29th, 1453 at 12:00:00 AM
  */
-type IDateTemplate =
+export type IDateTemplate =
   | 'date-short'
   | 'date-medium'
   | 'date-long'
@@ -45,7 +43,7 @@ type IDateTemplate =
  * Date Template Configs
  * The options that will be combined in order to provide a format that can meet any requirement.
  */
-type IDateTemplateConfigs = {
+export type IDateTemplateConfigs = {
   [key in IDateTemplate]: {
     localeMatcher?: 'best fit' | 'lookup' | undefined;
     weekday?: 'long' | 'short' | 'narrow' | undefined;
@@ -71,6 +69,32 @@ type IDateTemplateConfigs = {
 };
 
 /* ************************************************************************************************
- *                                         MODULE EXPORTS                                         *
+ *                                          TIME STRING                                           *
  ************************************************************************************************ */
-export type { IJSONValue, INumberFormatConfig, IDateTemplate, IDateTemplateConfigs };
+
+/**
+ * Time String
+ * The following types were extracted from the 'ms' package, which is a popular library for parsing
+ * and formatting time durations. For more information, please refer to the original source:
+ * https://github.com/vercel/ms
+ */
+type IYears = 'years' | 'year';
+type IMonths = 'months' | 'month';
+type IWeeks = 'weeks' | 'week';
+type IDays = 'days' | 'day';
+type IHours = 'hours' | 'hour';
+type IMinutes = 'minutes' | 'minute';
+type ISeconds = 'seconds' | 'second';
+type IMilliseconds = 'milliseconds' | 'millisecond';
+
+export type IUnit =
+  | IYears
+  | IMonths
+  | IWeeks
+  | IDays
+  | IHours
+  | IMinutes
+  | ISeconds
+  | IMilliseconds;
+
+export type ITimeString = `${number} ${IUnit}`;

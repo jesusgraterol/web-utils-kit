@@ -1,6 +1,4 @@
-/* ************************************************************************************************
- *                                         IMPLEMENTATION                                         *
- ************************************************************************************************ */
+// the codes for all the errors thrown by the library
 type IErrorCode =
   | 'MIXED_OR_UNSUPPORTED_DATA_TYPES'
   | 'UNSUPPORTED_DATA_TYPE'
@@ -9,8 +7,10 @@ type IErrorCode =
   | 'UNABLE_TO_SERIALIZE_JSON'
   | 'UNABLE_TO_DESERIALIZE_JSON'
   | 'UNABLE_TO_CREATE_DEEP_CLONE'
-  | 'INVALID_BATCH_SIZE';
-const ERRORS: { [key in IErrorCode]: IErrorCode } = {
+  | 'INVALID_BATCH_SIZE'
+  | 'UNABLE_TO_SLUGIFY_STRING'
+  | 'INVALID_TIME_STRING';
+export const ERRORS: { [key in IErrorCode]: IErrorCode } = {
   MIXED_OR_UNSUPPORTED_DATA_TYPES: 'MIXED_OR_UNSUPPORTED_DATA_TYPES',
   UNSUPPORTED_DATA_TYPE: 'UNSUPPORTED_DATA_TYPE',
   INVALID_OR_EMPTY_ARRAY: 'INVALID_OR_EMPTY_ARRAY',
@@ -19,9 +19,6 @@ const ERRORS: { [key in IErrorCode]: IErrorCode } = {
   UNABLE_TO_DESERIALIZE_JSON: 'UNABLE_TO_DESERIALIZE_JSON',
   UNABLE_TO_CREATE_DEEP_CLONE: 'UNABLE_TO_CREATE_DEEP_CLONE',
   INVALID_BATCH_SIZE: 'INVALID_BATCH_SIZE',
+  UNABLE_TO_SLUGIFY_STRING: 'UNABLE_TO_SLUGIFY_STRING',
+  INVALID_TIME_STRING: 'INVALID_TIME_STRING',
 };
-
-/* ************************************************************************************************
- *                                         MODULE EXPORTS                                         *
- ************************************************************************************************ */
-export { ERRORS };

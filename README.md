@@ -60,10 +60,12 @@ await res.json();
   ```typescript
   import { isStringValid } from 'web-utils-kit';
 
-  isStringValid(''); // true
+  isStringValid('Hello world!'); // true
   isStringValid('', 1, 5); // false
   isStringValid('abcde', 1, 5); // true
   isStringValid('abcdef', 1, 5); // false
+  isStringValid(' '); // false
+  isStringValid(' ', undefined, undefined, false); // true
   ```
   <br/>
 </details>
@@ -492,6 +494,21 @@ await res.json();
     count: 5,
   }); 
   // 'Hello, John! You have 5 new messages.'
+  ```
+  <br/>
+</details>
+
+<details>
+  <summary><code>toMS</code></summary>
+  <br/>
+
+  Converts a time string into milliseconds. The time string should be in the format of `"{value} {unit}"`, where the **value** is a number and the **unit** can be milliseconds, seconds, minutes, hours, days, weeks, months, or years. For example: `"2 days"`, `"5 minutes"`, `"2 hours"`.
+
+  ```typescript
+  import { toMS } from 'web-utils-kit';
+
+  toMS('53 years'); // 1672552800000
+  toMS('53 days'); // 4579200000
   ```
   <br/>
 </details>
@@ -936,6 +953,37 @@ await res.json();
 
   ```typescript
   type IDateTemplate = 'date-short' | 'date-medium' | 'date-long' | 'time-short' | 'time-medium' | 'datetime-short' | 'datetime-medium' | 'datetime-long';
+  ```
+  <br/>
+</details>
+
+<details>
+  <summary><code>ITimeString</code></summary>
+  <br/>
+  
+  A duration string composed of a numeric value followed by a supported time unit, with or without a space.
+
+  ```typescript
+  type IYears = 'years' | 'year';
+  type IMonths = 'months' | 'month';
+  type IWeeks = 'weeks' | 'week';
+  type IDays = 'days' | 'day';
+  type IHours = 'hours' | 'hour';
+  type IMinutes = 'minutes' | 'minute';
+  type ISeconds = 'seconds' | 'second';
+  type IMilliseconds = 'milliseconds' | 'millisecond';
+  
+  export type IUnit =
+    | IYears
+    | IMonths
+    | IWeeks
+    | IDays
+    | IHours
+    | IMinutes
+    | ISeconds
+    | IMilliseconds;
+
+  export type ITimeString = `${number} ${IUnit}`;
   ```
   <br/>
 </details>

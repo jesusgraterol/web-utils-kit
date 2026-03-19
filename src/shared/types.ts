@@ -1,14 +1,17 @@
-/* ************************************************************************************************
- *                                             TYPES                                              *
- ************************************************************************************************ */
+/**
+ * JSON Value
+ * A value that can be represented in JSON format.
+ */
+export type IJSONValue =
+  | string
+  | number
+  | boolean
+  | null
+  | IJSONValue[]
+  | { [key: string]: IJSONValue };
 
 /**
  * UUID Version
  * The UUID versions supported by this library.
  */
-type IUUIDVersion = 4 | 7;
-
-/* ************************************************************************************************
- *                                         MODULE EXPORTS                                         *
- ************************************************************************************************ */
-export type { IUUIDVersion };
+export type IUUIDVersion = 4 | 7;

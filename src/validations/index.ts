@@ -1,32 +1,35 @@
 import { version as uuidVersion, validate as uuidValidate } from 'uuid';
 import { IUUIDVersion } from '../shared/types.js';
 
-/* ************************************************************************************************
- *                                         IMPLEMENTATION                                         *
- ************************************************************************************************ */
-
 /**
  * Verifies if a value is a valid string and its length is within a range (optional).
- * @param value
- * @param minLength?
- * @param maxLength?
- * @returns boolean
+ * @param value The value to be validated.
+ * @param minLength? The minimum length of the string. If not provided, it will not check for a minimum length. Defaults to 1.
+ * @param maxLength? The maximum length of the string. If not provided, it will not check for a maximum length.
+ * @param disallowWhitespaceOnly? A boolean indicating whether strings that contain only whitespace should be considered invalid. Defaults to true.
+ * @returns A boolean indicating whether the value is a valid string and meets the length requirements (if provided).
  */
-const isStringValid = (value: unknown, minLength?: number, maxLength?: number): value is string =>
+export const isStringValid = (
+  value: unknown,
+  minLength: number = 1,
+  maxLength?: number,
+  disallowWhitespaceOnly: boolean = true,
+): value is string =>
   typeof value === 'string' &&
   (minLength === undefined || value.length >= minLength) &&
-  (maxLength === undefined || value.length <= maxLength);
+  (maxLength === undefined || value.length <= maxLength) &&
+  (!disallowWhitespaceOnly || value.trim().length > 0);
 
 /**
  * Verifies if a value is a valid number and is within a range (optional). The minimum value
  * defaults to Number.MIN_SAFE_INTEGER (-9007199254740991) while the maximum value defaults to
  * Number.MAX_SAFE_INTEGER (9007199254740991).
- * @param value
- * @param min?
- * @param max?
- * @returns boolean
+ * @param value The value to be validated.
+ * @param min? The minimum value. If not provided, it will default to Number.MIN_SAFE_INTEGER.
+ * @param max? The maximum value. If not provided, it will default to Number.MAX_SAFE_INTEGER.
+ * @returns A boolean indicating whether the value is a valid number and within the specified range.
  */
-const isNumberValid = (
+export const isNumberValid = (
   value: unknown,
   min: number = Number.MIN_SAFE_INTEGER,
   max: number = Number.MAX_SAFE_INTEGER,
@@ -35,38 +38,39 @@ const isNumberValid = (
 /**
  * Verifies if a value is a valid integer and is within a range (optional). If a range is not
  * provided, it will use the properties Number.MIN_SAFE_INTEGER & Number.MAX_SAFE_INTEGER.
- * @param value
- * @param min?
- * @param max?
- * @returns boolean
+ * @param value The value to be validated.
+ * @param min? The minimum value. If not provided, it will default to Number.MIN_SAFE_INTEGER.
+ * @param max? The maximum value. If not provided, it will default to Number.MAX_SAFE_INTEGER.
+ * @returns A boolean indicating whether the value is a valid integer and within the specified range.
  */
-const isIntegerValid = (value: unknown, min?: number, max?: number): value is number =>
+export const isIntegerValid = (value: unknown, min?: number, max?: number): value is number =>
   isNumberValid(value, min, max) && Number.isInteger(value);
 
 /**
  * Verifies if a value is a valid unix timestamp in milliseconds. The smallest value is set for
  * the beginning of the Unix epoch (January 1st, 1970 - 14400000) while the largest value is based
  * on the numeric limit established by JavaScript (9007199254740991).
- * @param value
- * @returns boolean
+ * @param value The value to be validated.
+ * @returns A boolean indicating whether the value is a valid unix timestamp in milliseconds.
  */
-const isTimestampValid = (value: unknown): value is number => isIntegerValid(value, 14400000);
+export const isTimestampValid = (value: unknown): value is number =>
+  isIntegerValid(value, 14400000);
 
 /**
  * Verifies if a value is a valid numeric string.
- * @param value
- * @returns boolean
+ * @param value The value to be validated.
+ * @returns A boolean indicating whether the value is a valid numeric string.
  */
-const isNumeric = (value: string): boolean =>
+export const isNumeric = (value: string): boolean =>
   typeof value === 'string' && /^[+-]?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(value);
 
 /**
  * Verifies if a value is an actual object. It also validates if it has keys (optional).
- * @param value
- * @param allowEmpty?
- * @returns boolean
+ * @param value The value to be validated.
+ * @param allowEmpty? A boolean indicating whether empty objects are allowed. Defaults to false.
+ * @returns A boolean indicating whether the value is a valid object and meets the key requirements (if provided).
  */
-const isObjectValid = (value: unknown, allowEmpty?: boolean): value is Record<string, any> =>
+export const isObjectValid = (value: unknown, allowEmpty?: boolean): value is Record<string, any> =>
   value !== null &&
   typeof value === 'object' &&
   !Array.isArray(value) &&
@@ -74,22 +78,22 @@ const isObjectValid = (value: unknown, allowEmpty?: boolean): value is Record<st
 
 /**
  * Verifies if a value is an array. It also validates if it has elements inside (optional).
- * @param value
- * @param allowEmpty?
- * @returns boolean
+ * @param value The value to be validated.
+ * @param allowEmpty? A boolean indicating whether empty arrays are allowed. Defaults to false.
+ * @returns A boolean indicating whether the value is a valid array and meets the element requirements (if provided).
  */
-const isArrayValid = (value: unknown, allowEmpty?: boolean): value is Array<any> =>
+export const isArrayValid = (value: unknown, allowEmpty?: boolean): value is Array<any> =>
   Array.isArray(value) && (allowEmpty || value.length > 0);
 
 /**
  * Verifies if a value is a valid email address.
  * Important: when providing forbiddenExtensions, ensure to include the dot (.) at the beginning.
  * For example, to forbid .con, use ['.con'].
- * @param value
- * @param forbiddenExtensions?
- * @returns boolean
+ * @param value The value to be validated.
+ * @param forbiddenExtensions? An array of forbidden email extensions. Defaults to ['.con'].
+ * @returns A boolean indicating whether the value is a valid email address and does not have a forbidden extension.
  */
-const isEmailValid = (
+export const isEmailValid = (
   value: unknown,
   forbiddenExtensions: string[] = ['.con'],
 ): value is string => {
@@ -106,21 +110,21 @@ const isEmailValid = (
 
 /**
  * Verifies if a slug meets the following requirements:
- * - Accepts any Alpha Characters (lower and upper case)
+ * - Accepts any lowercase alpha characters
  * - Accepts any digits
  * - Accepts - , . and/or _
  * - Meets a length range (Defaults to 2 - 16)
- * @param value
- * @param minLength?
- * @param maxLength?
- * @returns boolean
+ * @param value The value to be validated.
+ * @param minLength? The minimum length of the slug. Defaults to 2.
+ * @param maxLength? The maximum length of the slug. Defaults to 16.
+ * @returns A boolean indicating whether the value is a valid slug.
  */
-const isSlugValid = (
+export const isSlugValid = (
   value: unknown,
   minLength: number = 2,
   maxLength: number = 16,
 ): value is string =>
-  isStringValid(value, minLength, maxLength) && /^[a-zA-Z0-9\-._]+$/.test(value);
+  isStringValid(value, minLength, maxLength) && /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(value);
 
 /**
  * Verifies if a password meets the following requirements:
@@ -129,12 +133,12 @@ const isSlugValid = (
  * - At least one lowercase letter
  * - At least one number
  * - At least one special character
- * @param value
- * @param minLength?
- * @param maxLength?
- * @returns boolean
+ * @param value The value to be validated.
+ * @param minLength? The minimum length of the password. Defaults to 8.
+ * @param maxLength? The maximum length of the password. Defaults to 2048.
+ * @returns A boolean indicating whether the value is a valid password.
  */
-const isPasswordValid = (
+export const isPasswordValid = (
   value: unknown,
   minLength: number = 8,
   maxLength: number = 2048,
@@ -144,27 +148,27 @@ const isPasswordValid = (
 
 /**
  * Verifies if a value has the correct OTP Secret Format.
- * @param value
- * @returns boolean
+ * @param value The value to be validated.
+ * @returns A boolean indicating whether the value is a valid OTP secret.
  */
-const isOTPSecretValid = (value: unknown): value is string =>
+export const isOTPSecretValid = (value: unknown): value is string =>
   typeof value === 'string' && /^[0-9a-zA-Z]{16,64}$/.test(value);
 
 /**
  * Verifies if a value has the correct OTP Token Format.
- * @param value
- * @returns boolean
+ * @param value The value to be validated.
+ * @returns A boolean indicating whether the value is a valid OTP token.
  */
-const isOTPTokenValid = (value: unknown): value is string =>
+export const isOTPTokenValid = (value: unknown): value is string =>
   typeof value === 'string' && /^[0-9]{6}$/.test(value);
 
 /**
  * Verifies if a value has a correct JWT Format:
  * [Base64-URL Encoded Header].[Base64-URL Encoded Payload].[Signature]
- * @param value
- * @returns boolean
+ * @param value The value to be validated.
+ * @returns A boolean indicating whether the value is a valid JWT.
  */
-const isJWTValid = (value: unknown): value is string =>
+export const isJWTValid = (value: unknown): value is string =>
   typeof value === 'string' &&
   /^[A-Za-z0-9-_]{2,1000}\.[A-Za-z0-9-_]{2,1000}\.[A-Za-z0-9-_]{2,1000}$/.test(value);
 
@@ -174,27 +178,27 @@ const isJWTValid = (value: unknown): value is string =>
  * More info:
  * - https://stackoverflow.com/questions/33265812/best-http-authorization-header-type-for-jwt
  * - https://www.rfc-editor.org/rfc/rfc6750
- * @param value
- * @returns boolean
+ * @param value The value to be validated.
+ * @returns A boolean indicating whether the value is a valid Authorization header.
  */
-const isAuthorizationHeaderValid = (value: unknown): value is string =>
+export const isAuthorizationHeaderValid = (value: unknown): value is string =>
   typeof value === 'string' &&
   /^Bearer [A-Za-z0-9-_]{2,1000}\.[A-Za-z0-9-_]{2,1000}\.[A-Za-z0-9-_]{2,1000}$/.test(value);
 
 /**
  * Verifies if a value complies with semantic versioning.
- * @param value
- * @returns boolean
+ * @param value The value to be validated.
+ * @returns A boolean indicating whether the value is a valid semantic version.
  */
-const isSemverValid = (value: unknown): value is string =>
+export const isSemverValid = (value: unknown): value is string =>
   typeof value === 'string' && /^[0-9]{1,5}\.[0-9]{1,5}\.[0-9]{1,5}$/.test(value);
 
 /**
  * Verifies if a value is a valid URL.
- * @param value
- * @returns boolean
+ * @param value The value to be validated.
+ * @returns A boolean indicating whether the value is a valid URL.
  */
-const isURLValid = (value: unknown): value is string => {
+export const isURLValid = (value: unknown): value is string => {
   if (typeof value !== 'string') {
     return false;
   }
@@ -209,32 +213,9 @@ const isURLValid = (value: unknown): value is string => {
 
 /**
  * Verifies if a value is a valid UUID and that it matches a specific version.
- * @param value
- * @param version
- * @returns boolean
+ * @param value The value to be validated.
+ * @param version The UUID version to be validated against.
+ * @returns A boolean indicating whether the value is a valid UUID of the specified version.
  */
-const isUUIDValid = (value: unknown, version: IUUIDVersion): value is string =>
+export const isUUIDValid = (value: unknown, version: IUUIDVersion): value is string =>
   typeof value === 'string' && uuidValidate(value) && uuidVersion(value) === version;
-
-/* ************************************************************************************************
- *                                         MODULE EXPORTS                                         *
- ************************************************************************************************ */
-export {
-  isStringValid,
-  isNumberValid,
-  isIntegerValid,
-  isTimestampValid,
-  isNumeric,
-  isObjectValid,
-  isArrayValid,
-  isEmailValid,
-  isSlugValid,
-  isPasswordValid,
-  isOTPSecretValid,
-  isOTPTokenValid,
-  isJWTValid,
-  isAuthorizationHeaderValid,
-  isSemverValid,
-  isURLValid,
-  isUUIDValid,
-};

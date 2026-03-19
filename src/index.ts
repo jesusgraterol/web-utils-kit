@@ -1,4 +1,4 @@
-import { IUUIDVersion } from './shared/types.js';
+import type { IJSONValue, IUUIDVersion } from './shared/types.js';
 import {
   isStringValid,
   isNumberValid,
@@ -17,8 +17,10 @@ import {
   isURLValid,
   isUUIDValid,
 } from './validations/index.js';
-import { INumberFormatConfig, IDateTemplate } from './transformers/types.js';
 import {
+  type INumberFormatConfig,
+  type IDateTemplate,
+  type ITimeString,
   prettifyNumber,
   prettifyDate,
   prettifyFileSize,
@@ -29,14 +31,16 @@ import {
   truncateText,
   maskMiddle,
   applySubstitutions,
+  toMS,
   stringifyJSON,
   stringifyJSONDeterministically,
   parseJSON,
   createDeepClone,
   pruneJSON,
 } from './transformers/index.js';
-import { ISortDirection, IFilterByQueryOptions } from './utils/types.js';
 import {
+  type ISortDirection,
+  type IFilterByQueryOptions,
   generateUUID,
   generateRandomString,
   generateRandomFloat,
@@ -57,6 +61,7 @@ import {
  ************************************************************************************************ */
 export {
   // shared
+  type IJSONValue,
   type IUUIDVersion,
 
   // validations
@@ -80,6 +85,7 @@ export {
   // transformers
   type INumberFormatConfig,
   type IDateTemplate,
+  type ITimeString,
   prettifyNumber,
   prettifyDate,
   prettifyFileSize,
@@ -90,6 +96,7 @@ export {
   truncateText,
   maskMiddle,
   applySubstitutions,
+  toMS,
   stringifyJSON,
   stringifyJSONDeterministically,
   parseJSON,
