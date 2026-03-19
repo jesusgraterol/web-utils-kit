@@ -499,6 +499,21 @@ await res.json();
 </details>
 
 <details>
+  <summary><code>toMS</code></summary>
+  <br/>
+
+  Converts a time string into milliseconds. The time string should be in the format of `"{value} {unit}"`, where the **value** is a number and the **unit** can be milliseconds, seconds, minutes, hours, days, weeks, months, or years. For example: `"2 days"`, `"5 minutes"`, `"2 hours"`.
+
+  ```typescript
+  import { toMS } from 'web-utils-kit';
+
+  toMS('53 years'); // 1672552800000
+  toMS('53 days'); // 4579200000
+  ```
+  <br/>
+</details>
+
+<details>
   <summary><code>stringifyJSON</code></summary>
   <br/>
 
