@@ -1,6 +1,11 @@
 import { encodeError } from 'error-message-utils';
 import { ERRORS } from '../shared/errors.js';
-import { isArrayValid, isObjectValid, isStringValid } from '../validations/index.js';
+import {
+  isArrayValid,
+  isIntegerValid,
+  isObjectValid,
+  isStringValid,
+} from '../validations/index.js';
 import { ITimeString } from './types.js';
 
 /* ************************************************************************************************
@@ -14,10 +19,10 @@ import { ITimeString } from './types.js';
  * - INVALID_TIME_STRING: if the provided time string is not a valid string.
  */
 export const validateTimeStringType = (str: ITimeString): void => {
-  if (!isStringValid(str, 1, 100)) {
+  if (!isStringValid(str, 5, 100)) {
     throw new Error(
       encodeError(
-        `The provided time string is invalid, it must be a string with length between 1 and 99. Received: ${str}`,
+        `The provided time string is invalid, it must be a string with length between 5 and 100. Received: ${str}`,
         ERRORS.INVALID_TIME_STRING,
       ),
     );
@@ -25,16 +30,33 @@ export const validateTimeStringType = (str: ITimeString): void => {
 };
 
 /**
- * Validates the result of a regular expression match against a time string.
- * @param match The result of a RegExp.exec() operation on a time string.
+ * Ensures the chunks obtained from splitting a time string are valid and can be parsed by the toMS function.
+ * @param chunks The chunks obtained from splitting a time string.
  * @throws
- * - INVALID_TIME_STRING: if the match is null, does not contain groups, or the value group is not a valid string.
+ * - INVALID_TIME_STRING: if the chunks do not match the expected format.
  */
-export const validateTimeStringFormat = (match: RegExpExecArray | null): void => {
-  if (!match || !isObjectValid(match.groups) || !isStringValid(match.groups.value)) {
+export const validateTimeStringChunks = (chunks: string[]): void => {
+  if (chunks.length !== 2) {
     throw new Error(
       encodeError(
-        `The format of the provided time string is invalid, it must match the expected format {value} {unit}. For example: '2 days'`,
+        `The format of the provided time string is invalid, it must match the expected format {value} {unit}. For example: '2 days'. Received: ${JSON.stringify(chunks)}`,
+        ERRORS.INVALID_TIME_STRING,
+      ),
+    );
+  }
+};
+
+/**
+ * Ensures the value obtained from a time string is a valid positive integer that can be parsed by the toMS function.
+ * @param value The value to validate.
+ * @throws
+ * - INVALID_TIME_STRING: if the value is not a valid positive integer.
+ */
+export const validateTimeStringValue = (value: number): void => {
+  if (!isIntegerValid(value, 1)) {
+    throw new Error(
+      encodeError(
+        `The value of the provided time string is invalid, it must be a positive integer. Received: ${value}`,
         ERRORS.INVALID_TIME_STRING,
       ),
     );

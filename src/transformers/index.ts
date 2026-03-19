@@ -2,17 +2,31 @@ import { decodeError, encodeError, extractMessage } from 'error-message-utils';
 import { IJSONValue } from '../shared/types.js';
 import { ERRORS } from '../shared/errors.js';
 import { isObjectValid } from '../validations/index.js';
-import { IDateTemplate, INumberFormatConfig, ITimeString, IUnit } from './types.js';
-import { DATE_TEMPLATE_CONFIGS, FILE_SIZE_THRESHOLD, FILE_SIZE_UNITS } from './consts.js';
+import { IDateTemplate, INumberFormatConfig, ITimeString } from './types.js';
 import {
-  validateTimeStringType,
-  validateTimeStringFormat,
+  FILE_SIZE_THRESHOLD,
+  FILE_SIZE_UNITS,
+  DATE_TEMPLATE_CONFIGS,
+  ONE_DAY_IN_MILLISECONDS,
+  ONE_HOUR_IN_MILLISECONDS,
+  ONE_MINUTE_IN_MILLISECONDS,
+  ONE_MONTH_IN_MILLISECONDS,
+  ONE_SECOND_IN_MILLISECONDS,
+  ONE_WEEK_IN_MILLISECONDS,
+  ONE_YEAR_IN_MILLISECONDS,
+} from './consts.js';
+import {
   canJSONBeSerialized,
   validateJSONSerializationResult,
   canJSONBeDeserialized,
   validateJSONDeserializationResult,
 } from './validations.js';
-import { buildNumberFormatConfig, getDateInstance, sortJSONObjectKeys } from './utils.js';
+import {
+  buildNumberFormatConfig,
+  getDateInstance,
+  parseTimeString,
+  sortJSONObjectKeys,
+} from './utils.js';
 
 /* ************************************************************************************************
  *                                            GENERAL                                             *
@@ -200,66 +214,41 @@ const applySubstitutions = (input: string, substitutions: Record<string, unknown
  * @returns The equivalent time in milliseconds.
  * @throws
  * - INVALID_TIME_STRING: if the provided time string is not a valid string.
- * - INVALID_TIME_STRING: if the match is null, does not contain groups, or the value group is not a valid string.
- * - INVALID_TIME_STRING: if the unit provided is not recognized.
+ * - INVALID_TIME_STRING: if the chunks do not match the expected format.
+ * - INVALID_TIME_STRING: if the value is not a valid positive integer.
+ * - INVALID_TIME_STRING: if the unit is not one of the accepted values.
  */
 const toMS = (str: ITimeString): number => {
-  // ensure the type of the input is valid
-  validateTimeStringType(str);
-  if (typeof str !== 'string' || str.length === 0 || str.length > 100) {
-    throw new Error(
-      `Value provided to ms.parse() must be a string with length between 1 and 99. value=${JSON.stringify(str)}`,
-    );
-  }
-
-  // match the input string against the expected format and extract the value and unit
-  const match =
-    /^(?<value>-?\d*\.?\d+) *(?<unit>milliseconds?|msecs?|ms|seconds?|secs?|s|minutes?|mins?|m|hours?|hrs?|h|days?|d|weeks?|w|months?|mo|years?|yrs?|y)?$/i.exec(
-      str,
-    );
-  validateTimeStringFormat(match);
-
-  // named capture groups need to be manually typed today: https://github.com/microsoft/TypeScript/issues/32098
-  const { value, unit = 'ms' } = match!.groups as {
-    value: string;
-    unit: string | undefined;
-  };
-
-  // process the value and unit to calculate the total milliseconds
-  const n = parseFloat(value);
-  const matchUnit = unit.toLowerCase() as Lowercase<IUnit>;
-
-  // convert the value to milliseconds based on the matched unit
-  switch (matchUnit) {
+  const { value, unit } = parseTimeString(str);
+  switch (unit) {
     case 'years':
     case 'year':
-      return n * y;
+      return value * ONE_YEAR_IN_MILLISECONDS;
     case 'months':
     case 'month':
-      return n * mo;
+      return value * ONE_MONTH_IN_MILLISECONDS;
     case 'weeks':
     case 'week':
-      return n * w;
+      return value * ONE_WEEK_IN_MILLISECONDS;
     case 'days':
     case 'day':
-      return n * d;
+      return value * ONE_DAY_IN_MILLISECONDS;
     case 'hours':
     case 'hour':
-      return n * h;
+      return value * ONE_HOUR_IN_MILLISECONDS;
     case 'minutes':
     case 'minute':
-      return n * m;
+      return value * ONE_MINUTE_IN_MILLISECONDS;
     case 'seconds':
     case 'second':
-      return n * s;
+      return value * ONE_SECOND_IN_MILLISECONDS;
     case 'milliseconds':
     case 'millisecond':
-      return n;
+      return value;
     default:
-      matchUnit satisfies never;
       throw new Error(
         encodeError(
-          `The unit provided to the toMS function is invalid: "${matchUnit}". Received: ${str}`,
+          `The unit provided to the toMS function is invalid: "${unit}". Received: ${str}`,
           ERRORS.INVALID_TIME_STRING,
         ),
       );
@@ -437,6 +426,7 @@ export {
   truncateText,
   maskMiddle,
   applySubstitutions,
+  toMS,
 
   // JSON
   stringifyJSON,

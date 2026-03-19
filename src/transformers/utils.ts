@@ -1,5 +1,10 @@
 import { isArrayValid, isObjectValid } from '../validations/index.js';
-import { INumberFormatConfig } from './types.js';
+import { INumberFormatConfig, ITimeString } from './types.js';
+import {
+  validateTimeStringChunks,
+  validateTimeStringType,
+  validateTimeStringValue,
+} from './validations.js';
 
 /**
  * Builds the object that will be passed to the number formatting function.
@@ -25,6 +30,31 @@ export const getDateInstance = (value: Date | number | string): Date => {
     return value;
   }
   return new Date(value);
+};
+
+/**
+ * Parses a time string and returns an object containing the value and the unit.
+ * @param str The time string to parse.
+ * @returns The parsed time string as an object containing the value and the unit.
+ * @throws
+ * - INVALID_TIME_STRING: if the provided time string is not a valid string.
+ * - INVALID_TIME_STRING: if the chunks do not match the expected format.
+ * - INVALID_TIME_STRING: if the value is not a valid positive integer.
+ */
+export const parseTimeString = (str: ITimeString): { value: number; unit: string } => {
+  // ensure the provided value is a valid string
+  validateTimeStringType(str);
+
+  // separate the value and the unit and ensure they are both present
+  const chunks = str.split(' ');
+  validateTimeStringChunks(chunks);
+
+  // cast the value to a number and ensure it's a positive integer
+  const value = Number(chunks[0]);
+  validateTimeStringValue(value);
+
+  // finally, return the value and the unit
+  return { value, unit: chunks[1] };
 };
 
 /**
