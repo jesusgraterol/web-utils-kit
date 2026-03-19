@@ -1,4 +1,5 @@
 import { describe, test, expect } from 'vitest';
+import { encodeError } from 'error-message-utils';
 import { ERRORS } from '../shared/errors.js';
 import { IDateTemplate, INumberFormatConfig } from './types.js';
 import {
@@ -107,7 +108,6 @@ describe('toTitleCase', () => {
 
 describe('toSlug', () => {
   test.each([
-    ['', ''],
     ['hello world', 'hello-world'],
     ['hello - world', 'hello-world'],
     ['Hello World', 'hello-world'],
@@ -124,12 +124,20 @@ describe('toSlug', () => {
     ['À la carte', 'a-la-carte'],
     ['Æther & Œuvre', 'ther-uvre'],
     ['Lina’s article', 'linas-article'],
-    ['!!!@@@###', ''],
     ['already---valid---slug', 'already-valid-slug'],
     ['hello_world_test', 'hello-world-test'],
     ['blog\\posts\\typescript', 'blog-posts-typescript'],
   ])('toSlug(%s) -> %s', (a, expected) => {
     expect(toSlug(a)).toBe(expected);
+  });
+
+  test.each(['', '!!!@@@###', '--__--', '@-@'])('toSlug(%s) -> throws', (a) => {
+    expect(() => toSlug(a)).toThrowError(
+      encodeError(
+        `Failed to slugify the string '${a}': the resulting slug is empty.`,
+        ERRORS.UNABLE_TO_SLUGIFY_STRING,
+      ),
+    );
   });
 });
 

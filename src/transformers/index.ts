@@ -125,19 +125,29 @@ export const toTitleCase = (value: string): string =>
  * - trims leading/trailing "-"
  * @param value The string value to convert.
  * @returns A string converted to a slug.
+ * @throws
+ * - UNABLE_TO_SLUGIFY_STRING: if the resulting slug is empty after processing the input string
  */
-export const toSlug = (value: string): string =>
-  value.length > 0
-    ? value
-        .normalize('NFKD') // separate accents from letters
-        .replace(/[\u0300-\u036f]/g, '') // remove diacritics
-        .toLowerCase()
-        .trim()
-        .replace(/['’]/g, '') // remove apostrophes
-        .replace(/[^a-z0-9]+/g, '-') // replace non-alphanumeric runs with "-"
-        .replace(/-+/g, '-') // collapse multiple "-"
-        .replace(/^-|-$/g, '') // trim "-" from start/end
-    : '';
+export const toSlug = (value: string): string => {
+  const slug = value
+    .normalize('NFKD') // separate accents from letters
+    .replace(/[\u0300-\u036f]/g, '') // remove diacritics
+    .toLowerCase()
+    .trim()
+    .replace(/['’]/g, '') // remove apostrophes
+    .replace(/[^a-z0-9]+/g, '-') // replace non-alphanumeric runs with "-"
+    .replace(/-+/g, '-') // collapse multiple "-"
+    .replace(/^-|-$/g, ''); // trim "-" from start/end
+  if (slug.length === 0) {
+    throw new Error(
+      encodeError(
+        `Failed to slugify the string '${value}': the resulting slug is empty.`,
+        ERRORS.UNABLE_TO_SLUGIFY_STRING,
+      ),
+    );
+  }
+  return slug;
+};
 
 /**
  * Truncates a string to a specified length and appends an ellipsis if it exceeds that length.
