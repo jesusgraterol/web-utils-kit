@@ -60,10 +60,12 @@ await res.json();
   ```typescript
   import { isStringValid } from 'web-utils-kit';
 
-  isStringValid(''); // true
+  isStringValid('Hello world!'); // true
   isStringValid('', 1, 5); // false
   isStringValid('abcde', 1, 5); // true
   isStringValid('abcdef', 1, 5); // false
+  isStringValid(' '); // false
+  isStringValid(' ', undefined, undefined, false); // true
   ```
   <br/>
 </details>
@@ -936,6 +938,30 @@ await res.json();
 
   ```typescript
   type IDateTemplate = 'date-short' | 'date-medium' | 'date-long' | 'time-short' | 'time-medium' | 'datetime-short' | 'datetime-medium' | 'datetime-long';
+  ```
+  <br/>
+</details>
+
+<details>
+  <summary><code>ITimeString</code></summary>
+  <br/>
+  
+  A duration string composed of a numeric value followed by a supported time unit, with or without a space.
+
+  ```typescript
+  type IYears = 'years' | 'year' | 'yrs' | 'yr' | 'y';
+  type IMonths = 'months' | 'month' | 'mo';
+  type IWeeks = 'weeks' | 'week' | 'w';
+  type IDays = 'days' | 'day' | 'd';
+  type IHours = 'hours' | 'hour' | 'hrs' | 'hr' | 'h';
+  type IMinutes = 'minutes' | 'minute' | 'mins' | 'min' | 'm';
+  type ISeconds = 'seconds' | 'second' | 'secs' | 'sec' | 's';
+  type IMilliseconds = 'milliseconds' | 'millisecond' | 'msecs' | 'msec' | 'ms';
+  type Unit = IYears | IMonths | IWeeks | IDays | IHours | IMinutes | ISeconds | IMilliseconds;
+
+  type IUnitAnyCase = Capitalize<Unit> | Uppercase<Unit> | Unit;
+
+  type ITimeString = `${number}${IUnitAnyCase}` | `${number} ${IUnitAnyCase}`;
   ```
   <br/>
 </details>

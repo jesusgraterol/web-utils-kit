@@ -42,6 +42,7 @@ describe('isStringValid', () => {
     [' ', undefined, undefined, undefined, false],
     ['     ', undefined, undefined, undefined, false],
     ['     \n', undefined, undefined, undefined, false],
+    ['  \n   \n', undefined, undefined, undefined, false],
     [undefined, undefined, undefined, undefined, false],
     [null, undefined, undefined, undefined, false],
     [{}, undefined, undefined, undefined, false],

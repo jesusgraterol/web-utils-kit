@@ -1,20 +1,4 @@
 /* ************************************************************************************************
- *                                            GENERAL                                             *
- ************************************************************************************************ */
-
-/**
- * JSON Value
- * A value that can be represented in JSON format.
- */
-export type IJSONValue =
-  | string
-  | number
-  | boolean
-  | null
-  | IJSONValue[]
-  | { [key: string]: IJSONValue };
-
-/* ************************************************************************************************
  *                                            NUMBERS                                             *
  ************************************************************************************************ */
 
@@ -83,3 +67,27 @@ export type IDateTemplateConfigs = {
     timeZone?: string | undefined;
   };
 };
+
+/* ************************************************************************************************
+ *                                          TIME STRING                                           *
+ ************************************************************************************************ */
+
+/**
+ * Time String
+ * The following types were extracted from the 'ms' package, which is a popular library for parsing
+ * and formatting time durations. For more information, please refer to the original source:
+ * https://github.com/vercel/ms
+ */
+type IYears = 'years' | 'year' | 'yrs' | 'yr' | 'y';
+type IMonths = 'months' | 'month' | 'mo';
+type IWeeks = 'weeks' | 'week' | 'w';
+type IDays = 'days' | 'day' | 'd';
+type IHours = 'hours' | 'hour' | 'hrs' | 'hr' | 'h';
+type IMinutes = 'minutes' | 'minute' | 'mins' | 'min' | 'm';
+type ISeconds = 'seconds' | 'second' | 'secs' | 'sec' | 's';
+type IMilliseconds = 'milliseconds' | 'millisecond' | 'msecs' | 'msec' | 'ms';
+type Unit = IYears | IMonths | IWeeks | IDays | IHours | IMinutes | ISeconds | IMilliseconds;
+
+type IUnitAnyCase = Capitalize<Unit> | Uppercase<Unit> | Unit;
+
+export type ITimeString = `${number}${IUnitAnyCase}` | `${number} ${IUnitAnyCase}`;

@@ -2,6 +2,10 @@ import { encodeError } from 'error-message-utils';
 import { ERRORS } from '../shared/errors.js';
 import { isArrayValid, isObjectValid } from '../validations/index.js';
 
+/* ************************************************************************************************
+ *                                             JSON                                               *
+ ************************************************************************************************ */
+
 /**
  * Checks if a JSON value can be serialized (JSON.stringify).
  * @param value The value to check for JSON serialization. It should be an object or an array.
