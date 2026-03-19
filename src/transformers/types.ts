@@ -78,16 +78,23 @@ export type IDateTemplateConfigs = {
  * and formatting time durations. For more information, please refer to the original source:
  * https://github.com/vercel/ms
  */
-type IYears = 'years' | 'year' | 'yrs' | 'yr' | 'y';
-type IMonths = 'months' | 'month' | 'mo';
-type IWeeks = 'weeks' | 'week' | 'w';
-type IDays = 'days' | 'day' | 'd';
-type IHours = 'hours' | 'hour' | 'hrs' | 'hr' | 'h';
-type IMinutes = 'minutes' | 'minute' | 'mins' | 'min' | 'm';
-type ISeconds = 'seconds' | 'second' | 'secs' | 'sec' | 's';
-type IMilliseconds = 'milliseconds' | 'millisecond' | 'msecs' | 'msec' | 'ms';
-type Unit = IYears | IMonths | IWeeks | IDays | IHours | IMinutes | ISeconds | IMilliseconds;
+type IYears = 'years' | 'year';
+type IMonths = 'months' | 'month';
+type IWeeks = 'weeks' | 'week';
+type IDays = 'days' | 'day';
+type IHours = 'hours' | 'hour';
+type IMinutes = 'minutes' | 'minute';
+type ISeconds = 'seconds' | 'second';
+type IMilliseconds = 'milliseconds' | 'millisecond';
 
-type IUnitAnyCase = Capitalize<Unit> | Uppercase<Unit> | Unit;
+export type IUnit =
+  | IYears
+  | IMonths
+  | IWeeks
+  | IDays
+  | IHours
+  | IMinutes
+  | ISeconds
+  | IMilliseconds;
 
-export type ITimeString = `${number}${IUnitAnyCase}` | `${number} ${IUnitAnyCase}`;
+export type ITimeString = `${number} ${IUnit}`;

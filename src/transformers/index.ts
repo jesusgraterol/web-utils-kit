@@ -2,9 +2,11 @@ import { decodeError, encodeError, extractMessage } from 'error-message-utils';
 import { IJSONValue } from '../shared/types.js';
 import { ERRORS } from '../shared/errors.js';
 import { isObjectValid } from '../validations/index.js';
-import { IDateTemplate, INumberFormatConfig, ITimeString } from './types.js';
+import { IDateTemplate, INumberFormatConfig, ITimeString, IUnit } from './types.js';
 import { DATE_TEMPLATE_CONFIGS, FILE_SIZE_THRESHOLD, FILE_SIZE_UNITS } from './consts.js';
 import {
+  validateTimeStringType,
+  validateTimeStringFormat,
   canJSONBeSerialized,
   validateJSONSerializationResult,
   canJSONBeDeserialized,
@@ -189,6 +191,80 @@ const applySubstitutions = (input: string, substitutions: Record<string, unknown
   input.replace(/{{(.*?)}}/g, (match, key) =>
     key in substitutions ? String(substitutions[key]) : match,
   );
+
+/**
+ * Converts a time string into milliseconds. The time string should be in the format of "{value} {unit}",
+ * where the value is a number and the unit can be milliseconds, seconds, minutes, hours, days, weeks,
+ * months, or years. For example: "2 days", "5 minutes", "2 hours".
+ * @param str The time string to convert into milliseconds.
+ * @returns The equivalent time in milliseconds.
+ * @throws
+ * - INVALID_TIME_STRING: if the provided time string is not a valid string.
+ * - INVALID_TIME_STRING: if the match is null, does not contain groups, or the value group is not a valid string.
+ * - INVALID_TIME_STRING: if the unit provided is not recognized.
+ */
+const toMS = (str: ITimeString): number => {
+  // ensure the type of the input is valid
+  validateTimeStringType(str);
+  if (typeof str !== 'string' || str.length === 0 || str.length > 100) {
+    throw new Error(
+      `Value provided to ms.parse() must be a string with length between 1 and 99. value=${JSON.stringify(str)}`,
+    );
+  }
+
+  // match the input string against the expected format and extract the value and unit
+  const match =
+    /^(?<value>-?\d*\.?\d+) *(?<unit>milliseconds?|msecs?|ms|seconds?|secs?|s|minutes?|mins?|m|hours?|hrs?|h|days?|d|weeks?|w|months?|mo|years?|yrs?|y)?$/i.exec(
+      str,
+    );
+  validateTimeStringFormat(match);
+
+  // named capture groups need to be manually typed today: https://github.com/microsoft/TypeScript/issues/32098
+  const { value, unit = 'ms' } = match!.groups as {
+    value: string;
+    unit: string | undefined;
+  };
+
+  // process the value and unit to calculate the total milliseconds
+  const n = parseFloat(value);
+  const matchUnit = unit.toLowerCase() as Lowercase<IUnit>;
+
+  // convert the value to milliseconds based on the matched unit
+  switch (matchUnit) {
+    case 'years':
+    case 'year':
+      return n * y;
+    case 'months':
+    case 'month':
+      return n * mo;
+    case 'weeks':
+    case 'week':
+      return n * w;
+    case 'days':
+    case 'day':
+      return n * d;
+    case 'hours':
+    case 'hour':
+      return n * h;
+    case 'minutes':
+    case 'minute':
+      return n * m;
+    case 'seconds':
+    case 'second':
+      return n * s;
+    case 'milliseconds':
+    case 'millisecond':
+      return n;
+    default:
+      matchUnit satisfies never;
+      throw new Error(
+        encodeError(
+          `The unit provided to the toMS function is invalid: "${matchUnit}". Received: ${str}`,
+          ERRORS.INVALID_TIME_STRING,
+        ),
+      );
+  }
+};
 
 /* ************************************************************************************************
  *                                             JSON                                               *

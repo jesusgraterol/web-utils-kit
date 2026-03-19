@@ -949,19 +949,26 @@ await res.json();
   A duration string composed of a numeric value followed by a supported time unit, with or without a space.
 
   ```typescript
-  type IYears = 'years' | 'year' | 'yrs' | 'yr' | 'y';
-  type IMonths = 'months' | 'month' | 'mo';
-  type IWeeks = 'weeks' | 'week' | 'w';
-  type IDays = 'days' | 'day' | 'd';
-  type IHours = 'hours' | 'hour' | 'hrs' | 'hr' | 'h';
-  type IMinutes = 'minutes' | 'minute' | 'mins' | 'min' | 'm';
-  type ISeconds = 'seconds' | 'second' | 'secs' | 'sec' | 's';
-  type IMilliseconds = 'milliseconds' | 'millisecond' | 'msecs' | 'msec' | 'ms';
-  type Unit = IYears | IMonths | IWeeks | IDays | IHours | IMinutes | ISeconds | IMilliseconds;
+  type IYears = 'years' | 'year';
+  type IMonths = 'months' | 'month';
+  type IWeeks = 'weeks' | 'week';
+  type IDays = 'days' | 'day';
+  type IHours = 'hours' | 'hour';
+  type IMinutes = 'minutes' | 'minute';
+  type ISeconds = 'seconds' | 'second';
+  type IMilliseconds = 'milliseconds' | 'millisecond';
+  
+  export type IUnit =
+    | IYears
+    | IMonths
+    | IWeeks
+    | IDays
+    | IHours
+    | IMinutes
+    | ISeconds
+    | IMilliseconds;
 
-  type IUnitAnyCase = Capitalize<Unit> | Uppercase<Unit> | Unit;
-
-  type ITimeString = `${number}${IUnitAnyCase}` | `${number} ${IUnitAnyCase}`;
+  export type ITimeString = `${number} ${IUnit}`;
   ```
   <br/>
 </details>
