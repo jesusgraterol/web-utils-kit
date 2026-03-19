@@ -23,26 +23,33 @@ import {
 describe('isStringValid', () => {
   test.each([
     // essential
-    ['', undefined, undefined, true],
-    [' ', undefined, undefined, true],
-    ['Hello World!', undefined, undefined, true],
+    ['', 0, undefined, false, true],
+    [' ', undefined, undefined, false, true],
+    [' \n\n', undefined, undefined, false, true],
+    ['Hello World!', undefined, undefined, undefined, true],
 
     // ranges
-    ['', 1, undefined, false],
-    ['A', 1, undefined, true],
-    ['ABCDE', undefined, 5, true],
-    ['ABCDEF', undefined, 5, false],
-    ['ABCDEF', 1, 5, false],
+    ['', 1, undefined, undefined, false],
+    ['A', 1, undefined, undefined, true],
+    ['ABCDE', undefined, 5, undefined, true],
+    ['ABCDEF', undefined, 5, undefined, false],
+    ['ABCDEF', 1, 5, undefined, false],
+    ['AB', 3, 6, undefined, false],
+    ['ABC', 3, 6, undefined, true],
 
     // bad data types
-    [undefined, undefined, undefined, false],
-    [null, undefined, undefined, false],
-    [{}, undefined, undefined, false],
-    [[], undefined, undefined, false],
-    [1, undefined, undefined, false],
-    [true, undefined, undefined, false],
-  ])('isStringValid(%s, %s, %s) -> %s', (a, b, c, expected) => {
-    expect(isStringValid(a, b, c)).toBe(expected);
+    ['', undefined, undefined, undefined, false],
+    [' ', undefined, undefined, undefined, false],
+    ['     ', undefined, undefined, undefined, false],
+    ['     \n', undefined, undefined, undefined, false],
+    [undefined, undefined, undefined, undefined, false],
+    [null, undefined, undefined, undefined, false],
+    [{}, undefined, undefined, undefined, false],
+    [[], undefined, undefined, undefined, false],
+    [1, undefined, undefined, undefined, false],
+    [true, undefined, undefined, undefined, false],
+  ])('isStringValid(%s, %i, %i, %s) -> %s', (a, b, c, d, expected) => {
+    expect(isStringValid(a, b, c, d)).toBe(expected);
   });
 });
 

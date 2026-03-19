@@ -20,10 +20,6 @@ import {
   pruneJSON,
 } from './index.js';
 
-/* ************************************************************************************************
- *                                             TESTS                                              *
- ************************************************************************************************ */
-
 describe('prettifyNumber', () => {
   test.each(<Array<[number, Partial<INumberFormatConfig> | undefined, string]>>[
     [1000.583, undefined, '1,000.58'],

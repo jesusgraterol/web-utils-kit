@@ -4,18 +4,21 @@ import { IUUIDVersion } from '../shared/types.js';
 /**
  * Verifies if a value is a valid string and its length is within a range (optional).
  * @param value The value to be validated.
- * @param minLength? The minimum length of the string. If not provided, it will not check for a minimum length.
+ * @param minLength? The minimum length of the string. If not provided, it will not check for a minimum length. Defaults to 1.
  * @param maxLength? The maximum length of the string. If not provided, it will not check for a maximum length.
+ * @param disallowWhitespaceOnly? A boolean indicating whether strings that contain only whitespace should be considered invalid. Defaults to true.
  * @returns A boolean indicating whether the value is a valid string and meets the length requirements (if provided).
  */
 export const isStringValid = (
   value: unknown,
-  minLength?: number,
+  minLength: number = 1,
   maxLength?: number,
+  disallowWhitespaceOnly: boolean = true,
 ): value is string =>
   typeof value === 'string' &&
   (minLength === undefined || value.length >= minLength) &&
-  (maxLength === undefined || value.length <= maxLength);
+  (maxLength === undefined || value.length <= maxLength) &&
+  (!disallowWhitespaceOnly || value.trim().length > 0);
 
 /**
  * Verifies if a value is a valid number and is within a range (optional). The minimum value
