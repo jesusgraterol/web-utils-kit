@@ -269,8 +269,8 @@ const toMS = (str: ITimeString): number => {
  * - UNABLE_TO_SERIALIZE_JSON: if an error is thrown during stringification
  */
 const stringifyJSON = <T>(value: T): string => {
+  canJSONBeSerialized(value);
   try {
-    canJSONBeSerialized(value);
     const result = JSON.stringify(value);
     validateJSONSerializationResult(value, result);
     return result;
