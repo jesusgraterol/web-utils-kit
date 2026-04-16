@@ -54,6 +54,7 @@ import {
   filterByQuery,
   delay,
   retryAsyncFunction,
+  retryExternalRequest,
 } from './utils/index.js';
 
 /* ************************************************************************************************
@@ -119,4 +120,5 @@ export {
   filterByQuery,
   delay,
   retryAsyncFunction,
+  retryExternalRequest,
 };
