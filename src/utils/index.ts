@@ -2,7 +2,7 @@ import { v4 as uuidv4, v7 as uuidv7 } from 'uuid';
 import { encodeError } from 'error-message-utils';
 import { IUUIDVersion } from '../shared/types.js';
 import { ERRORS } from '../shared/errors.js';
-import { isIntegerValid } from '../validations/index.js';
+import { isIntegerValid, isObjectValid } from '../validations/index.js';
 import { stringifyJSONDeterministically } from '../transformers/index.js';
 import { IFilterByQueryOptions, ISortDirection } from './types.js';
 import { canArrayBeShuffled, validateObjectAndKeys } from './validations.js';
@@ -311,22 +311,49 @@ const delay = (seconds: number): Promise<void> =>
 /**
  * Executes an asynchronous function persistently, retrying on error with incremental delays
  * defined in retryScheduleDuration (seconds).
- * @param func The asynchronous function to be executed persistently.
+ * @param fn The asynchronous function to be executed persistently.
  * @param retryScheduleDuration? An array of numbers representing the delay (in seconds) between each retry attempt. Defaults to [3, 5].
  * @returns A promise that resolves with the result of the asynchronous function or rejects with the last encountered error.
  */
 const retryAsyncFunction = async <T>(
-  func: () => Promise<T>,
+  fn: () => Promise<T>,
   retryScheduleDuration: number[] = [3, 5],
 ): Promise<T> => {
   try {
-    return await func();
+    return await fn();
   } catch (e) {
     if (retryScheduleDuration.length === 0) {
       throw e;
     }
     await delay(retryScheduleDuration[0]);
-    return retryAsyncFunction(func, retryScheduleDuration.slice(1));
+    return retryAsyncFunction(fn, retryScheduleDuration.slice(1));
+  }
+};
+
+/**
+ * Executes an external request persistently, retrying on error with incremental delays
+ * defined in retryScheduleDuration (seconds).
+ * @param fn The asynchronous function representing the external request.
+ * @param nonRetryiableCodes? An array of HTTP status codes that should not be retried. (Defaults to [401, 403, 404, 409, 429])
+ * @param retryScheduleDuration? The schedule of delays (in seconds) between retries. (Defaults to [3, 5])
+ * @returns A promise that resolves to the result of the asynchronous function.
+ */
+export const retryExternalRequest = async <T>(
+  fn: () => Promise<T>,
+  nonRetryiableCodes: number[] = [401, 403, 404, 409, 429],
+  retryScheduleDuration: number[] = [3, 5],
+): Promise<T> => {
+  try {
+    return await fn();
+  } catch (e) {
+    if (
+      retryScheduleDuration.length === 0 ||
+      (isObjectValid(e) && e.statusCode && nonRetryiableCodes.includes(e.statusCode))
+    ) {
+      throw e;
+    }
+    await delay(retryScheduleDuration[0]);
+    return retryExternalRequest(fn, nonRetryiableCodes, retryScheduleDuration.slice(1));
   }
 };
 

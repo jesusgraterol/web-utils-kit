@@ -11,6 +11,7 @@ import {
   filterByQuery,
   delay,
   retryAsyncFunction,
+  retryExternalRequest,
 } from './index.js';
 import { ERRORS } from '../shared/errors.js';
 
@@ -41,6 +42,9 @@ const TEST_OBJ = {
     { id: 102, amount: 50, items: [{ id: 202, name: 'Widget B' }] },
   ],
 };
+
+const ERROR_MESSAGE = 'This is an error!';
+const requestArguments = ['abc', 1, true, [1, 2], { foo: 'bar' }] as const;
 
 /* ************************************************************************************************
  *                                             TESTS                                              *
@@ -516,6 +520,107 @@ describe('Misc Helpers', () => {
       expect(fn).toHaveBeenNthCalledWith(1, ...args);
       expect(fn).toHaveBeenNthCalledWith(2, ...args);
       expect(fn).toHaveBeenNthCalledWith(3, ...args);
+    });
+  });
+
+  describe('retryExternalRequest', () => {
+    test('retries according to the provided schedule before resolving', async () => {
+      vi.useFakeTimers();
+
+      const fn = vi
+        .fn()
+        .mockRejectedValueOnce(new Error(ERROR_MESSAGE))
+        .mockRejectedValueOnce(new Error(ERROR_MESSAGE))
+        .mockResolvedValueOnce(undefined);
+
+      const retryPromise = retryExternalRequest(fn, [404], [3, 5]);
+
+      expect(fn).toHaveBeenCalledTimes(1);
+
+      await vi.advanceTimersByTimeAsync(1000);
+      expect(fn).toHaveBeenCalledTimes(1);
+
+      await vi.advanceTimersByTimeAsync(2100);
+      expect(fn).toHaveBeenCalledTimes(2);
+
+      await vi.advanceTimersByTimeAsync(5500);
+      expect(fn).toHaveBeenCalledTimes(3);
+
+      await expect(retryPromise).resolves.toBeUndefined();
+    });
+
+    test.each([
+      [[0, 0], 3],
+      [[0, 0, 0], 4],
+    ])(
+      'retryExternalRequest(%o) -> throws after %d attempts',
+      async (retryScheduleDuration, expectedCalls) => {
+        const fn = vi.fn().mockRejectedValue(new Error(ERROR_MESSAGE));
+
+        await expect(retryExternalRequest(fn, [404], retryScheduleDuration)).rejects.toThrow(
+          ERROR_MESSAGE,
+        );
+        expect(fn).toHaveBeenCalledTimes(expectedCalls);
+      },
+    );
+
+    test('passes the same arguments on every retry until the attempts are exhausted', async () => {
+      const fn = vi.fn().mockRejectedValue(new Error(ERROR_MESSAGE));
+
+      await expect(
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+        retryExternalRequest(() => fn(...requestArguments), [404], [0, 0, 0]),
+      ).rejects.toThrow(ERROR_MESSAGE);
+
+      expect(fn).toHaveBeenCalledTimes(4);
+      expect(fn).toHaveBeenNthCalledWith(1, ...requestArguments);
+      expect(fn).toHaveBeenNthCalledWith(2, ...requestArguments);
+      expect(fn).toHaveBeenNthCalledWith(3, ...requestArguments);
+      expect(fn).toHaveBeenNthCalledWith(4, ...requestArguments);
+    });
+
+    test.each([
+      ['undefined', undefined],
+      ['value', 'Hello World!'],
+    ])('retryExternalRequest(%s) -> resolves when a retry succeeds', async (_, expectedValue) => {
+      const fn = vi
+        .fn()
+        .mockRejectedValueOnce(new Error(ERROR_MESSAGE))
+        .mockRejectedValueOnce(new Error(ERROR_MESSAGE))
+        .mockResolvedValueOnce(expectedValue);
+
+      await expect(retryExternalRequest(fn, [404], [0, 0])).resolves.toBe(expectedValue);
+      expect(fn).toHaveBeenCalledTimes(3);
+    });
+
+    test('stops retrying when the error status code is non-retryable', async () => {
+      const fn = vi
+        .fn()
+        .mockRejectedValueOnce({ message: ERROR_MESSAGE, statusCode: 500 })
+        .mockRejectedValueOnce({ message: ERROR_MESSAGE, statusCode: 404 })
+        .mockRejectedValueOnce({ message: ERROR_MESSAGE, statusCode: 404 })
+        .mockResolvedValueOnce(undefined);
+
+      await expect(retryExternalRequest(fn, [404], [0, 0])).rejects.toThrow(ERROR_MESSAGE);
+      expect(fn).toHaveBeenCalledTimes(2);
+    });
+
+    test('passes the same arguments on every retry until the request resolves', async () => {
+      const fn = vi
+        .fn()
+        .mockRejectedValueOnce(new Error(ERROR_MESSAGE))
+        .mockRejectedValueOnce(new Error(ERROR_MESSAGE))
+        .mockResolvedValueOnce(undefined);
+
+      await expect(
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+        retryExternalRequest(() => fn(...requestArguments), [404], [0, 0]),
+      ).resolves.toBeUndefined();
+
+      expect(fn).toHaveBeenCalledTimes(3);
+      expect(fn).toHaveBeenNthCalledWith(1, ...requestArguments);
+      expect(fn).toHaveBeenNthCalledWith(2, ...requestArguments);
+      expect(fn).toHaveBeenNthCalledWith(3, ...requestArguments);
     });
   });
 });
