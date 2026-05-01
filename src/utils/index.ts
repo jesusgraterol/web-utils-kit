@@ -5,7 +5,12 @@ import { ERRORS } from '../shared/errors.js';
 import { isIntegerValid, isObjectValid } from '../validations/index.js';
 import { stringifyJSONDeterministically } from '../transformers/index.js';
 import { IFilterByQueryOptions, ISortDirection } from './types.js';
-import { canArrayBeShuffled, validateObjectAndKeys } from './validations.js';
+import {
+  canArrayBeShuffled,
+  validateAuthorizationHeader,
+  validateEmailAddress,
+  validateObjectAndKeys,
+} from './validations.js';
 import { buildNormalizedQueryTokens } from './transformers.js';
 import { filterItemsByQueryTokens } from './utils.js';
 
@@ -357,6 +362,30 @@ export const retryExternalRequest = async <T>(
   }
 };
 
+/**
+ * Validates the format of an authorization header and extracts the token from it.
+ * @param header The authorization header to validate and extract the token from.
+ * @returns The extracted token from the authorization header.
+ * @throws
+ * - INVALID_AUTHORIZATION_HEADER: If the header does not comply with the expected format.
+ */
+const extractTokenFromAuthorizationHeader = (header: string): string => {
+  validateAuthorizationHeader(header);
+  return header.split(' ')[1];
+};
+
+/**
+ * Validates the format of an email address and extracts the username from it.
+ * @param email The email address to validate and extract the username from.
+ * @returns The extracted username from the email address.
+ * @throws
+ * - INVALID_EMAIL_ADDRESS: If the email address is not valid or has a forbidden extension.
+ */
+const extractEmailUsername = (email: string): string => {
+  validateEmailAddress(email);
+  return email.split('@')[0].toLowerCase();
+};
+
 /* ************************************************************************************************
  *                                         MODULE EXPORTS                                         *
  ************************************************************************************************ */
@@ -389,4 +418,6 @@ export {
   // misc helpers
   delay,
   retryAsyncFunction,
+  extractTokenFromAuthorizationHeader,
+  extractEmailUsername,
 };

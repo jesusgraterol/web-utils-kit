@@ -916,6 +916,38 @@ await res.json();
   <br/>
 </details>
 
+
+<details>
+  <summary><code>extractTokenFromAuthorizationHeader</code></summary>
+  <br/>
+
+  Validates the format of an authorization header and extracts the token from it.
+
+  ```typescript
+  import { extractTokenFromAuthorizationHeader } from 'web-utils-kit';
+
+  extractTokenFromAuthorizationHeader('Bearer my-secret-token')
+  // my-secret-token
+  ```
+  <br/>
+</details>
+
+
+<details>
+  <summary><code>extractEmailUsername</code></summary>
+  <br/>
+
+  Validates the format of an email address and extracts the username from it.
+
+  ```typescript
+  import { extractEmailUsername } from 'web-utils-kit';
+
+  extractEmailUsername('johndoe@gmail.com')
+  // johndoe
+  ```
+  <br/>
+</details>
+
 <br/>
 
 ## Types

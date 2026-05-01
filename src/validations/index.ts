@@ -183,7 +183,7 @@ export const isJWTValid = (value: unknown): value is string =>
  */
 export const isAuthorizationHeaderValid = (value: unknown): value is string =>
   typeof value === 'string' &&
-  /^Bearer [A-Za-z0-9-_]{2,1000}\.[A-Za-z0-9-_]{2,1000}\.[A-Za-z0-9-_]{2,1000}$/.test(value);
+  /^Bearer [A-Za-z0-9-_\.]{1,3000}$/.test(value);
 
 /**
  * Verifies if a value complies with semantic versioning.

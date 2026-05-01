@@ -55,6 +55,8 @@ import {
   delay,
   retryAsyncFunction,
   retryExternalRequest,
+  extractTokenFromAuthorizationHeader,
+  extractEmailUsername,
 } from './utils/index.js';
 
 /* ************************************************************************************************
@@ -121,4 +123,6 @@ export {
   delay,
   retryAsyncFunction,
   retryExternalRequest,
+  extractTokenFromAuthorizationHeader,
+  extractEmailUsername,
 };

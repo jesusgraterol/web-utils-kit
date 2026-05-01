@@ -12,6 +12,8 @@ import {
   delay,
   retryAsyncFunction,
   retryExternalRequest,
+  extractTokenFromAuthorizationHeader,
+  extractEmailUsername,
 } from './index.js';
 import { ERRORS } from '../shared/errors.js';
 
@@ -621,6 +623,67 @@ describe('Misc Helpers', () => {
       expect(fn).toHaveBeenNthCalledWith(1, ...requestArguments);
       expect(fn).toHaveBeenNthCalledWith(2, ...requestArguments);
       expect(fn).toHaveBeenNthCalledWith(3, ...requestArguments);
+    });
+  });
+
+  describe('extractTokenFromAuthorizationHeader', () => {
+    test.each([
+      [
+        'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c',
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c',
+      ],
+      ['Bearer abc123.XYZ-789_token', 'abc123.XYZ-789_token'],
+    ])('extractTokenFromAuthorizationHeader(%s) -> %s', (header, expected) => {
+      expect(extractTokenFromAuthorizationHeader(header)).toBe(expected);
+    });
+
+    test.each([
+      undefined,
+      null,
+      {},
+      [],
+      '',
+      'Bearer',
+      'Bearer ',
+      'bearer abc123',
+      'Basic abc123',
+      'Bearer abc123#',
+    ])(
+      'extractTokenFromAuthorizationHeader(%s) -> Error: INVALID_AUTHORIZATION_HEADER',
+      (header) => {
+        expect(() => extractTokenFromAuthorizationHeader(header as string)).toThrowError(
+          ERRORS.INVALID_AUTHORIZATION_HEADER,
+        );
+      },
+    );
+  });
+
+  describe('extractEmailUsername', () => {
+    test.each([
+      ['johndoe@gmail.com', 'johndoe'],
+      ['john.doe@protonmail.com', 'john.doe'],
+      ['john.doe+shopping@protonmail.com', 'john.doe+shopping'],
+      ['JOHNDOE@GMAIL.COM', 'johndoe'],
+    ])('extractEmailUsername(%s) -> %s', (email, expected) => {
+      expect(extractEmailUsername(email)).toBe(expected);
+    });
+
+    test.each([
+      undefined,
+      null,
+      {},
+      [],
+      '',
+      ' ',
+      'domain.com',
+      '@domain.com',
+      'johndoe@gmail',
+      'johndoe@gmail.',
+      'johndoe@gmail.con',
+    ])('extractEmailUsername(%s) -> Error: INVALID_EMAIL_ADDRESS', (email) => {
+      expect(() => extractEmailUsername(email as string)).toThrowError(
+        ERRORS.INVALID_EMAIL_ADDRESS,
+      );
     });
   });
 });
