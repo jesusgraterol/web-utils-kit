@@ -13,6 +13,7 @@ import {
   retryAsyncFunction,
   retryExternalRequest,
   extractTokenFromAuthorizationHeader,
+  extractEmailUsername,
 } from './index.js';
 import { ERRORS } from '../shared/errors.js';
 
@@ -655,5 +656,34 @@ describe('Misc Helpers', () => {
         );
       },
     );
+  });
+
+  describe('extractEmailUsername', () => {
+    test.each([
+      ['johndoe@gmail.com', 'johndoe'],
+      ['john.doe@protonmail.com', 'john.doe'],
+      ['john.doe+shopping@protonmail.com', 'john.doe+shopping'],
+      ['JOHNDOE@GMAIL.COM', 'johndoe'],
+    ])('extractEmailUsername(%s) -> %s', (email, expected) => {
+      expect(extractEmailUsername(email)).toBe(expected);
+    });
+
+    test.each([
+      undefined,
+      null,
+      {},
+      [],
+      '',
+      ' ',
+      'domain.com',
+      '@domain.com',
+      'johndoe@gmail',
+      'johndoe@gmail.',
+      'johndoe@gmail.con',
+    ])('extractEmailUsername(%s) -> Error: INVALID_EMAIL_ADDRESS', (email) => {
+      expect(() => extractEmailUsername(email as string)).toThrowError(
+        ERRORS.INVALID_EMAIL_ADDRESS,
+      );
+    });
   });
 });

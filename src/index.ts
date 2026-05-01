@@ -56,6 +56,7 @@ import {
   retryAsyncFunction,
   retryExternalRequest,
   extractTokenFromAuthorizationHeader,
+  extractEmailUsername,
 } from './utils/index.js';
 
 /* ************************************************************************************************
@@ -123,4 +124,5 @@ export {
   retryAsyncFunction,
   retryExternalRequest,
   extractTokenFromAuthorizationHeader,
+  extractEmailUsername,
 };

@@ -1,6 +1,11 @@
 import { encodeError } from 'error-message-utils';
 import { ERRORS } from '../shared/errors.js';
-import { isArrayValid, isAuthorizationHeaderValid, isObjectValid } from '../validations/index.js';
+import {
+  isArrayValid,
+  isAuthorizationHeaderValid,
+  isEmailValid,
+  isObjectValid,
+} from '../validations/index.js';
 
 /**
  * Checks if a list can be shuffled.
@@ -56,8 +61,25 @@ export const validateAuthorizationHeader = (header: unknown): void => {
   if (!isAuthorizationHeaderValid(header)) {
     throw new Error(
       encodeError(
-        'The provided authorization header does not comply with the expected format.',
+        `The provided authorization header does not comply with the expected format (RFC6750). Received: ${header}`,
         ERRORS.INVALID_AUTHORIZATION_HEADER,
+      ),
+    );
+  }
+};
+
+/**
+ * Validates the format of an email address.
+ * @param email The email address to validate.
+ * @throws
+ * - INVALID_EMAIL_ADDRESS: If the email address is not valid or has a forbidden extension.
+ */
+export const validateEmailAddress = (email: unknown): void => {
+  if (!isEmailValid(email)) {
+    throw new Error(
+      encodeError(
+        `The provided email address is not valid or has a forbidden extension. Received: ${email}`,
+        ERRORS.INVALID_EMAIL_ADDRESS,
       ),
     );
   }

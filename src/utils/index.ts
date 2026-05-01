@@ -8,6 +8,7 @@ import { IFilterByQueryOptions, ISortDirection } from './types.js';
 import {
   canArrayBeShuffled,
   validateAuthorizationHeader,
+  validateEmailAddress,
   validateObjectAndKeys,
 } from './validations.js';
 import { buildNormalizedQueryTokens } from './transformers.js';
@@ -373,6 +374,18 @@ const extractTokenFromAuthorizationHeader = (header: string): string => {
   return header.split(' ')[1];
 };
 
+/**
+ * Validates the format of an email address and extracts the username from it.
+ * @param email The email address to validate and extract the username from.
+ * @returns The extracted username from the email address.
+ * @throws
+ * - INVALID_EMAIL_ADDRESS: If the email address is not valid or has a forbidden extension.
+ */
+const extractEmailUsername = (email: string): string => {
+  validateEmailAddress(email);
+  return email.split('@')[0].toLowerCase();
+};
+
 /* ************************************************************************************************
  *                                         MODULE EXPORTS                                         *
  ************************************************************************************************ */
@@ -406,4 +419,5 @@ export {
   delay,
   retryAsyncFunction,
   extractTokenFromAuthorizationHeader,
+  extractEmailUsername,
 };

@@ -926,8 +926,24 @@ await res.json();
   ```typescript
   import { extractTokenFromAuthorizationHeader } from 'web-utils-kit';
 
-  const token = extractTokenFromAuthorizationHeader('Bearer my-secret-token')
+  extractTokenFromAuthorizationHeader('Bearer my-secret-token')
   // my-secret-token
+  ```
+  <br/>
+</details>
+
+
+<details>
+  <summary><code>extractEmailUsername</code></summary>
+  <br/>
+
+  Validates the format of an email address and extracts the username from it.
+
+  ```typescript
+  import { extractEmailUsername } from 'web-utils-kit';
+
+  extractEmailUsername('johndoe@gmail.com')
+  // johndoe
   ```
   <br/>
 </details>
