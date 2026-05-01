@@ -2,7 +2,7 @@ import { v4 as uuidv4, v7 as uuidv7 } from 'uuid';
 import { encodeError } from 'error-message-utils';
 import { IUUIDVersion } from '../shared/types.js';
 import { ERRORS } from '../shared/errors.js';
-import { isAuthorizationHeaderValid, isIntegerValid, isObjectValid } from '../validations/index.js';
+import { isIntegerValid, isObjectValid } from '../validations/index.js';
 import { stringifyJSONDeterministically } from '../transformers/index.js';
 import { IFilterByQueryOptions, ISortDirection } from './types.js';
 import {
