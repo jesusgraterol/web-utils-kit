@@ -916,6 +916,22 @@ await res.json();
   <br/>
 </details>
 
+
+<details>
+  <summary><code>extractTokenFromAuthorizationHeader</code></summary>
+  <br/>
+
+  Validates the format of an authorization header and extracts the token from it.
+
+  ```typescript
+  import { extractTokenFromAuthorizationHeader } from 'web-utils-kit';
+
+  const token = extractTokenFromAuthorizationHeader('Bearer my-secret-token')
+  // my-secret-token
+  ```
+  <br/>
+</details>
+
 <br/>
 
 ## Types

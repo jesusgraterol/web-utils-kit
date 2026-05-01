@@ -1,6 +1,6 @@
 import { encodeError } from 'error-message-utils';
 import { ERRORS } from '../shared/errors.js';
-import { isArrayValid, isObjectValid } from '../validations/index.js';
+import { isArrayValid, isAuthorizationHeaderValid, isObjectValid } from '../validations/index.js';
 
 /**
  * Checks if a list can be shuffled.
@@ -41,6 +41,23 @@ export const validateObjectAndKeys = (input: unknown, propKeys: unknown): void =
       encodeError(
         'The keys must be a valid and non-empty array of strings.',
         ERRORS.INVALID_OR_EMPTY_ARRAY,
+      ),
+    );
+  }
+};
+
+/**
+ * Validates the format of an authorization header.
+ * @param header The authorization header to validate.
+ * @throws
+ * - INVALID_AUTHORIZATION_HEADER: If the header does not comply with the expected format.
+ */
+export const validateAuthorizationHeader = (header: unknown): void => {
+  if (!isAuthorizationHeaderValid(header)) {
+    throw new Error(
+      encodeError(
+        'The provided authorization header does not comply with the expected format.',
+        ERRORS.INVALID_AUTHORIZATION_HEADER,
       ),
     );
   }

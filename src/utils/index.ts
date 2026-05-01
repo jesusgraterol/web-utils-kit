@@ -2,10 +2,14 @@ import { v4 as uuidv4, v7 as uuidv7 } from 'uuid';
 import { encodeError } from 'error-message-utils';
 import { IUUIDVersion } from '../shared/types.js';
 import { ERRORS } from '../shared/errors.js';
-import { isIntegerValid, isObjectValid } from '../validations/index.js';
+import { isAuthorizationHeaderValid, isIntegerValid, isObjectValid } from '../validations/index.js';
 import { stringifyJSONDeterministically } from '../transformers/index.js';
 import { IFilterByQueryOptions, ISortDirection } from './types.js';
-import { canArrayBeShuffled, validateObjectAndKeys } from './validations.js';
+import {
+  canArrayBeShuffled,
+  validateAuthorizationHeader,
+  validateObjectAndKeys,
+} from './validations.js';
 import { buildNormalizedQueryTokens } from './transformers.js';
 import { filterItemsByQueryTokens } from './utils.js';
 
@@ -357,6 +361,18 @@ export const retryExternalRequest = async <T>(
   }
 };
 
+/**
+ * Validates the format of an authorization header and extracts the token from it.
+ * @param header The authorization header to validate and extract the token from.
+ * @returns The extracted token from the authorization header.
+ * @throws
+ * - INVALID_AUTHORIZATION_HEADER: If the header does not comply with the expected format.
+ */
+const extractTokenFromAuthorizationHeader = (header: string): string => {
+  validateAuthorizationHeader(header);
+  return header.split(' ')[1];
+};
+
 /* ************************************************************************************************
  *                                         MODULE EXPORTS                                         *
  ************************************************************************************************ */
@@ -389,4 +405,5 @@ export {
   // misc helpers
   delay,
   retryAsyncFunction,
+  extractTokenFromAuthorizationHeader,
 };
