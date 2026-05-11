@@ -62,7 +62,7 @@ export const isTimestampValid = (value: unknown): value is number =>
  * @returns A boolean indicating whether the value is a valid numeric string.
  */
 export const isNumeric = (value: string): boolean =>
-  typeof value === 'string' && /^[+-]?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(value);
+  typeof value === 'string' && /^[-]?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(value);
 
 /**
  * Verifies if a value is an actual object. It also validates if it has keys (optional).
@@ -182,8 +182,7 @@ export const isJWTValid = (value: unknown): value is string =>
  * @returns A boolean indicating whether the value is a valid Authorization header.
  */
 export const isAuthorizationHeaderValid = (value: unknown): value is string =>
-  typeof value === 'string' &&
-  /^Bearer [A-Za-z0-9-_\.]{1,3000}$/.test(value);
+  typeof value === 'string' && /^Bearer [A-Za-z0-9-_\.]{1,3000}$/.test(value);
 
 /**
  * Verifies if a value complies with semantic versioning.

@@ -178,6 +178,7 @@ describe('isNumeric', () => {
     ['123.', true],
     ['123.55', true],
     ['123.558545', true],
+    ['-123.558545', true],
 
     // invalid
     [undefined, false],
@@ -204,6 +205,7 @@ describe('isNumeric', () => {
     ['123.12.1', false],
     ['123,12', false],
     ['1,423.85', false],
+    ['+1423.85', false],
   ])('isNumeric(%s) -> %s', (a, expected) => {
     expect(isNumeric(a as any)).toBe(expected);
   });
@@ -625,10 +627,10 @@ describe('isAuthorizationHeaderValid', () => {
       ' eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiJhYmNkMTIzIiwiZXhwaXJ5IjoxNjQ2NjM1NjExMzAxfQ.3Thp81rDFrKXr3WrY1MyMnNK8kKoZBX9lg-JwFznR-M',
       false,
     ],
-    [ 'Bearer', false ],
-    [ 'Bearer ', false ],
-    [ 'Bearer     ', false ],
-    [ 'Bearer asd#2123', false ],
+    ['Bearer', false],
+    ['Bearer ', false],
+    ['Bearer     ', false],
+    ['Bearer asd#2123', false],
   ])('isAuthorizationHeaderValid(%s) -> %s', (a, expected) => {
     expect(isAuthorizationHeaderValid(a)).toBe(expected);
   });
