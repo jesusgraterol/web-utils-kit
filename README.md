@@ -129,6 +129,7 @@ await res.json();
 
   isNumeric('14400000'); // true
   isNumeric('123.55'); // true
+  isNumeric('-522.01'); // true
   isNumeric('6,555.85'); // false
   isNumeric('Hello world!'); // false
   ```
