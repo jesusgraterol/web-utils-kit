@@ -1,8 +1,8 @@
 import { decodeError, encodeError, extractMessage } from 'error-message-utils';
 import { IJSONValue } from '../shared/types.js';
 import { ERRORS } from '../shared/errors.js';
-import { isObjectValid } from '../validations/index.js';
-import { IDateTemplate, INumberFormatConfig, ITimeString } from './types.js';
+import { isArrayValid, isObjectValid } from '../validations/index.js';
+import { IDateTemplate, INumberFormatConfig, ISubstitutionOptions, ITimeString } from './types.js';
 import {
   FILE_SIZE_THRESHOLD,
   FILE_SIZE_UNITS,
@@ -192,6 +192,25 @@ const maskMiddle = (text: string, visibleChars: number, mask: string = '...'): s
 };
 
 /**
+ * Converts any value into a string. If the value is an object or an array, it will be stringified
+ * with JSON.stringify.
+ * @param value The value to convert into a string.
+ * @param jsonIndent? The number of spaces to use for indentation in the JSON string. Defaults to 0.
+ * @returns A string representation of the value.
+ */
+const stringifyValue = (value: unknown, jsonIndent: number = 0): string => {
+  if (typeof value === 'string') {
+    return value;
+  }
+  if (isObjectValid(value, true) || isArrayValid(value, true)) {
+    try {
+      return JSON.stringify(value, null, jsonIndent);
+    } catch (_) {}
+  }
+  return String(value);
+};
+
+/**
  * Applies substitutions to a string based on a provided object. The string can contain placeholders
  * in the format of {{key}}, which will be replaced by the corresponding value from the substitutions
  * object. If a placeholder does not have a corresponding key in the substitutions object, it will
@@ -199,11 +218,18 @@ const maskMiddle = (text: string, visibleChars: number, mask: string = '...'): s
  * @param input The input string containing placeholders in the format of {{key}}.
  * @param substitutions? An object containing key-value pairs for substitutions. The keys should
  * match the placeholders in the input string, without the curly braces.
+ * @param options? An optional object containing additional options for substitutions.
  * @returns A string with the placeholders replaced by their corresponding values from the substitutions object.
  */
-const applySubstitutions = (input: string, substitutions: Record<string, unknown> = {}): string =>
+const applySubstitutions = (
+  input: string,
+  substitutions: Record<string, unknown> = {},
+  options: ISubstitutionOptions = {
+    jsonIndent: 0,
+  },
+): string =>
   input.replace(/{{(.*?)}}/g, (match, key) =>
-    key in substitutions ? String(substitutions[key]) : match,
+    key in substitutions ? stringifyValue(substitutions[key], options.jsonIndent) : match,
   );
 
 /**
@@ -414,6 +440,7 @@ export {
   type INumberFormatConfig,
   type IDateTemplate,
   type ITimeString,
+  type ISubstitutionOptions,
 
   // general
   prettifyNumber,
@@ -425,6 +452,7 @@ export {
   toSlug,
   truncateText,
   maskMiddle,
+  stringifyValue,
   applySubstitutions,
   toMS,
 

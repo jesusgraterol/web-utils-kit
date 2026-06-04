@@ -12,6 +12,7 @@ import {
   prettifyDate,
   truncateText,
   maskMiddle,
+  stringifyValue,
   applySubstitutions,
   toMS,
   stringifyJSON,
@@ -164,6 +165,50 @@ describe('maskMiddle', () => {
   });
 });
 
+describe('stringifyValue', () => {
+  test('returns string inputs unchanged', () => {
+    expect(stringifyValue('hello world')).toBe('hello world');
+    expect(stringifyValue('{"already":"stringified"}')).toBe('{"already":"stringified"}');
+  });
+
+  test.each(<Array<[unknown, string]>>[
+    [undefined, 'undefined'],
+    [null, 'null'],
+    [true, 'true'],
+    [false, 'false'],
+    [0, '0'],
+    [123.45, '123.45'],
+    [NaN, 'NaN'],
+    [10n, '10'],
+    [Symbol('token'), 'Symbol(token)'],
+  ])('stringifyValue(%o) -> %s', (value, expected) => {
+    expect(stringifyValue(value)).toBe(expected);
+  });
+
+  test.each(<Array<[unknown, string]>>[
+    [{ name: 'Jane', count: 2 }, '{"name":"Jane","count":2}'],
+    [['ready', 3, false], '["ready",3,false]'],
+    [{}, '{}'],
+    [[], '[]'],
+  ])('stringifyValue(%o) -> JSON string', (value, expected) => {
+    expect(stringifyValue(value)).toBe(expected);
+  });
+
+  test('applies JSON indentation when stringifying objects and arrays', () => {
+    expect(stringifyValue({ name: 'Jane', roles: ['admin', 'editor'] }, 2)).toBe(
+      '{\n  "name": "Jane",\n  "roles": [\n    "admin",\n    "editor"\n  ]\n}',
+    );
+  });
+
+  test('falls back to String when JSON stringification fails', () => {
+    const circularValue: Record<string, unknown> = { name: 'Circular' };
+
+    circularValue.self = circularValue;
+
+    expect(stringifyValue(circularValue)).toBe('[object Object]');
+  });
+});
+
 describe('applySubstitutions', () => {
   test('replaces placeholders with corresponding values', () => {
     expect(
@@ -227,6 +272,57 @@ describe('applySubstitutions', () => {
         'user.email': 'john@example.com',
       }),
     ).toBe('Hello, John! Your email is john@example.com.');
+  });
+
+  test('stringifies object and array substitution values as compact JSON', () => {
+    expect(
+      applySubstitutions('User: {{user}}. Roles: {{roles}}.', {
+        user: {
+          id: 'user-1',
+          name: 'Jane',
+        },
+        roles: ['admin', 'editor'],
+      }),
+    ).toBe('User: {"id":"user-1","name":"Jane"}. Roles: ["admin","editor"].');
+  });
+
+  test('applies JSON indentation to object and array substitution values', () => {
+    expect(
+      applySubstitutions(
+        'User:\n{{user}}\nRoles:\n{{roles}}',
+        {
+          user: {
+            id: 'user-1',
+            name: 'Jane',
+          },
+          roles: ['admin', 'editor'],
+        },
+        {
+          jsonIndent: 2,
+        },
+      ),
+    ).toBe(
+      'User:\n{\n  "id": "user-1",\n  "name": "Jane"\n}\nRoles:\n[\n  "admin",\n  "editor"\n]',
+    );
+  });
+
+  test('replaces placeholders when their substitution value is null or undefined', () => {
+    expect(
+      applySubstitutions('Missing value: {{missingValue}}. Null value: {{nullValue}}.', {
+        missingValue: undefined,
+        nullValue: null,
+      }),
+    ).toBe('Missing value: undefined. Null value: null.');
+  });
+
+  test('falls back to String when a substitution value cannot be stringified as JSON', () => {
+    const circularValue: Record<string, unknown> = { id: 'value-1' };
+
+    circularValue.self = circularValue;
+
+    expect(applySubstitutions('Value: {{value}}.', { value: circularValue })).toBe(
+      'Value: [object Object].',
+    );
   });
 });
 
