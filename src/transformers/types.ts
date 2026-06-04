@@ -98,3 +98,12 @@ export type IUnit =
   | IMilliseconds;
 
 export type ITimeString = `${number} ${IUnit}`;
+
+/* ************************************************************************************************
+ *                                         SUBSTITUTIONS                                          *
+ ************************************************************************************************ */
+
+// the options that can be passed to the applySubstitutions function
+export type ISubstitutionOptions = {
+  jsonIndent: number;
+};

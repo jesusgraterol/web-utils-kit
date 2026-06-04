@@ -1,5 +1,8 @@
-import type { IJSONValue, IUUIDVersion } from './shared/types.js';
-import {
+// shared
+export type { IJSONValue, IUUIDVersion } from './shared/types.js';
+
+// validations
+export {
   isStringValid,
   isNumberValid,
   isIntegerValid,
@@ -18,10 +21,13 @@ import {
   isURLValid,
   isUUIDValid,
 } from './validations/index.js';
-import {
+
+// transformers
+export {
   type INumberFormatConfig,
   type IDateTemplate,
   type ITimeString,
+  type ISubstitutionOptions,
   prettifyNumber,
   prettifyDate,
   prettifyFileSize,
@@ -31,6 +37,7 @@ import {
   toSlug,
   truncateText,
   maskMiddle,
+  stringifyValue,
   applySubstitutions,
   toMS,
   stringifyJSON,
@@ -39,7 +46,9 @@ import {
   createDeepClone,
   pruneJSON,
 } from './transformers/index.js';
-import {
+
+// utils
+export {
   type ISortDirection,
   type IFilterByQueryOptions,
   generateUUID,
@@ -59,72 +68,3 @@ import {
   extractTokenFromAuthorizationHeader,
   extractEmailUsername,
 } from './utils/index.js';
-
-/* ************************************************************************************************
- *                                         MODULE EXPORTS                                         *
- ************************************************************************************************ */
-export {
-  // shared
-  type IJSONValue,
-  type IUUIDVersion,
-
-  // validations
-  isStringValid,
-  isNumberValid,
-  isIntegerValid,
-  isTimestampValid,
-  isNumeric,
-  isObjectValid,
-  isArrayValid,
-  isEmailValid,
-  isSlugValid,
-  isPasswordValid,
-  isOTPSecretValid,
-  isOTPTokenValid,
-  isJWTValid,
-  isAuthorizationHeaderValid,
-  isSemverValid,
-  isURLValid,
-  isUUIDValid,
-
-  // transformers
-  type INumberFormatConfig,
-  type IDateTemplate,
-  type ITimeString,
-  prettifyNumber,
-  prettifyDate,
-  prettifyFileSize,
-  prettifyBadgeCount,
-  capitalizeFirst,
-  toTitleCase,
-  toSlug,
-  truncateText,
-  maskMiddle,
-  applySubstitutions,
-  toMS,
-  stringifyJSON,
-  stringifyJSONDeterministically,
-  parseJSON,
-  createDeepClone,
-  pruneJSON,
-
-  // utils
-  type ISortDirection,
-  type IFilterByQueryOptions,
-  generateUUID,
-  generateRandomString,
-  generateRandomFloat,
-  generateRandomInteger,
-  generateSequence,
-  sortPrimitives,
-  sortRecords,
-  shuffleArray,
-  pickProps,
-  omitProps,
-  filterByQuery,
-  delay,
-  retryAsyncFunction,
-  retryExternalRequest,
-  extractTokenFromAuthorizationHeader,
-  extractEmailUsername,
-};

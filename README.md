@@ -482,6 +482,23 @@ await res.json();
 </details>
 
 <details>
+  <summary><code>stringifyValue</code></summary>
+  <br/>
+
+  Converts any value into a string. If the value is an object or an array, it will be stringified with `JSON.stringify`.
+
+  ```typescript
+  import { stringifyValue } from 'web-utils-kit';
+
+  stringifyValue(123.45); // '123.45'
+  stringifyValue({ name: 'Jane', count: 2 }); // '{"name":"Jane","count":2}'
+  stringifyValue({ name: 'Jane', roles: ['admin', 'editor'] }, 2); 
+  // '{\n  "name": "Jane",\n  "roles": [\n    "admin",\n    "editor"\n  ]\n}'
+  ```
+  <br/>
+</details>
+
+<details>
   <summary><code>applySubstitutions</code></summary>
   <br/>
 
@@ -1041,6 +1058,20 @@ await res.json();
     | IMilliseconds;
 
   export type ITimeString = `${number} ${IUnit}`;
+  ```
+  <br/>
+</details>
+
+<details>
+  <summary><code>ISubstitutionOptions</code></summary>
+  <br/>
+  
+  The options that can be passed to the applySubstitutions function.
+
+  ```typescript
+  type ISubstitutionOptions = {
+    jsonIndent: number;
+  };
   ```
   <br/>
 </details>
