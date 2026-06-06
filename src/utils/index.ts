@@ -336,33 +336,6 @@ const retryAsyncFunction = async <T>(
 };
 
 /**
- * Executes an external request persistently, retrying on error with incremental delays
- * defined in retryScheduleDuration (seconds).
- * @param fn The asynchronous function representing the external request.
- * @param nonRetryiableCodes? An array of HTTP status codes that should not be retried. (Defaults to [401, 403, 404, 409, 422, 429])
- * @param retryScheduleDuration? The schedule of delays (in seconds) between retries. (Defaults to [3, 5])
- * @returns A promise that resolves to the result of the asynchronous function.
- */
-export const retryExternalRequest = async <T>(
-  fn: () => Promise<T>,
-  nonRetryiableCodes: number[] = [401, 403, 404, 409, 422, 429],
-  retryScheduleDuration: number[] = [3, 5],
-): Promise<T> => {
-  try {
-    return await fn();
-  } catch (e) {
-    if (
-      retryScheduleDuration.length === 0 ||
-      (isObjectValid(e) && e.statusCode && nonRetryiableCodes.includes(e.statusCode))
-    ) {
-      throw e;
-    }
-    await delay(retryScheduleDuration[0]);
-    return retryExternalRequest(fn, nonRetryiableCodes, retryScheduleDuration.slice(1));
-  }
-};
-
-/**
  * Validates the format of an authorization header and extracts the token from it.
  * @param header The authorization header to validate and extract the token from.
  * @returns The extracted token from the authorization header.
