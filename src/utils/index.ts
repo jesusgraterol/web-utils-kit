@@ -2,7 +2,7 @@ import { v4 as uuidv4, v7 as uuidv7 } from 'uuid';
 import { encodeError } from 'error-message-utils';
 import { IUUIDVersion } from '../shared/types.js';
 import { ERRORS } from '../shared/errors.js';
-import { isIntegerValid, isObjectValid } from '../validations/index.js';
+import { isIntegerValid } from '../validations/index.js';
 import { stringifyJSONDeterministically } from '../transformers/index.js';
 import { IFilterByQueryOptions, ISortDirection } from './types.js';
 import {
@@ -359,6 +359,29 @@ const extractEmailUsername = (email: string): string => {
   return email.split('@')[0].toLowerCase();
 };
 
+/**
+ * Extracts a string of initials from the provided value.
+ * @param value The string value from which to extract initials.
+ * @param initialsCount? The maximum number of initials to extract. Defaults to 1.
+ * @returns A string with up to the requested number of letter-only initials, or "A" if none exist.
+ */
+const getInitials = (value: string, initialsCount: number = 1): string => {
+  const segmentLetters = (value.match(/[\p{L}\p{N}]+/gu) ?? [])
+    .map((segment) => Array.from(segment.match(/\p{L}/gu) ?? []))
+    .filter((letters) => letters.length > 0);
+
+  if (!segmentLetters.length) {
+    return 'A';
+  }
+
+  const initials = segmentLetters.map(([firstLetter]) => firstLetter.toUpperCase());
+  const remainingLetters = segmentLetters.flatMap((letters) =>
+    letters.slice(1).map((letter) => letter.toUpperCase()),
+  );
+
+  return initials.concat(remainingLetters).slice(0, initialsCount).join('');
+};
+
 /* ************************************************************************************************
  *                                         MODULE EXPORTS                                         *
  ************************************************************************************************ */
@@ -393,4 +416,5 @@ export {
   retryAsyncFunction,
   extractTokenFromAuthorizationHeader,
   extractEmailUsername,
+  getInitials,
 };

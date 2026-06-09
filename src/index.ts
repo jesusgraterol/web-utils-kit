@@ -66,4 +66,5 @@ export {
   retryAsyncFunction,
   extractTokenFromAuthorizationHeader,
   extractEmailUsername,
+  getInitials,
 } from './utils/index.js';
