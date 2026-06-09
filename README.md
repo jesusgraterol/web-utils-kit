@@ -942,6 +942,22 @@ await res.json();
   <br/>
 </details>
 
+
+<details>
+  <summary><code>getInitials</code></summary>
+  <br/>
+
+  Extracts a string of initials from the provided value.
+
+  ```typescript
+  import { getInitials } from 'web-utils-kit';
+
+  getInitials('John Doe', 1); // 'J'
+  getInitials('John Doe', 2); // 'JD'
+  ```
+  <br/>
+</details>
+
 <br/>
 
 ## Types

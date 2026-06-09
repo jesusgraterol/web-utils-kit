@@ -13,6 +13,7 @@ import {
   retryAsyncFunction,
   extractTokenFromAuthorizationHeader,
   extractEmailUsername,
+  getInitials,
 } from './index.js';
 import { ERRORS } from '../shared/errors.js';
 
@@ -43,9 +44,6 @@ const TEST_OBJ = {
     { id: 102, amount: 50, items: [{ id: 202, name: 'Widget B' }] },
   ],
 };
-
-const ERROR_MESSAGE = 'This is an error!';
-const requestArguments = ['abc', 1, true, [1, 2], { foo: 'bar' }] as const;
 
 /* ************************************************************************************************
  *                                             TESTS                                              *
@@ -582,6 +580,21 @@ describe('Misc Helpers', () => {
       expect(() => extractEmailUsername(email as string)).toThrowError(
         ERRORS.INVALID_EMAIL_ADDRESS,
       );
+    });
+  });
+
+  describe('getInitials', () => {
+    test.each([
+      ['John Doe', 1, 'J'],
+      ['John Doe', 2, 'JD'],
+      ['John', 2, 'JO'],
+      ['123 john - 456 doe', 2, 'JD'],
+      ['12345', 3, 'A'],
+      ['1!23@4#5', 1, 'A'],
+      ['  ', 1, 'A'],
+      ['', 1, 'A'],
+    ])('getInitials(%s, %i) -> %s', (value, initialsCount, expected) => {
+      expect(getInitials(value, initialsCount)).toBe(expected);
     });
   });
 });
