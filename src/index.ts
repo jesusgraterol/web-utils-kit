@@ -61,6 +61,7 @@ export {
   shuffleArray,
   pickProps,
   omitProps,
+  isEqual,
   filterByQuery,
   delay,
   retryAsyncFunction,
