@@ -67,4 +67,5 @@ export {
   extractTokenFromAuthorizationHeader,
   extractEmailUsername,
   getInitials,
+  getNextPageParam,
 } from './utils/index.js';

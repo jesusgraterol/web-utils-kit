@@ -958,6 +958,28 @@ await res.json();
   <br/>
 </details>
 
+<details>
+  <summary><code>getNextPageParam</code></summary>
+  <br/>
+
+  Gets the value of a property from the last item when the array length reaches the page size.
+
+  ```typescript
+  import { getNextPageParam } from 'web-utils-kit';
+
+  const entries = [
+    { id: 'entry-1', reason: 'spam' },
+    { id: 'entry-2', reason: 'abuse' },
+  ];
+  const partialEntries = [{ id: 'entry-1', reason: 'spam' }];
+  const ENTRY_PAGE_SIZE = 2;
+
+  getNextPageParam('id', entries, ENTRY_PAGE_SIZE); // 'entry-2'
+  getNextPageParam('id', partialEntries, ENTRY_PAGE_SIZE); // undefined
+  ```
+  <br/>
+</details>
+
 <br/>
 
 ## Types
