@@ -64,7 +64,7 @@ describe('Generators', () => {
 });
 
 describe('Sorting Utils', () => {
-  test.each(<Array<[(number | string)[], ISortDirection, (number | string)[]]>>[
+  test.each(<Array<[(number | string | bigint)[], ISortDirection, (number | string | bigint)[]]>>[
     [[], 'asc', []],
 
     // numeric values
@@ -74,6 +74,24 @@ describe('Sorting Utils', () => {
     [[5, 4, 3, 2, 1], 'desc', [5, 4, 3, 2, 1]],
     [[3, 1, 4, 2, 5], 'asc', [1, 2, 3, 4, 5]],
     [[3, 1, 4, 2, 5], 'desc', [5, 4, 3, 2, 1]],
+
+    // bigint values
+    [[1n, 2n, 3n, 4n, 5n], 'asc', [1n, 2n, 3n, 4n, 5n]],
+    [[1n, 2n, 3n, 4n, 5n], 'desc', [5n, 4n, 3n, 2n, 1n]],
+    [[5n, 4n, 3n, 2n, 1n], 'asc', [1n, 2n, 3n, 4n, 5n]],
+    [[5n, 4n, 3n, 2n, 1n], 'desc', [5n, 4n, 3n, 2n, 1n]],
+    [[3n, 1n, 4n, 2n, 5n], 'asc', [1n, 2n, 3n, 4n, 5n]],
+    [[3n, 1n, 4n, 2n, 5n], 'desc', [5n, 4n, 3n, 2n, 1n]],
+    [
+      [9007199254740993n, -12n, 0n, 9007199254740992n, -12n],
+      'asc',
+      [-12n, -12n, 0n, 9007199254740992n, 9007199254740993n],
+    ],
+    [
+      [9007199254740993n, -12n, 0n, 9007199254740992n, -12n],
+      'desc',
+      [9007199254740993n, 9007199254740992n, 0n, -12n, -12n],
+    ],
 
     // string values
     [['a', 'b', 'c'], 'asc', ['a', 'b', 'c']],
@@ -100,6 +118,8 @@ describe('Sorting Utils', () => {
     [[1, { foo: 'bar' }, 3, 4, 5], 'asc'],
     [[1, '2', 3, 4, 5], 'asc'],
     [[1, 2, '3', 4, '5'], 'asc'],
+    [[1n, 2n, 3, 4n, 5n], 'asc'],
+    [[1n, '2', 3n, 4n, 5n], 'asc'],
     [[[1], 2, 3], 'asc'],
   ])('sortPrimitives(%o, %s) -> Error: MIXED_OR_UNSUPPORTED_DATA_TYPES', (a, b) => {
     expect(() => a.sort(sortPrimitives(b))).toThrowError(ERRORS.MIXED_OR_UNSUPPORTED_DATA_TYPES);
@@ -120,6 +140,30 @@ describe('Sorting Utils', () => {
       [{ v: 21 }, { v: 37 }, { v: 45 }, { v: -12 }, { v: 13 }, { v: 37 }],
       'desc',
       [{ v: 45 }, { v: 37 }, { v: 37 }, { v: 21 }, { v: 13 }, { v: -12 }],
+    ],
+
+    // bigint values
+    [[{ v: 1n }, { v: 2n }, { v: 3n }], 'asc', [{ v: 1n }, { v: 2n }, { v: 3n }]],
+    [[{ v: 1n }, { v: 2n }, { v: 3n }], 'desc', [{ v: 3n }, { v: 2n }, { v: 1n }]],
+    [
+      [{ v: 21n }, { v: 37n }, { v: 45n }, { v: -12n }, { v: 13n }, { v: 37n }],
+      'asc',
+      [{ v: -12n }, { v: 13n }, { v: 21n }, { v: 37n }, { v: 37n }, { v: 45n }],
+    ],
+    [
+      [{ v: 21n }, { v: 37n }, { v: 45n }, { v: -12n }, { v: 13n }, { v: 37n }],
+      'desc',
+      [{ v: 45n }, { v: 37n }, { v: 37n }, { v: 21n }, { v: 13n }, { v: -12n }],
+    ],
+    [
+      [{ v: 9007199254740993n }, { v: -12n }, { v: 0n }, { v: 9007199254740992n }],
+      'asc',
+      [{ v: -12n }, { v: 0n }, { v: 9007199254740992n }, { v: 9007199254740993n }],
+    ],
+    [
+      [{ v: 9007199254740993n }, { v: -12n }, { v: 0n }, { v: 9007199254740992n }],
+      'desc',
+      [{ v: 9007199254740993n }, { v: 9007199254740992n }, { v: 0n }, { v: -12n }],
     ],
 
     // string values
@@ -183,6 +227,8 @@ describe('Sorting Utils', () => {
     [[{ v: 'a' }, { v: 'b' }, { v: { c: 'c' } }]],
     [[{ v: 1 }, { v: 'b' }, { v: 3 }]],
     [[{ v: 1 }, { v: 2 }, { v: '3' }]],
+    [[{ v: 1n }, { v: 2n }, { v: 3 }]],
+    [[{ v: 1n }, { v: 2n }, { v: '3' }]],
     [[{ v: [1] }, { v: [2] }, { v: '3' }]],
   ])('sortRecords(%o, %s) -> Error: MIXED_OR_UNSUPPORTED_DATA_TYPES', (a) => {
     expect(() => a.sort(sortRecords('v', 'asc'))).toThrowError(

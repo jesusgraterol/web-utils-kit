@@ -1,5 +1,5 @@
 import { v4 as uuidv4, v7 as uuidv7 } from 'uuid';
-import { encodeError } from 'error-message-utils';
+import { encodeError, extractMessage, isEncodedError } from 'error-message-utils';
 import { IUUIDVersion } from '../shared/types.js';
 import { ERRORS } from '../shared/errors.js';
 import { isIntegerValid } from '../validations/index.js';
@@ -113,24 +113,39 @@ const __sortNumberValues = (a: number, b: number, direction: ISortDirection): nu
   direction === 'asc' ? a - b : b - a;
 
 /**
+ * Orders two bigint values based on a sorting direction.
+ * @param a The first bigint value to compare.
+ * @param b The second bigint value to compare.
+ * @param direction The direction to sort the values.
+ * @returns A number indicating the sort order.
+ */
+const __sortBigIntValues = (a: bigint, b: bigint, direction: ISortDirection): number => {
+  if (a === b) return 0;
+  return (direction === 'asc') === a < b ? -1 : 1;
+};
+
+/**
  * Sorts a list of primitive values based on their type and a sort direction.
  * @param direction The direction to sort the values.
  * @returns A number indicating the sort order based on the primitive type.
  * @throws
- * - MIXED_OR_UNSUPPORTED_DATA_TYPES: if the values are mixed or are different to string | number
+ * - MIXED_OR_UNSUPPORTED_DATA_TYPES: if the values are mixed or are different to string | number | bigint
  */
 const sortPrimitives =
   (direction: ISortDirection) =>
-  <T extends string | number>(a: T, b: T): number => {
+  <T extends string | number | bigint>(a: T, b: T): number => {
     if (typeof a === 'string' && typeof b === 'string') {
       return __sortStringValues(a, b, direction);
     }
     if (typeof a === 'number' && typeof b === 'number') {
       return __sortNumberValues(a, b, direction);
     }
+    if (typeof a === 'bigint' && typeof b === 'bigint') {
+      return __sortBigIntValues(a, b, direction);
+    }
     throw new Error(
       encodeError(
-        `Unable to sort list of primitive values as they can only be string | number and must not be mixed. Received: ${typeof a}, ${typeof b}`,
+        `Unable to sort list of primitive values as they can only be string | number | bigint and must not be mixed. Received: ${typeof a}, ${typeof b}`,
         ERRORS.MIXED_OR_UNSUPPORTED_DATA_TYPES,
       ),
     );
@@ -142,7 +157,7 @@ const sortPrimitives =
  * @param direction The direction to sort the values.
  * @returns A number indicating the sort order based on the primitive type.
  * @throws
- * - MIXED_OR_UNSUPPORTED_DATA_TYPES: if the values are mixed or are different to string | number
+ * - MIXED_OR_UNSUPPORTED_DATA_TYPES: if the values are mixed or are different to string | number | bigint
  */
 const sortRecords =
   (key: string, direction: ISortDirection) =>
@@ -153,12 +168,59 @@ const sortRecords =
     if (typeof a[key] === 'number' && typeof b[key] === 'number') {
       return __sortNumberValues(a[key], b[key], direction);
     }
+    if (typeof a[key] === 'bigint' && typeof b[key] === 'bigint') {
+      return __sortBigIntValues(a[key], b[key], direction);
+    }
     throw new Error(
       encodeError(
-        `Unable to sort list of record values as they can only be string | number and must not be mixed. Received: ${typeof a[key]}, ${typeof b[key]}`,
+        `Unable to sort list of record values as they can only be string | number | bigint and must not be mixed. Received: ${typeof a[key]}, ${typeof b[key]}`,
         ERRORS.MIXED_OR_UNSUPPORTED_DATA_TYPES,
       ),
     );
+  };
+
+/**
+ * Sorts a list of record values by key, treating stringified bigints as actual bigints, based on a
+ * sort direction.
+ * @param key The key of the record to sort by.
+ * @param direction The direction to sort the values.
+ * @returns A number indicating the sort order based on the primitive type.
+ * @throws
+ * - MIXED_OR_UNSUPPORTED_DATA_TYPES: if the values are mixed or are different to string | number | bigint
+ */
+export const sortRecordsWithBigIntString =
+  (key: string, direction: ISortDirection) =>
+  (a: Record<string, any>, b: Record<string, any>): number => {
+    try {
+      const aValue = a[key];
+      const bValue = b[key];
+
+      if (typeof aValue === 'string' && typeof bValue === 'string') {
+        const aBigInt = BigInt(aValue);
+        const bBigInt = BigInt(bValue);
+        return __sortBigIntValues(aBigInt, bBigInt, direction);
+      }
+
+      throw new Error(
+        encodeError(
+          `Unable to sort list of record values as they can only be stringified bigints. Received: ${typeof aValue}, ${typeof bValue}`,
+          ERRORS.MIXED_OR_UNSUPPORTED_DATA_TYPES,
+        ),
+      );
+    } catch (e) {
+      if (isEncodedError(e)) {
+        throw e;
+      }
+      console.log(`key: ${key}`);
+      console.log('a: ', a);
+      console.log('b: ', b);
+      throw new Error(
+        encodeError(
+          `Failed to sort list of record values as they can only be stringified bigints: ${extractMessage(e)}`,
+          ERRORS.MIXED_OR_UNSUPPORTED_DATA_TYPES,
+        ),
+      );
+    }
   };
 
 /* ************************************************************************************************

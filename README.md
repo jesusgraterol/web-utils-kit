@@ -750,6 +750,8 @@ await res.json();
   // ['a', 'b', 'c']
   ['a', 'b', 'c'].sort(sortPrimitives('desc'));
   // ['c', 'b', 'a']
+  [[3n, 1n, 4n, 2n, 5n]].sort(sortPrimitives('asc'));
+  // [1n, 2n, 3n, 4n, 5n]
   ```
   <br/>
 </details>
@@ -772,6 +774,8 @@ await res.json();
   // [{ v: 'a' }, { v: 'b' }, { v: 'c' }]
   [{ v: 'a' }, { v: 'b' }, { v: 'c' }].sort(sortRecords('v', 'desc'));
   // [{ v: 'c' }, { v: 'b' }, { v: 'a' }]
+  [{ v: 1n }, { v: 2n }, { v: 3n }].sort(sortRecords('v', 'desc'));
+  // [{ v: 3n }, { v: 2n }, { v: 1n }]
   ```
   <br/>
 </details>
