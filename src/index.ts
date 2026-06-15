@@ -63,6 +63,7 @@ export {
   sortPrimitives,
   sortRecords,
   sortRecordsWithBigIntString,
+  sortRecordsWithDateValue,
   shuffleArray,
   pickProps,
   omitProps,
