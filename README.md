@@ -823,6 +823,40 @@ await res.json();
 </details>
 
 <details>
+  <summary><code>sortRecordsWithDateValue</code></summary>
+  <br/>
+
+  Sorts a list of record values by key, treating date values as actual Date objects, based on a sort direction.
+
+  ```typescript
+  import { sortRecordsWithDateValue } from 'web-utils-kit';
+
+  [
+    { v: '2026-06-15T16:01:33.658Z' }, 
+    { v: new Date('2026-05-15T16:01:33.658Z') }, 
+    { v: new Date('2026-07-15T16:01:33.658Z').getTime() }
+  ].sort(sortRecordsWithDateValue('v', 'asc'));
+  // [
+  //   { v: new Date('2026-05-15T16:01:33.658Z') }, 
+  //   { v: '2026-06-15T16:01:33.658Z' }, 
+  //   { v: new Date('2026-07-15T16:01:33.658Z').getTime() }
+  // ]
+
+  [
+    { v: '2026-06-15T16:01:33.658Z' }, 
+    { v: new Date('2026-05-15T16:01:33.658Z') }, 
+    { v: new Date('2026-07-15T16:01:33.658Z').getTime() }
+  ].sort(sortRecordsWithDateValue('v', 'desc'));
+  // [
+  //   { v: new Date('2026-07-15T16:01:33.658Z').getTime() }
+  //   { v: '2026-06-15T16:01:33.658Z' }, 
+  //   { v: new Date('2026-05-15T16:01:33.658Z') }, 
+  // ]
+  ```
+  <br/>
+</details>
+
+<details>
   <summary><code>shuffleArray</code></summary>
   <br/>
 

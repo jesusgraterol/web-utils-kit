@@ -3,7 +3,7 @@ import { encodeError, extractMessage, isEncodedError } from 'error-message-utils
 import { IUUIDVersion } from '../shared/types.js';
 import { ERRORS } from '../shared/errors.js';
 import { isIntegerValid } from '../validations/index.js';
-import { stringifyJSONDeterministically } from '../transformers/index.js';
+import { IDateValue, stringifyJSONDeterministically, toDate } from '../transformers/index.js';
 import { IFilterByQueryOptions, ISortDirection } from './types.js';
 import {
   canArrayBeShuffled,
@@ -208,15 +208,56 @@ export const sortRecordsWithBigIntString =
         ),
       );
     } catch (e) {
-      if (isEncodedError(e)) {
-        throw e;
-      }
       console.log(`key: ${key}`);
       console.log('a: ', a);
       console.log('b: ', b);
+      if (isEncodedError(e)) {
+        throw e;
+      }
       throw new Error(
         encodeError(
           `Failed to sort list of record values as they can only be stringified bigints: ${extractMessage(e)}`,
+          ERRORS.MIXED_OR_UNSUPPORTED_DATA_TYPES,
+        ),
+      );
+    }
+  };
+
+/**
+ * Sorts a list of record values by key, treating date values as actual Date objects, based on a
+ * sort direction.
+ * @param key The key of the record to sort by.
+ * @param direction The direction to sort the values.
+ * @returns A number indicating the sort order based on the date values.
+ * @throws
+ * - MIXED_OR_UNSUPPORTED_DATA_TYPES: if the values are mixed or are different to date values
+ */
+export const sortRecordsWithDateValue =
+  (key: string, direction: ISortDirection) =>
+  (a: Record<string, unknown>, b: Record<string, unknown>): number => {
+    try {
+      if (a[key] && b[key]) {
+        const aDate = toDate(a[key] as IDateValue);
+        const bDate = toDate(b[key] as IDateValue);
+        return __sortNumberValues(aDate.getTime(), bDate.getTime(), direction);
+      }
+
+      throw new Error(
+        encodeError(
+          `Unable to sort list of record values as they can only be date values.`,
+          ERRORS.MIXED_OR_UNSUPPORTED_DATA_TYPES,
+        ),
+      );
+    } catch (e) {
+      console.log(`key: ${key}`);
+      console.log('a: ', a);
+      console.log('b: ', b);
+      if (isEncodedError(e)) {
+        throw e;
+      }
+      throw new Error(
+        encodeError(
+          `Failed to sort list of record values as they can only be date strings: ${extractMessage(e)}`,
           ERRORS.MIXED_OR_UNSUPPORTED_DATA_TYPES,
         ),
       );

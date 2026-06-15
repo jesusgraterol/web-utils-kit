@@ -1,11 +1,12 @@
 // @vitest-environment node
 import { describe, afterEach, test, expect, vi } from 'vitest';
-import { ISortDirection } from './types.js';
+import type { ISortDirection } from './types.js';
 import {
   generateSequence,
   sortPrimitives,
   sortRecords,
   sortRecordsWithBigIntString,
+  sortRecordsWithDateValue,
   splitArrayIntoBatches,
   pickProps,
   omitProps,
@@ -47,6 +48,9 @@ const TEST_OBJ = {
     { id: 102, amount: 50, items: [{ id: 202, name: 'Widget B' }] },
   ],
 };
+
+// records containing date values accepted by sortRecordsWithDateValue
+type IDateSortRecord = Record<'v', Date | number | string>;
 
 /* ************************************************************************************************
  *                                             TESTS                                              *
@@ -285,6 +289,80 @@ describe('Sorting Utils', () => {
       [{ v: '1' }, { v: 'not-a-bigint' }].sort(sortRecordsWithBigIntString('v', 'asc')),
     ).toThrow(ERRORS.MIXED_OR_UNSUPPORTED_DATA_TYPES);
     expect(consoleLogSpy).toHaveBeenCalledTimes(3);
+  });
+
+  test.each(<Array<[IDateSortRecord[], ISortDirection, IDateSortRecord[]]>>[
+    [[], 'asc', []],
+    [
+      [
+        { v: '2026-06-15T00:00:00.000Z' },
+        { v: '2024-01-01T00:00:00.000Z' },
+        { v: '2025-01-01T00:00:00.000Z' },
+      ],
+      'asc',
+      [
+        { v: '2024-01-01T00:00:00.000Z' },
+        { v: '2025-01-01T00:00:00.000Z' },
+        { v: '2026-06-15T00:00:00.000Z' },
+      ],
+    ],
+    [
+      [
+        { v: '2026-06-15T00:00:00.000Z' },
+        { v: '2024-01-01T00:00:00.000Z' },
+        { v: '2025-01-01T00:00:00.000Z' },
+      ],
+      'desc',
+      [
+        { v: '2026-06-15T00:00:00.000Z' },
+        { v: '2025-01-01T00:00:00.000Z' },
+        { v: '2024-01-01T00:00:00.000Z' },
+      ],
+    ],
+    [
+      [
+        { v: new Date('2026-06-15T00:00:00.000Z') },
+        { v: '2024-01-01T00:00:00.000Z' },
+        { v: 1_735_689_600_000 },
+      ],
+      'asc',
+      [
+        { v: '2024-01-01T00:00:00.000Z' },
+        { v: 1_735_689_600_000 },
+        { v: new Date('2026-06-15T00:00:00.000Z') },
+      ],
+    ],
+    [
+      [
+        { v: new Date('2026-06-15T00:00:00.000Z') },
+        { v: '2024-01-01T00:00:00.000Z' },
+        { v: 1_735_689_600_000 },
+      ],
+      'desc',
+      [
+        { v: new Date('2026-06-15T00:00:00.000Z') },
+        { v: 1_735_689_600_000 },
+        { v: '2024-01-01T00:00:00.000Z' },
+      ],
+    ],
+  ])('sortRecordsWithDateValue(%o, %s) -> %o', (a, b, expected) => {
+    const arr = a.slice();
+    arr.sort(sortRecordsWithDateValue('v', b));
+    expect(arr).toStrictEqual(expected);
+  });
+
+  test.each(<Array<[string, Array<Record<string, unknown>>]>>[
+    [
+      'missing sort key',
+      [{ v: '2024-01-01T00:00:00.000Z' }, { value: '2025-01-01T00:00:00.000Z' }],
+    ],
+    ['null date value', [{ v: null }, { v: '2025-01-01T00:00:00.000Z' }]],
+  ])('sortRecordsWithDateValue(%s) -> Error: MIXED_OR_UNSUPPORTED_DATA_TYPES', (caseName, a) => {
+    vi.spyOn(console, 'log').mockImplementation(() => undefined);
+
+    expect(() => a.sort(sortRecordsWithDateValue('v', 'asc')), caseName).toThrow(
+      ERRORS.MIXED_OR_UNSUPPORTED_DATA_TYPES,
+    );
   });
 });
 
