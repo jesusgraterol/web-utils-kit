@@ -29,6 +29,7 @@ export {
   type ITimeString,
   type ISubstitutionOptions,
   prettifyNumber,
+  prettifyPercentage,
   prettifyDate,
   prettifyTime,
   prettifyFileSize,

@@ -48,6 +48,24 @@ const prettifyNumber = (value: number, configuration?: Partial<INumberFormatConf
 };
 
 /**
+ * Formats a numeric value as a percentage based on the user's default language.
+ * @param value The number to be formatted as a percentage - whole value (e.g., 50 for 50%)
+ * @param configuration? An optional configuration object.
+ * @returns A string representing the formatted percentage.
+ */
+const prettifyPercentage = (
+  value: number,
+  configuration?: Partial<INumberFormatConfig>,
+): string => {
+  const config = buildNumberFormatConfig(configuration);
+  const prettifiedValue = value.toLocaleString(undefined, {
+    minimumFractionDigits: config.minimumFractionDigits,
+    maximumFractionDigits: config.maximumFractionDigits,
+  });
+  return `${config.prefix}${prettifiedValue}%${config.suffix}`;
+};
+
+/**
  * Formats a date instance based on a template.
  * - date-short: 12/05/2024 (Default)
  * - date-medium: December 5, 2024
@@ -468,6 +486,7 @@ export {
 
   // general
   prettifyNumber,
+  prettifyPercentage,
   prettifyDate,
   prettifyTime,
   prettifyFileSize,

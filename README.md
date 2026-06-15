@@ -337,7 +337,7 @@ await res.json();
   <summary><code>prettifyNumber</code></summary>
   <br/>
 
-  Verifies if a value is a valid UUID and that it matches a specific version.
+  Formats a numeric value based on the user's default language.
 
   ```typescript
   import { prettifyNumber } from 'web-utils-kit';
@@ -347,6 +347,24 @@ await res.json();
   // '2,654.69642236 BTC'
   prettifyNumber(1000, { minimumFractionDigits: 2, prefix: '$' });
   // '$1,000.00'
+  ```
+  <br/>
+</details>
+
+<details>
+  <summary><code>prettifyPercentage</code></summary>
+  <br/>
+
+  Formats a numeric value as a percentage based on the user's default language.
+
+  ```typescript
+  import { prettifyPercentage } from 'web-utils-kit';
+
+  prettifyPercentage(10); // '10%'
+  prettifyPercentage(25.583, { maximumFractionDigits: 2 }); 
+  // '25.58%'
+  prettifyPercentage(2.65469642236, { maximumFractionDigits: 8, suffix: ' APY' }); 
+  // '2.65469642% APY'
   ```
   <br/>
 </details>

@@ -5,6 +5,7 @@ import { ERRORS } from '../shared/errors.js';
 import { IDateTemplate, INumberFormatConfig, ITimeString } from './types.js';
 import {
   prettifyNumber,
+  prettifyPercentage,
   prettifyFileSize,
   prettifyBadgeCount,
   capitalizeFirst,
@@ -34,6 +35,19 @@ describe('prettifyNumber', () => {
     [1000, { minimumFractionDigits: 2 }, '1,000.00'],
   ])('prettifyNumber(%d, %o) -> %s', (a, b, expected) => {
     expect(prettifyNumber(a, b)).toBe(expected);
+  });
+});
+
+describe('prettifyPercentage', () => {
+  test.each(<Array<[number, Partial<INumberFormatConfig> | undefined, string]>>[
+    [10, undefined, '10%'],
+    [25.583, { maximumFractionDigits: 2 }, '25.58%'],
+    [100, { prefix: '~' }, '~100%'],
+    [2.65469642236, { maximumFractionDigits: 8, suffix: ' APY' }, '2.65469642% APY'],
+    [100, { minimumFractionDigits: 2 }, '100.00%'],
+    [-3.45, { maximumFractionDigits: 2 }, '-3.45%'],
+  ])('prettifyPercentage(%d, %o) -> %s', (a, b, expected) => {
+    expect(prettifyPercentage(a, b)).toBe(expected);
   });
 });
 
