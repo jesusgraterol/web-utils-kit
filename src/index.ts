@@ -30,6 +30,7 @@ export {
   type ISubstitutionOptions,
   prettifyNumber,
   prettifyDate,
+  prettifyTime,
   prettifyFileSize,
   prettifyBadgeCount,
   capitalizeFirst,

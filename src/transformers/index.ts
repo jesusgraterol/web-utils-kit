@@ -65,6 +65,29 @@ const prettifyDate = (value: Date | number | string, template: IDateTemplate): s
   getDateInstance(value).toLocaleString(undefined, DATE_TEMPLATE_CONFIGS[template]);
 
 /**
+ * Formats a duration in milliseconds into a human-readable string.
+ * @param milliseconds The duration in milliseconds.
+ * @returns A string representing the formatted duration.
+ */
+const prettifyTime = (milliseconds: number): string => {
+  const safeSeconds = Number.isFinite(milliseconds)
+    ? Math.max(0, Math.floor(milliseconds / 1000))
+    : 0;
+  const days = Math.floor(safeSeconds / 86_400);
+  const hours = Math.floor((safeSeconds % 86_400) / 3_600);
+  const minutes = Math.floor((safeSeconds % 3_600) / 60);
+  const seconds = safeSeconds % 60;
+  const parts = [
+    days > 0 ? `${days}d` : null,
+    hours > 0 ? `${hours}h` : null,
+    minutes > 0 ? `${minutes}m` : null,
+    days === 0 && hours === 0 && minutes === 0 ? `${seconds}s` : null,
+  ].filter((part): part is string => typeof part === 'string');
+
+  return parts.join(' ');
+};
+
+/**
  * Formats a bytes value into a human readable format.
  * @param value The bytes value to be formatted.
  * @param decimalPlaces The number of decimal places to include. Defaults to 2.
@@ -205,6 +228,7 @@ const stringifyValue = (value: unknown, jsonIndent: number = 0): string => {
   if (isObjectValid(value, true) || isArrayValid(value, true)) {
     try {
       return JSON.stringify(value, null, jsonIndent);
+      // eslint-disable-next-line no-empty
     } catch (_) {}
   }
   return String(value);
@@ -445,6 +469,7 @@ export {
   // general
   prettifyNumber,
   prettifyDate,
+  prettifyTime,
   prettifyFileSize,
   prettifyBadgeCount,
   capitalizeFirst,

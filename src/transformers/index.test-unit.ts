@@ -1,3 +1,4 @@
+// @vitest-environment node
 import { describe, test, expect } from 'vitest';
 import { encodeError } from 'error-message-utils';
 import { ERRORS } from '../shared/errors.js';
@@ -10,6 +11,7 @@ import {
   toTitleCase,
   toSlug,
   prettifyDate,
+  prettifyTime,
   truncateText,
   maskMiddle,
   stringifyValue,
@@ -49,6 +51,32 @@ describe('prettifyDate', () => {
     const res = prettifyDate(Date.now(), template);
     expect(res).toBeTypeOf('string');
     expect(res.length).toBeGreaterThan(0);
+  });
+});
+
+describe('prettifyTime', () => {
+  test.each(<Array<[number, string]>>[
+    [0, '0s'],
+    [999, '0s'],
+    [1000, '1s'],
+    [59_999, '59s'],
+    [60_000, '1m'],
+    [61_999, '1m'],
+    [3_600_000, '1h'],
+    [3_660_000, '1h 1m'],
+    [86_400_000, '1d'],
+    [90_000_000, '1d 1h'],
+    [90_060_000, '1d 1h 1m'],
+  ])('prettifyTime(%d) -> %s', (milliseconds, expected) => {
+    expect(prettifyTime(milliseconds)).toBe(expected);
+  });
+
+  test.each(<Array<[number, string]>>[
+    [-1, '0s'],
+    [Number.NaN, '0s'],
+    [Number.POSITIVE_INFINITY, '0s'],
+  ])('prettifyTime(%d) -> safe fallback %s', (milliseconds, expected) => {
+    expect(prettifyTime(milliseconds)).toBe(expected);
   });
 });
 

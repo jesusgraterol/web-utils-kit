@@ -377,6 +377,22 @@ await res.json();
 </details>
 
 <details>
+  <summary><code>prettifyTime</code></summary>
+  <br/>
+
+  Formats a duration in milliseconds into a human-readable string.
+
+  ```typescript
+  import { prettifyTime } from 'web-utils-kit';
+
+  prettifyTime(59_999); // '59s'
+  prettifyTime(3_660_000); // '1h 1m'
+  prettifyTime(90_060_000); // '1d 1h 1m'
+  ```
+  <br/>
+</details>
+
+<details>
   <summary><code>prettifyFileSize</code></summary>
   <br/>
 
