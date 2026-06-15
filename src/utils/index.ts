@@ -190,7 +190,7 @@ const sortRecords =
  */
 export const sortRecordsWithBigIntString =
   (key: string, direction: ISortDirection) =>
-  (a: Record<string, any>, b: Record<string, any>): number => {
+  (a: Record<string, unknown>, b: Record<string, unknown>): number => {
     try {
       const aValue = a[key];
       const bValue = b[key];

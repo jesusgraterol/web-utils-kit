@@ -756,7 +756,6 @@ await res.json();
   <br/>
 </details>
 
-
 <details>
   <summary><code>sortRecords</code></summary>
   <br/>
@@ -767,7 +766,7 @@ await res.json();
   import { sortRecords } from 'web-utils-kit';
 
   [{ v: 1 }, { v: 2 }, { v: 3 }].sort(sortRecords('v', 'asc'));
-  // [1, 2, 3, 4, 5]
+  // [{ v: 1 }, { v: 2 }, { v: 3 }]
   [{ v: 1 }, { v: 2 }, { v: 3 }].sort(sortRecords('v', 'desc'));
   // [{ v: 3 }, { v: 2 }, { v: 1 }]
   [{ v: 'a' }, { v: 'b' }, { v: 'c' }].sort(sortRecords('v', 'asc'));
@@ -776,6 +775,28 @@ await res.json();
   // [{ v: 'c' }, { v: 'b' }, { v: 'a' }]
   [{ v: 1n }, { v: 2n }, { v: 3n }].sort(sortRecords('v', 'desc'));
   // [{ v: 3n }, { v: 2n }, { v: 1n }]
+  ```
+  <br/>
+</details>
+
+<details>
+  <summary><code>sortRecordsWithBigIntString</code></summary>
+  <br/>
+
+  Sorts a list of record values by key, treating stringified bigints as actual bigints, based on a sort direction.
+
+  ```typescript
+  import { sortRecordsWithBigIntString } from 'web-utils-kit';
+
+  [{ v: '1' }, { v: '2' }, { v: '3' }].sort(sortRecordsWithBigIntString('v', 'asc'));
+  // [{ v: '1' }, { v: '2' }, { v: '3' }]
+  [
+    { v: '9007199254740993' }, 
+    { v: '-12' }, 
+    { v: '0' }, 
+    { v: '9007199254740992' }
+  ].sort(sortRecords('v', 'desc'));
+  // [{ v: '9007199254740993' }, { v: '9007199254740992' }, { v: '0' }, { v: '-12' }]
   ```
   <br/>
 </details>

@@ -60,6 +60,7 @@ export {
   generateSequence,
   sortPrimitives,
   sortRecords,
+  sortRecordsWithBigIntString,
   shuffleArray,
   pickProps,
   omitProps,
