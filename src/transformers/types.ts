@@ -17,6 +17,9 @@ export type INumberFormatConfig = {
  *                                             DATES                                              *
  ************************************************************************************************ */
 
+// the value that can be used to create a Date instance
+export type IDateValue = Date | number | string;
+
 /**
  * Date Template
  * A date can be prettified by choosing a template that meets the user's requirements.

@@ -2,7 +2,13 @@ import { decodeError, encodeError, extractMessage } from 'error-message-utils';
 import { IJSONValue } from '../shared/types.js';
 import { ERRORS } from '../shared/errors.js';
 import { isArrayValid, isObjectValid } from '../validations/index.js';
-import { IDateTemplate, INumberFormatConfig, ISubstitutionOptions, ITimeString } from './types.js';
+import {
+  IDateTemplate,
+  IDateValue,
+  INumberFormatConfig,
+  ISubstitutionOptions,
+  ITimeString,
+} from './types.js';
 import {
   FILE_SIZE_THRESHOLD,
   FILE_SIZE_UNITS,
@@ -21,12 +27,7 @@ import {
   canJSONBeDeserialized,
   validateJSONDeserializationResult,
 } from './validations.js';
-import {
-  buildNumberFormatConfig,
-  getDateInstance,
-  parseTimeString,
-  sortJSONObjectKeys,
-} from './utils.js';
+import { buildNumberFormatConfig, parseTimeString, sortJSONObjectKeys } from './utils.js';
 
 /* ************************************************************************************************
  *                                            GENERAL                                             *
@@ -66,6 +67,18 @@ const prettifyPercentage = (
 };
 
 /**
+ * Creates an instance of Date based on a value.
+ * @param value The value to create a Date instance from. It can be a Date object, a timestamp, or a date string.
+ * @returns A Date instance.
+ */
+const toDate = (value: IDateValue): Date => {
+  if (value instanceof Date) {
+    return value;
+  }
+  return new Date(value);
+};
+
+/**
  * Formats a date instance based on a template.
  * - date-short: 12/05/2024 (Default)
  * - date-medium: December 5, 2024
@@ -79,8 +92,8 @@ const prettifyPercentage = (
  * @param template The template to use for formatting the date.
  * @returns A string representing the formatted date.
  */
-const prettifyDate = (value: Date | number | string, template: IDateTemplate): string =>
-  getDateInstance(value).toLocaleString(undefined, DATE_TEMPLATE_CONFIGS[template]);
+const prettifyDate = (value: IDateValue, template: IDateTemplate): string =>
+  toDate(value).toLocaleString(undefined, DATE_TEMPLATE_CONFIGS[template]);
 
 /**
  * Formats a duration in milliseconds into a human-readable string.
@@ -480,6 +493,7 @@ const pruneJSON = <T extends IJSONValue>(value: T): T | null => {
 export {
   // types
   type INumberFormatConfig,
+  type IDateValue,
   type IDateTemplate,
   type ITimeString,
   type ISubstitutionOptions,
@@ -487,6 +501,7 @@ export {
   // general
   prettifyNumber,
   prettifyPercentage,
+  toDate,
   prettifyDate,
   prettifyTime,
   prettifyFileSize,

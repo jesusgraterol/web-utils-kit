@@ -370,6 +370,27 @@ await res.json();
 </details>
 
 <details>
+  <summary><code>toDate</code></summary>
+  <br/>
+
+  Creates an instance of Date based on a value.
+
+  ```typescript
+  import { toDate } from 'web-utils-kit';
+
+  toDate('2026-06-15T16:01:04.228Z').toISOString(); 
+  // Date 2026-06-15T16:01:04.228Z
+
+  toDate(new Date('2026-06-15T16:01:04.228Z')).toISOString(); 
+  // Date 2026-06-15T16:01:04.228Z
+
+  toDate(1781539293658).toISOString(); 
+  // Date 2026-06-15T16:01:04.228Z
+  ```
+  <br/>
+</details>
+
+<details>
   <summary><code>prettifyDate</code></summary>
   <br/>
 
@@ -1080,6 +1101,18 @@ await res.json();
     prefix: string; // Default: ''
     suffix: string; // Default: ''
   };
+  ```
+  <br/>
+</details>
+
+<details>
+  <summary><code>IDateValue</code></summary>
+  <br/>
+  
+  The value that can be used to create a `Date` instance.
+
+  ```typescript
+  type IDateValue = Date | number | string;
   ```
   <br/>
 </details>

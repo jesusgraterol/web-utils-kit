@@ -21,18 +21,6 @@ export const buildNumberFormatConfig = (
 });
 
 /**
- * Creates an instance of Date based on a value.
- * @param value The value to create a Date instance from. It can be a Date object, a timestamp, or a date string.
- * @returns A Date instance.
- */
-export const getDateInstance = (value: Date | number | string): Date => {
-  if (value instanceof Date) {
-    return value;
-  }
-  return new Date(value);
-};
-
-/**
  * Parses a time string and returns an object containing the value and the unit.
  * @param str The time string to parse.
  * @returns The parsed time string as an object containing the value and the unit.

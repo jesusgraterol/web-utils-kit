@@ -1,6 +1,6 @@
 import { describe, test, expect } from 'vitest';
 import { INumberFormatConfig } from './types.js';
-import { buildNumberFormatConfig, getDateInstance, sortJSONObjectKeys } from './utils.js';
+import { buildNumberFormatConfig, sortJSONObjectKeys } from './utils.js';
 
 /* ************************************************************************************************
  *                                            HELPERS                                             *
@@ -38,18 +38,6 @@ describe('buildNumberFormatConfig', () => {
     ],
   ])('buildNumberFormatConfig(%o) -> %o', (a, expected) => {
     expect(buildNumberFormatConfig(a)).toStrictEqual(expected);
-  });
-});
-
-describe('getDateInstance', () => {
-  test.each(<Array<[number | string | Date]>>[
-    [1733412835329],
-    ['2024-12-05T15:33:55.329Z'],
-    [new Date(1733412835329)],
-  ])('getDateInstance(%s) -> valid Date', (a) => {
-    const instance = getDateInstance(a);
-    expect(instance).toBeInstanceOf(Date);
-    expect(instance.getTime()).toBe(1733412835329);
   });
 });
 
