@@ -1,15 +1,18 @@
+// @vitest-environment node
 import { describe, test, expect } from 'vitest';
 import { encodeError } from 'error-message-utils';
 import { ERRORS } from '../shared/errors.js';
 import { IDateTemplate, INumberFormatConfig, ITimeString } from './types.js';
 import {
   prettifyNumber,
+  prettifyPercentage,
   prettifyFileSize,
   prettifyBadgeCount,
   capitalizeFirst,
   toTitleCase,
   toSlug,
   prettifyDate,
+  prettifyTime,
   truncateText,
   maskMiddle,
   stringifyValue,
@@ -35,6 +38,19 @@ describe('prettifyNumber', () => {
   });
 });
 
+describe('prettifyPercentage', () => {
+  test.each(<Array<[number, Partial<INumberFormatConfig> | undefined, string]>>[
+    [10, undefined, '10%'],
+    [25.583, { maximumFractionDigits: 2 }, '25.58%'],
+    [100, { prefix: '~' }, '~100%'],
+    [2.65469642236, { maximumFractionDigits: 8, suffix: ' APY' }, '2.65469642% APY'],
+    [100, { minimumFractionDigits: 2 }, '100.00%'],
+    [-3.45, { maximumFractionDigits: 2 }, '-3.45%'],
+  ])('prettifyPercentage(%d, %o) -> %s', (a, b, expected) => {
+    expect(prettifyPercentage(a, b)).toBe(expected);
+  });
+});
+
 describe('prettifyDate', () => {
   test.each(<Array<[IDateTemplate]>>[
     ['date-short'],
@@ -49,6 +65,32 @@ describe('prettifyDate', () => {
     const res = prettifyDate(Date.now(), template);
     expect(res).toBeTypeOf('string');
     expect(res.length).toBeGreaterThan(0);
+  });
+});
+
+describe('prettifyTime', () => {
+  test.each(<Array<[number, string]>>[
+    [0, '0s'],
+    [999, '0s'],
+    [1000, '1s'],
+    [59_999, '59s'],
+    [60_000, '1m'],
+    [61_999, '1m'],
+    [3_600_000, '1h'],
+    [3_660_000, '1h 1m'],
+    [86_400_000, '1d'],
+    [90_000_000, '1d 1h'],
+    [90_060_000, '1d 1h 1m'],
+  ])('prettifyTime(%d) -> %s', (milliseconds, expected) => {
+    expect(prettifyTime(milliseconds)).toBe(expected);
+  });
+
+  test.each(<Array<[number, string]>>[
+    [-1, '0s'],
+    [Number.NaN, '0s'],
+    [Number.POSITIVE_INFINITY, '0s'],
+  ])('prettifyTime(%d) -> safe fallback %s', (milliseconds, expected) => {
+    expect(prettifyTime(milliseconds)).toBe(expected);
   });
 });
 

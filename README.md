@@ -337,7 +337,7 @@ await res.json();
   <summary><code>prettifyNumber</code></summary>
   <br/>
 
-  Verifies if a value is a valid UUID and that it matches a specific version.
+  Formats a numeric value based on the user's default language.
 
   ```typescript
   import { prettifyNumber } from 'web-utils-kit';
@@ -347,6 +347,24 @@ await res.json();
   // '2,654.69642236 BTC'
   prettifyNumber(1000, { minimumFractionDigits: 2, prefix: '$' });
   // '$1,000.00'
+  ```
+  <br/>
+</details>
+
+<details>
+  <summary><code>prettifyPercentage</code></summary>
+  <br/>
+
+  Formats a numeric value as a percentage based on the user's default language.
+
+  ```typescript
+  import { prettifyPercentage } from 'web-utils-kit';
+
+  prettifyPercentage(10); // '10%'
+  prettifyPercentage(25.583, { maximumFractionDigits: 2 }); 
+  // '25.58%'
+  prettifyPercentage(2.65469642236, { maximumFractionDigits: 8, suffix: ' APY' }); 
+  // '2.65469642% APY'
   ```
   <br/>
 </details>
@@ -372,6 +390,22 @@ await res.json();
   // 'Thursday, December 5, 2024 at 12:05:20 PM'
   prettifyDate(Date.now(), 'date-medium');
   // 'December 5, 2024'
+  ```
+  <br/>
+</details>
+
+<details>
+  <summary><code>prettifyTime</code></summary>
+  <br/>
+
+  Formats a duration in milliseconds into a human-readable string.
+
+  ```typescript
+  import { prettifyTime } from 'web-utils-kit';
+
+  prettifyTime(59_999); // '59s'
+  prettifyTime(3_660_000); // '1h 1m'
+  prettifyTime(90_060_000); // '1d 1h 1m'
   ```
   <br/>
 </details>
@@ -716,10 +750,11 @@ await res.json();
   // ['a', 'b', 'c']
   ['a', 'b', 'c'].sort(sortPrimitives('desc'));
   // ['c', 'b', 'a']
+  [[3n, 1n, 4n, 2n, 5n]].sort(sortPrimitives('asc'));
+  // [1n, 2n, 3n, 4n, 5n]
   ```
   <br/>
 </details>
-
 
 <details>
   <summary><code>sortRecords</code></summary>
@@ -731,13 +766,37 @@ await res.json();
   import { sortRecords } from 'web-utils-kit';
 
   [{ v: 1 }, { v: 2 }, { v: 3 }].sort(sortRecords('v', 'asc'));
-  // [1, 2, 3, 4, 5]
+  // [{ v: 1 }, { v: 2 }, { v: 3 }]
   [{ v: 1 }, { v: 2 }, { v: 3 }].sort(sortRecords('v', 'desc'));
   // [{ v: 3 }, { v: 2 }, { v: 1 }]
   [{ v: 'a' }, { v: 'b' }, { v: 'c' }].sort(sortRecords('v', 'asc'));
   // [{ v: 'a' }, { v: 'b' }, { v: 'c' }]
   [{ v: 'a' }, { v: 'b' }, { v: 'c' }].sort(sortRecords('v', 'desc'));
   // [{ v: 'c' }, { v: 'b' }, { v: 'a' }]
+  [{ v: 1n }, { v: 2n }, { v: 3n }].sort(sortRecords('v', 'desc'));
+  // [{ v: 3n }, { v: 2n }, { v: 1n }]
+  ```
+  <br/>
+</details>
+
+<details>
+  <summary><code>sortRecordsWithBigIntString</code></summary>
+  <br/>
+
+  Sorts a list of record values by key, treating stringified bigints as actual bigints, based on a sort direction.
+
+  ```typescript
+  import { sortRecordsWithBigIntString } from 'web-utils-kit';
+
+  [{ v: '1' }, { v: '2' }, { v: '3' }].sort(sortRecordsWithBigIntString('v', 'asc'));
+  // [{ v: '1' }, { v: '2' }, { v: '3' }]
+  [
+    { v: '9007199254740993' }, 
+    { v: '-12' }, 
+    { v: '0' }, 
+    { v: '9007199254740992' }
+  ].sort(sortRecords('v', 'desc'));
+  // [{ v: '9007199254740993' }, { v: '9007199254740992' }, { v: '0' }, { v: '-12' }]
   ```
   <br/>
 </details>
