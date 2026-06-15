@@ -25,11 +25,13 @@ export {
 // transformers
 export {
   type INumberFormatConfig,
+  type IDateValue,
   type IDateTemplate,
   type ITimeString,
   type ISubstitutionOptions,
   prettifyNumber,
   prettifyPercentage,
+  toDate,
   prettifyDate,
   prettifyTime,
   prettifyFileSize,

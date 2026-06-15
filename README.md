@@ -370,6 +370,27 @@ await res.json();
 </details>
 
 <details>
+  <summary><code>toDate</code></summary>
+  <br/>
+
+  Creates an instance of Date based on a value.
+
+  ```typescript
+  import { toDate } from 'web-utils-kit';
+
+  toDate('2026-06-15T16:01:04.228Z').toISOString(); 
+  // Date 2026-06-15T16:01:04.228Z
+
+  toDate(new Date('2026-06-15T16:01:04.228Z')).toISOString(); 
+  // Date 2026-06-15T16:01:04.228Z
+
+  toDate(1781539293658).toISOString(); 
+  // Date 2026-06-15T16:01:04.228Z
+  ```
+  <br/>
+</details>
+
+<details>
   <summary><code>prettifyDate</code></summary>
   <br/>
 
@@ -802,6 +823,40 @@ await res.json();
 </details>
 
 <details>
+  <summary><code>sortRecordsWithDateValue</code></summary>
+  <br/>
+
+  Sorts a list of record values by key, treating date values as actual Date objects, based on a sort direction.
+
+  ```typescript
+  import { sortRecordsWithDateValue } from 'web-utils-kit';
+
+  [
+    { v: '2026-06-15T16:01:33.658Z' }, 
+    { v: new Date('2026-05-15T16:01:33.658Z') }, 
+    { v: new Date('2026-07-15T16:01:33.658Z').getTime() }
+  ].sort(sortRecordsWithDateValue('v', 'asc'));
+  // [
+  //   { v: new Date('2026-05-15T16:01:33.658Z') }, 
+  //   { v: '2026-06-15T16:01:33.658Z' }, 
+  //   { v: new Date('2026-07-15T16:01:33.658Z').getTime() }
+  // ]
+
+  [
+    { v: '2026-06-15T16:01:33.658Z' }, 
+    { v: new Date('2026-05-15T16:01:33.658Z') }, 
+    { v: new Date('2026-07-15T16:01:33.658Z').getTime() }
+  ].sort(sortRecordsWithDateValue('v', 'desc'));
+  // [
+  //   { v: new Date('2026-07-15T16:01:33.658Z').getTime() }
+  //   { v: '2026-06-15T16:01:33.658Z' }, 
+  //   { v: new Date('2026-05-15T16:01:33.658Z') }, 
+  // ]
+  ```
+  <br/>
+</details>
+
+<details>
   <summary><code>shuffleArray</code></summary>
   <br/>
 
@@ -1080,6 +1135,18 @@ await res.json();
     prefix: string; // Default: ''
     suffix: string; // Default: ''
   };
+  ```
+  <br/>
+</details>
+
+<details>
+  <summary><code>IDateValue</code></summary>
+  <br/>
+  
+  The value that can be used to create a `Date` instance.
+
+  ```typescript
+  type IDateValue = Date | number | string;
   ```
   <br/>
 </details>

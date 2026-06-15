@@ -12,6 +12,7 @@ import {
   toTitleCase,
   toSlug,
   prettifyDate,
+  toDate,
   prettifyTime,
   truncateText,
   maskMiddle,
@@ -48,6 +49,18 @@ describe('prettifyPercentage', () => {
     [-3.45, { maximumFractionDigits: 2 }, '-3.45%'],
   ])('prettifyPercentage(%d, %o) -> %s', (a, b, expected) => {
     expect(prettifyPercentage(a, b)).toBe(expected);
+  });
+});
+
+describe('toDate', () => {
+  test.each(<Array<[number | string | Date]>>[
+    [1733412835329],
+    ['2024-12-05T15:33:55.329Z'],
+    [new Date(1733412835329)],
+  ])('toDate(%s) -> valid Date', (a) => {
+    const instance = toDate(a);
+    expect(instance).toBeInstanceOf(Date);
+    expect(instance.getTime()).toBe(1733412835329);
   });
 });
 
