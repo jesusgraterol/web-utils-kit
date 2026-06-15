@@ -189,8 +189,8 @@ const sortRecords =
  * - MIXED_OR_UNSUPPORTED_DATA_TYPES: if the values are mixed or are different to string | number | bigint
  */
 export const sortRecordsWithBigIntString =
-  (key: string, direction: ISortDirection) =>
-  (a: Record<string, unknown>, b: Record<string, unknown>): number => {
+  <T extends Record<string, unknown>>(key: keyof T, direction: ISortDirection) =>
+  (a: T, b: T): number => {
     try {
       const aValue = a[key];
       const bValue = b[key];
@@ -208,7 +208,7 @@ export const sortRecordsWithBigIntString =
         ),
       );
     } catch (e) {
-      console.log(`key: ${key}`);
+      console.log(`key: ${String(key)}`);
       console.log('a: ', a);
       console.log('b: ', b);
       if (isEncodedError(e)) {
@@ -233,8 +233,8 @@ export const sortRecordsWithBigIntString =
  * - MIXED_OR_UNSUPPORTED_DATA_TYPES: if the values are mixed or are different to date values
  */
 export const sortRecordsWithDateValue =
-  (key: string, direction: ISortDirection) =>
-  (a: Record<string, unknown>, b: Record<string, unknown>): number => {
+  <T extends Record<string, unknown>>(key: keyof T, direction: ISortDirection) =>
+  (a: T, b: T): number => {
     try {
       if (a[key] && b[key]) {
         const aDate = toDate(a[key] as IDateValue);
@@ -249,7 +249,7 @@ export const sortRecordsWithDateValue =
         ),
       );
     } catch (e) {
-      console.log(`key: ${key}`);
+      console.log(`key: ${String(key)}`);
       console.log('a: ', a);
       console.log('b: ', b);
       if (isEncodedError(e)) {
