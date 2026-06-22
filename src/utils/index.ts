@@ -1,8 +1,9 @@
+/* eslint-disable no-console */
 import { v4 as uuidv4, v7 as uuidv7 } from 'uuid';
 import { encodeError, extractMessage, isEncodedError } from 'error-message-utils';
 import { IUUIDVersion } from '../shared/types.js';
 import { ERRORS } from '../shared/errors.js';
-import { isIntegerValid } from '../validations/index.js';
+import { isIntegerValid, isStringValid } from '../validations/index.js';
 import { IDateValue, stringifyJSONDeterministically, toDate } from '../transformers/index.js';
 import { IFilterByQueryOptions, ISortDirection } from './types.js';
 import {
@@ -12,7 +13,12 @@ import {
   validateObjectAndKeys,
 } from './validations.js';
 import { buildNormalizedQueryTokens } from './transformers.js';
-import { filterItemsByQueryTokens } from './utils.js';
+import {
+  extractFenceMarker,
+  extractHeadingName,
+  filterItemsByQueryTokens,
+  isClosingFence,
+} from './utils.js';
 
 /* ************************************************************************************************
  *                                           GENERATORS                                           *
@@ -503,6 +509,42 @@ const getNextPageParam = <T extends object, K extends keyof T>(
   return items.at(-1)?.[propName];
 };
 
+/**
+ * Extracts the name of the first markdown heading in the given content.
+ * @param markdownContent The markdown-formatted content.
+ * @returns The first markdown heading text found in the content, or null if none is found.
+ */
+const extractFirstMarkdownHeadingName = (markdownContent: string): string | null => {
+  if (!isStringValid(markdownContent)) {
+    return null;
+  }
+
+  let openingFenceMarker: string | null = null;
+  let firstHeadingName: string | null = null;
+
+  markdownContent.split(/\r\n|\r|\n/).some((line) => {
+    if (openingFenceMarker !== null) {
+      if (isClosingFence(line, openingFenceMarker)) {
+        openingFenceMarker = null;
+      }
+
+      return false;
+    }
+
+    const fenceMarker = extractFenceMarker(line);
+
+    if (fenceMarker !== null) {
+      openingFenceMarker = fenceMarker;
+      return false;
+    }
+
+    firstHeadingName = extractHeadingName(line);
+    return firstHeadingName !== null;
+  });
+
+  return firstHeadingName;
+};
+
 /* ************************************************************************************************
  *                                         MODULE EXPORTS                                         *
  ************************************************************************************************ */
@@ -539,4 +581,5 @@ export {
   extractEmailUsername,
   getInitials,
   getNextPageParam,
+  extractFirstMarkdownHeadingName,
 };

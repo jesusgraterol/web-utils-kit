@@ -1094,6 +1094,21 @@ await res.json();
   <br/>
 </details>
 
+<details>
+  <summary><code>extractFirstMarkdownHeadingName</code></summary>
+  <br/>
+
+  Extracts the name of the first markdown heading in the given content.
+
+  ```typescript
+  import { extractFirstMarkdownHeadingName } from 'web-utils-kit';
+
+  extractFirstMarkdownHeadingName('# Output format\n\nReturn concise Markdown.')
+  // 'Output format'
+  ```
+  <br/>
+</details>
+
 <br/>
 
 ## Types
