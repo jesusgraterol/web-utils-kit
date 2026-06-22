@@ -75,4 +75,5 @@ export {
   extractEmailUsername,
   getInitials,
   getNextPageParam,
+  extractFirstMarkdownHeadingName,
 } from './utils/index.js';

@@ -18,6 +18,7 @@ import {
   extractEmailUsername,
   getInitials,
   getNextPageParam,
+  extractFirstMarkdownHeadingName,
 } from './index.js';
 import { ERRORS } from '../shared/errors.js';
 
@@ -811,5 +812,56 @@ describe('Misc Helpers', () => {
         expect(lastEntryCreatedAt).toStrictEqual(new Date('2026-01-02T00:00:00.000Z'));
       },
     );
+  });
+});
+
+describe('extractFirstMarkdownHeadingName', () => {
+  test.each(['', '  ', '\n', '\t', 'Hello world :)'])(
+    'returns null when section is invalid: %j',
+    (section) => {
+      expect(extractFirstMarkdownHeadingName(section)).toBeNull();
+    },
+  );
+
+  test('extracts the name from the first h1 heading', () => {
+    expect(extractFirstMarkdownHeadingName('# Output format\n\nReturn concise Markdown.')).toBe(
+      'Output format',
+    );
+  });
+
+  test('extracts the name from the first heading regardless of heading level', () => {
+    expect(
+      extractFirstMarkdownHeadingName(
+        [
+          'Introductory text before the reusable section.',
+          '',
+          '### Review criteria',
+          '',
+          '# Later heading',
+        ].join('\n'),
+      ),
+    ).toBe('Review criteria');
+  });
+
+  test('normalizes heading whitespace and trailing closing hashes', () => {
+    expect(
+      extractFirstMarkdownHeadingName('  ##   C# guidance ###  \n\nKeep inline hashes intact.'),
+    ).toBe('C# guidance');
+  });
+
+  test('ignores heading-like lines inside fenced code blocks', () => {
+    expect(
+      extractFirstMarkdownHeadingName(
+        ['```markdown', '# Example heading in code', '```', '', '## Runtime context'].join('\n'),
+      ),
+    ).toBe('Runtime context');
+  });
+
+  test('returns null when no markdown heading is found', () => {
+    expect(extractFirstMarkdownHeadingName('Plain section content without a heading.')).toBeNull();
+  });
+
+  test('returns null when the first markdown heading has no text', () => {
+    expect(extractFirstMarkdownHeadingName('###   \n\nBody content.')).toBeNull();
   });
 });
