@@ -755,6 +755,20 @@ await res.json();
 </details>
 
 <details>
+  <summary><code>generateDateId</code></summary>
+  <br/>
+
+  Generates a date ID string in the format "YYYY_MM_DD".
+
+  ```typescript
+  import { generateDateId } from 'web-utils-kit';
+
+  generateDateId() // '2026_06_26'
+  ```
+  <br/>
+</details>
+
+<details>
   <summary><code>sortPrimitives</code></summary>
   <br/>
 
