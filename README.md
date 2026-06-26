@@ -764,6 +764,9 @@ await res.json();
   import { generateDateId } from 'web-utils-kit';
 
   generateDateId() // '2026_06_26'
+  generateDateId(new Date()) // '2026_06_26'
+  generateDateId(new Date().getTime()) // '2026_06_26'
+  generateDateId('2022-01-07T12:30:09.449Z') // '2022_01_07'
   ```
   <br/>
 </details>
