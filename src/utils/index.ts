@@ -85,6 +85,19 @@ const generateRandomInteger = (min: number, max: number): number =>
 const generateSequence = (start: number, stop: number, step: number = 1): number[] =>
   Array.from({ length: (stop - start) / step + 1 }, (_, i) => start + i * step);
 
+/**
+ * Generates a date ID string in the format "YYYY_MM_DD".
+ * @param value The date value to generate the ID from. Defaults to the current date if not provided.
+ * @returns The generated date ID string.
+ */
+const generateDateId = (value?: IDateValue): string => {
+  const date = toDate(value ?? new Date());
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}_${month}_${day}`;
+};
+
 /* ************************************************************************************************
  *                                         SORTING UTILS                                          *
  ************************************************************************************************ */
@@ -559,6 +572,7 @@ export {
   generateRandomFloat,
   generateRandomInteger,
   generateSequence,
+  generateDateId,
 
   // sorting utils
   sortPrimitives,

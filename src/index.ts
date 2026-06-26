@@ -60,6 +60,7 @@ export {
   generateRandomFloat,
   generateRandomInteger,
   generateSequence,
+  generateDateId,
   sortPrimitives,
   sortRecords,
   sortRecordsWithBigIntString,
