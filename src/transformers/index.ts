@@ -246,6 +246,30 @@ const maskMiddle = (text: string, visibleChars: number, mask: string = '...'): s
 };
 
 /**
+ * Normalizes a query string by removing control characters, zero-width characters, and extra spaces,
+ * then converts it to lowercase. Optionally, it can truncate the string to a specified maximum length.
+ * @param query The query string to normalize.
+ * @param maxLength? The optional maximum length of the normalized query string.
+ * @returns The normalized query string.
+ */
+const normalizeQuery = (query: string, maxLength?: number): string => {
+  const normalized = query
+    .normalize('NFKC')
+    // eslint-disable-next-line no-control-regex
+    .replace(/[\u0000-\u001F\u007F-\u009F]/g, ' ')
+    .replace(/[\u200B-\u200D\uFEFF]/g, '')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .toLowerCase();
+
+  if (typeof maxLength === 'number' && normalized.length > maxLength) {
+    return normalized.slice(0, maxLength);
+  }
+
+  return normalized;
+};
+
+/**
  * Converts any value into a string. If the value is an object or an array, it will be stringified
  * with JSON.stringify.
  * @param value The value to convert into a string.
@@ -511,6 +535,7 @@ export {
   toSlug,
   truncateText,
   maskMiddle,
+  normalizeQuery,
   stringifyValue,
   applySubstitutions,
   toMS,
