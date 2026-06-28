@@ -537,6 +537,21 @@ await res.json();
 </details>
 
 <details>
+  <summary><code>normalizeQuery</code></summary>
+  <br/>
+
+  Normalizes a query string by removing control characters, zero-width characters, and extra spaces, then converts it to lowercase. Optionally, it can truncate the string to a specified maximum length.
+
+  ```typescript
+  import { normalizeQuery } from 'web-utils-kit';
+
+  normalizeQuery('  Information     Sections  '); // 'information sections'
+  normalizeQuery('quick\u200Bsearch\u200Cresult\uFEFF'); // 'quicksearchresult'
+  ```
+  <br/>
+</details>
+
+<details>
   <summary><code>stringifyValue</code></summary>
   <br/>
 

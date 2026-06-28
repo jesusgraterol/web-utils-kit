@@ -24,7 +24,19 @@ import {
   parseJSON,
   createDeepClone,
   pruneJSON,
+  normalizeQuery,
 } from './index.js';
+
+/* ************************************************************************************************
+ *                                           CONSTANTS                                            *
+ ************************************************************************************************ */
+
+// ASCII and C1 control characters that search normalization replaces with word separators.
+const CONTROL_CHARACTERS = String.fromCharCode(0, 31, 127, 159);
+
+/* ************************************************************************************************
+ *                                             TESTS                                              *
+ ************************************************************************************************ */
 
 describe('prettifyNumber', () => {
   test.each(<Array<[number, Partial<INumberFormatConfig> | undefined, string]>>[
@@ -217,6 +229,32 @@ describe('maskMiddle', () => {
     ['bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh', 6, '********', 'bc1qxy********hx0wlh'],
   ])('maskMiddle(%s, %i, %s) -> %s', (text, visibleChars, mask, expected) => {
     expect(maskMiddle(text, visibleChars, mask)).toBe(expected);
+  });
+});
+
+describe('normalizeQuery', () => {
+  test.each([
+    ['spacing and casing', '  Information     Sections  ', 'information sections'],
+    ['line and tab separators', 'First\nSecond\tThird', 'first second third'],
+    ['Unicode compatibility characters', 'Ｆｕｌｌｗｉｄｔｈ　Ｓｅａｒｃｈ', 'fullwidth search'],
+    ['zero-width characters', 'quick\u200Bsearch\u200Cresult\uFEFF', 'quicksearchresult'],
+  ])('normalizeQuery(%s) -> normalized query', (_, query, expectedQuery) => {
+    expect(normalizeQuery(query)).toBe(expectedQuery);
+  });
+
+  test('replaces control characters with spaces before collapsing whitespace', () => {
+    expect(normalizeQuery(`alpha${CONTROL_CHARACTERS}omega`)).toBe('alpha omega');
+  });
+
+  test('returns an empty string when only removable characters are provided', () => {
+    expect(normalizeQuery(`  \u200B${CONTROL_CHARACTERS}\uFEFF  `)).toBe('');
+  });
+
+  test('limits the normalized query to the configured max length', () => {
+    const maxLength = 10;
+    const query = 'A'.repeat(maxLength + 1);
+
+    expect(normalizeQuery(query, maxLength)).toBe('a'.repeat(maxLength));
   });
 });
 

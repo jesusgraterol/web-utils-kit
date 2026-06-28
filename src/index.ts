@@ -41,6 +41,7 @@ export {
   toSlug,
   truncateText,
   maskMiddle,
+  normalizeQuery,
   stringifyValue,
   applySubstitutions,
   toMS,
