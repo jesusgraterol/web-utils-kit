@@ -545,6 +545,33 @@ const extractFirstMarkdownHeadingName = (markdownContent: string): string | null
   return firstHeadingName;
 };
 
+/**
+ * Extracts the names of substitution placeholders in the given text.
+ * @param text The text containing substitution placeholders.
+ * @returns An array of substitution placeholder names.
+ */
+const extractSubstitutionPlaceholderNames = (text: string): string[] => {
+  // ensure the string is valid before attempting to extract the variables
+  if (!isStringValid(text)) {
+    return [];
+  }
+
+  // extract the variables (if any)
+  const pattern = /{{(.*?)}}/g;
+  const variables = new Set<string>();
+
+  // eslint-disable-next-line no-restricted-syntax
+  for (const match of text.matchAll(pattern)) {
+    const variableName = match[1];
+
+    if (isStringValid(variableName)) {
+      variables.add(variableName);
+    }
+  }
+
+  return [...variables];
+};
+
 /* ************************************************************************************************
  *                                         MODULE EXPORTS                                         *
  ************************************************************************************************ */
@@ -583,4 +610,5 @@ export {
   getInitials,
   getNextPageParam,
   extractFirstMarkdownHeadingName,
+  extractSubstitutionPlaceholderNames,
 };

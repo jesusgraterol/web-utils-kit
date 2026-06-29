@@ -1,7 +1,7 @@
 import { decodeError, Exception, extractMessage } from 'error-message-utils';
 import type { IJSONValue } from '../shared/types.js';
 import { ERRORS } from '../shared/errors.js';
-import { isArrayValid, isObjectValid } from '../validations/index.js';
+import { isArrayValid, isObjectValid, isStringValid } from '../validations/index.js';
 import type {
   IDateTemplate,
   IDateValue,
@@ -321,8 +321,10 @@ const applySubstitutions = (
     jsonIndent: 0,
   },
 ): string =>
-  input.replace(/{{(.*?)}}/g, (match, key) =>
-    key in substitutions ? stringifyValue(substitutions[key], options.jsonIndent) : match,
+  input.replace(/{{(.*?)}}/g, (match: string, key: string): string =>
+    isStringValid(key) && key in substitutions
+      ? stringifyValue(substitutions[key], options.jsonIndent)
+      : match,
   );
 
 /**

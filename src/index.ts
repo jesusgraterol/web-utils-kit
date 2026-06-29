@@ -78,4 +78,5 @@ export {
   getInitials,
   getNextPageParam,
   extractFirstMarkdownHeadingName,
+  extractSubstitutionPlaceholderNames,
 } from './utils/index.js';

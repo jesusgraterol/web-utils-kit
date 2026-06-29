@@ -20,6 +20,7 @@ import {
   getInitials,
   getNextPageParam,
   extractFirstMarkdownHeadingName,
+  extractSubstitutionPlaceholderNames,
   generateDateId,
 } from './index.js';
 import { ERRORS } from '../shared/errors.js';
@@ -189,10 +190,7 @@ describe('Sorting Utils', () => {
     [[1n, '2', 3n, 4n, 5n], 'asc'],
     [[[1], 2, 3], 'asc'],
   ])('sortPrimitives(%o, %s) -> Error: MIXED_OR_UNSUPPORTED_DATA_TYPES', (a, b) => {
-    expectException(
-      () => a.sort(sortPrimitives(b)),
-      ERRORS.MIXED_OR_UNSUPPORTED_DATA_TYPES,
-    );
+    expectException(() => a.sort(sortPrimitives(b)), ERRORS.MIXED_OR_UNSUPPORTED_DATA_TYPES);
   });
 
   test.each(<Array<[Record<string, any>[], ISortDirection, Record<string, any>[]]>>[
@@ -301,10 +299,7 @@ describe('Sorting Utils', () => {
     [[{ v: 1n }, { v: 2n }, { v: '3' }]],
     [[{ v: [1] }, { v: [2] }, { v: '3' }]],
   ])('sortRecords(%o, %s) -> Error: MIXED_OR_UNSUPPORTED_DATA_TYPES', (a) => {
-    expectException(
-      () => a.sort(sortRecords('v', 'asc')),
-      ERRORS.MIXED_OR_UNSUPPORTED_DATA_TYPES,
-    );
+    expectException(() => a.sort(sortRecords('v', 'asc')), ERRORS.MIXED_OR_UNSUPPORTED_DATA_TYPES);
   });
 
   test.each(<Array<[Array<Record<'v', string>>, ISortDirection, Array<Record<'v', string>>]>>[
@@ -932,5 +927,42 @@ describe('extractFirstMarkdownHeadingName', () => {
 
   test('returns null when the first markdown heading has no text', () => {
     expect(extractFirstMarkdownHeadingName('###   \n\nBody content.')).toBeNull();
+  });
+});
+
+describe('extractSubstitutionPlaceholderNames', () => {
+  test.each<[unknown]>([[undefined], [null], [{}], [[]], [''], ['  '], ['No placeholders here.']])(
+    'returns an empty array when text has no extractable placeholders: %j',
+    (text) => {
+      expect(extractSubstitutionPlaceholderNames(text as string)).toStrictEqual([]);
+    },
+  );
+
+  test('extracts placeholder names in first-seen order', () => {
+    expect(
+      extractSubstitutionPlaceholderNames('Hello, {{name}}! You have {{count}} new messages.'),
+    ).toStrictEqual(['name', 'count']);
+  });
+
+  test('deduplicates repeated placeholder names', () => {
+    expect(
+      extractSubstitutionPlaceholderNames(
+        'Hello, {{name}}! Your name is {{name}} and you have {{count}} messages.',
+      ),
+    ).toStrictEqual(['name', 'count']);
+  });
+
+  test('supports placeholder names with special characters', () => {
+    expect(
+      extractSubstitutionPlaceholderNames(
+        'User: {{user-name}}. Email: {{user.email}}. Role: {{roles[0]}}. My variable: {{MY_VARIABLE}}. Something: {{ }}',
+      ),
+    ).toStrictEqual(['user-name', 'user.email', 'roles[0]', 'MY_VARIABLE']);
+  });
+
+  test('ignores empty and whitespace-only placeholders', () => {
+    expect(
+      extractSubstitutionPlaceholderNames('Empty: {{}}. Space: {{ }}. Valid: {{name}}.'),
+    ).toStrictEqual(['name']);
   });
 });

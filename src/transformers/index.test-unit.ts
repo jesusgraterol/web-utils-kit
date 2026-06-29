@@ -376,6 +376,16 @@ describe('applySubstitutions', () => {
     );
   });
 
+  test('leaves empty and whitespace-only placeholders unchanged', () => {
+    expect(
+      applySubstitutions('Empty: {{}}. Space: {{ }}. Valid: {{name}}.', {
+        '': 'empty',
+        ' ': 'space',
+        name: 'Jane',
+      }),
+    ).toBe('Empty: {{}}. Space: {{ }}. Valid: Jane.');
+  });
+
   test('handles placeholders with no corresponding keys in substitutions object', () => {
     expect(
       applySubstitutions('Hello, {{name}}! You have {{count}} new messages.', {
