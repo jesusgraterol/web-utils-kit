@@ -1141,6 +1141,21 @@ await res.json();
   <br/>
 </details>
 
+<details>
+  <summary><code>extractSubstitutionPlaceholderNames</code></summary>
+  <br/>
+
+  Extracts the names of substitution placeholders in the given text.
+
+  ```typescript
+  import { extractSubstitutionPlaceholderNames } from 'web-utils-kit';
+
+  extractSubstitutionPlaceholderNames('Hello, {{name}}! Your name is {{name}} and you have {{count}} messages.')
+  // ['name', 'count']
+  ```
+  <br/>
+</details>
+
 <br/>
 
 ## Types
