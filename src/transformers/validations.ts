@@ -1,4 +1,4 @@
-import { encodeError } from 'error-message-utils';
+import { Exception } from 'error-message-utils';
 import { ERRORS } from '../shared/errors.js';
 import {
   isArrayValid,
@@ -6,7 +6,7 @@ import {
   isObjectValid,
   isStringValid,
 } from '../validations/index.js';
-import { ITimeString } from './types.js';
+import type { ITimeString } from './types.js';
 
 /* ************************************************************************************************
  *                                          TIME STRING                                            *
@@ -20,11 +20,9 @@ import { ITimeString } from './types.js';
  */
 export const validateTimeStringType = (str: ITimeString): void => {
   if (!isStringValid(str, 5, 100)) {
-    throw new Error(
-      encodeError(
-        `The provided time string is invalid, it must be a string with length between 5 and 100. Received: ${str}`,
-        ERRORS.INVALID_TIME_STRING,
-      ),
+    throw new Exception(
+      `The provided time string is invalid, it must be a string with length between 5 and 100. Received: ${str}`,
+      ERRORS.INVALID_TIME_STRING,
     );
   }
 };
@@ -37,11 +35,9 @@ export const validateTimeStringType = (str: ITimeString): void => {
  */
 export const validateTimeStringChunks = (chunks: string[]): void => {
   if (chunks.length !== 2) {
-    throw new Error(
-      encodeError(
-        `The format of the provided time string is invalid, it must match the expected format {value} {unit}. For example: '2 days'. Received: ${JSON.stringify(chunks)}`,
-        ERRORS.INVALID_TIME_STRING,
-      ),
+    throw new Exception(
+      `The format of the provided time string is invalid, it must match the expected format {value} {unit}. For example: '2 days'. Received: ${JSON.stringify(chunks)}`,
+      ERRORS.INVALID_TIME_STRING,
     );
   }
 };
@@ -54,11 +50,9 @@ export const validateTimeStringChunks = (chunks: string[]): void => {
  */
 export const validateTimeStringValue = (value: number): void => {
   if (!isIntegerValid(value, 1)) {
-    throw new Error(
-      encodeError(
-        `The value of the provided time string is invalid, it must be a positive integer. Received: ${value}`,
-        ERRORS.INVALID_TIME_STRING,
-      ),
+    throw new Exception(
+      `The value of the provided time string is invalid, it must be a positive integer. Received: ${value}`,
+      ERRORS.INVALID_TIME_STRING,
     );
   }
 };
@@ -75,11 +69,9 @@ export const validateTimeStringValue = (value: number): void => {
  */
 export const canJSONBeSerialized = (value: unknown): void => {
   if (!isObjectValid(value, true) && !isArrayValid(value, true)) {
-    throw new Error(
-      encodeError(
-        `The JSON value must be an object or an array in order to be stringified. Received: ${value}`,
-        ERRORS.UNSUPPORTED_DATA_TYPE,
-      ),
+    throw new Exception(
+      `The JSON value must be an object or an array in order to be stringified. Received: ${value}`,
+      ERRORS.UNSUPPORTED_DATA_TYPE,
     );
   }
 };
@@ -93,11 +85,9 @@ export const canJSONBeSerialized = (value: unknown): void => {
  */
 export const validateJSONSerializationResult = (value: unknown, result: unknown): void => {
   if (typeof result !== 'string' || !result.length) {
-    throw new Error(
-      encodeError(
-        `Stringifying the JSON value '${value}' produced an invalid result: ${result}.`,
-        ERRORS.UNABLE_TO_SERIALIZE_JSON,
-      ),
+    throw new Exception(
+      `Stringifying the JSON value '${value}' produced an invalid result: ${result}.`,
+      ERRORS.UNABLE_TO_SERIALIZE_JSON,
     );
   }
 };
@@ -110,11 +100,9 @@ export const validateJSONSerializationResult = (value: unknown, result: unknown)
  */
 export const canJSONBeDeserialized = (value: string): void => {
   if (typeof value !== 'string' || !value.length) {
-    throw new Error(
-      encodeError(
-        `The JSON value must be a non-empty string in order to be parsed. Received: ${value}`,
-        ERRORS.UNSUPPORTED_DATA_TYPE,
-      ),
+    throw new Exception(
+      `The JSON value must be a non-empty string in order to be parsed. Received: ${value}`,
+      ERRORS.UNSUPPORTED_DATA_TYPE,
     );
   }
 };
@@ -128,11 +116,9 @@ export const canJSONBeDeserialized = (value: string): void => {
  */
 export const validateJSONDeserializationResult = (value: string, result: unknown): void => {
   if (!isObjectValid(result, true) && !isArrayValid(result, true)) {
-    throw new Error(
-      encodeError(
-        `Parsing the JSON value '${value}' produced an invalid result: ${result}.`,
-        ERRORS.UNABLE_TO_DESERIALIZE_JSON,
-      ),
+    throw new Exception(
+      `Parsing the JSON value '${value}' produced an invalid result: ${result}.`,
+      ERRORS.UNABLE_TO_DESERIALIZE_JSON,
     );
   }
 };

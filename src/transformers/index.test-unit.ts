@@ -1,8 +1,8 @@
 // @vitest-environment node
 import { describe, test, expect } from 'vitest';
-import { encodeError } from 'error-message-utils';
+import { Exception } from 'error-message-utils';
 import { ERRORS } from '../shared/errors.js';
-import { IDateTemplate, INumberFormatConfig, ITimeString } from './types.js';
+import type { IDateTemplate, INumberFormatConfig, ITimeString } from './types.js';
 import {
   prettifyNumber,
   prettifyPercentage,
@@ -33,6 +33,40 @@ import {
 
 // ASCII and C1 control characters that search normalization replaces with word separators.
 const CONTROL_CHARACTERS = String.fromCharCode(0, 31, 127, 159);
+
+// error code values used by Exception assertions.
+type IExpectedErrorCode = (typeof ERRORS)[keyof typeof ERRORS];
+
+/**
+ * Asserts that a synchronous function throws an Exception with the expected code and message.
+ * @param fn The function expected to throw.
+ * @param expectedCode The expected Exception code.
+ * @param expectedMessage The expected Exception message when exact text matters.
+ * @returns Nothing.
+ */
+const expectException = (
+  fn: () => unknown,
+  expectedCode: IExpectedErrorCode,
+  expectedMessage?: string,
+): void => {
+  let thrownError: unknown;
+
+  try {
+    fn();
+  } catch (error) {
+    thrownError = error;
+  }
+
+  expect(thrownError).toBeInstanceOf(Exception);
+
+  const exception = thrownError as Exception;
+
+  expect(exception.code).toBe(expectedCode);
+
+  if (typeof expectedMessage === 'string') {
+    expect(exception.message).toBe(expectedMessage);
+  }
+};
 
 /* ************************************************************************************************
  *                                             TESTS                                              *
@@ -197,11 +231,10 @@ describe('toSlug', () => {
   });
 
   test.each(['', '!!!@@@###', '--__--', '@-@'])('toSlug(%s) -> throws', (a) => {
-    expect(() => toSlug(a)).toThrowError(
-      encodeError(
-        `Failed to slugify the string '${a}': the resulting slug is empty.`,
-        ERRORS.UNABLE_TO_SLUGIFY_STRING,
-      ),
+    expectException(
+      () => toSlug(a),
+      ERRORS.UNABLE_TO_SLUGIFY_STRING,
+      `Failed to slugify the string '${a}': the resulting slug is empty.`,
     );
   });
 });
@@ -341,6 +374,16 @@ describe('applySubstitutions', () => {
     expect(applySubstitutions('Hello, {{name}}! You have {{count}} new messages.')).toBe(
       'Hello, {{name}}! You have {{count}} new messages.',
     );
+  });
+
+  test('leaves empty and whitespace-only placeholders unchanged', () => {
+    expect(
+      applySubstitutions('Empty: {{}}. Space: {{ }}. Valid: {{name}}.', {
+        '': 'empty',
+        ' ': 'space',
+        name: 'Jane',
+      }),
+    ).toBe('Empty: {{}}. Space: {{ }}. Valid: Jane.');
   });
 
   test('handles placeholders with no corresponding keys in substitutions object', () => {
@@ -497,7 +540,7 @@ describe('toMS', () => {
     '0.5 years',
     '2  days',
   ])('toMS(%s) -> throws', (input) => {
-    expect(() => toMS(input as any)).toThrowError(ERRORS.INVALID_TIME_STRING);
+    expectException(() => toMS(input as ITimeString), ERRORS.INVALID_TIME_STRING);
   });
 });
 
@@ -505,7 +548,7 @@ describe('stringifyJSON', () => {
   test.each([[undefined], [null], [''], ['hello world'], [true], [123], [NaN]])(
     'stringifyJSON(%o) -> throws UNSUPPORTED_DATA_TYPE',
     (value) => {
-      expect(() => stringifyJSON(value as any)).toThrowError(ERRORS.UNSUPPORTED_DATA_TYPE);
+      expectException(() => stringifyJSON(value), ERRORS.UNSUPPORTED_DATA_TYPE);
     },
   );
 
@@ -526,9 +569,7 @@ describe('stringifyJSONDeterministically', () => {
   test.each([[undefined], [null], [''], ['hello world'], [true], [123], [NaN]])(
     'stringifyJSONDeterministically(%o) -> throws UNSUPPORTED_DATA_TYPE',
     (value) => {
-      expect(() => stringifyJSONDeterministically(value as any)).toThrowError(
-        ERRORS.UNSUPPORTED_DATA_TYPE,
-      );
+      expectException(() => stringifyJSONDeterministically(value), ERRORS.UNSUPPORTED_DATA_TYPE);
     },
   );
 
@@ -550,11 +591,11 @@ describe('parseJSON', () => {
   test.each([[undefined], [null], [''], [true], [123], [NaN]])(
     'parseJSON(%s) -> throws UNSUPPORTED_DATA_TYPE',
     (value) => {
-      expect(() => parseJSON(value as any)).toThrowError(ERRORS.UNSUPPORTED_DATA_TYPE);
+      expectException(() => parseJSON(value as string), ERRORS.UNSUPPORTED_DATA_TYPE);
     },
   );
   test.each([['hello world']])('parseJSON(%s) -> throws UNABLE_TO_DESERIALIZE_JSON', (value) => {
-    expect(() => parseJSON(value as any)).toThrowError(ERRORS.UNABLE_TO_DESERIALIZE_JSON);
+    expectException(() => parseJSON(value), ERRORS.UNABLE_TO_DESERIALIZE_JSON);
   });
 
   test.each([
@@ -574,7 +615,7 @@ describe('createDeepClone', () => {
   test.each([[undefined], [null], [''], [true], [123], [NaN], ['hello world']])(
     'createDeepClone(%o) -> throws UNABLE_TO_CREATE_DEEP_CLONE',
     (value) => {
-      expect(() => createDeepClone(value as any)).toThrowError(ERRORS.UNABLE_TO_CREATE_DEEP_CLONE);
+      expectException(() => createDeepClone(value), ERRORS.UNABLE_TO_CREATE_DEEP_CLONE);
     },
   );
 

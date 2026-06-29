@@ -1,4 +1,4 @@
-import { encodeError } from 'error-message-utils';
+import { Exception } from 'error-message-utils';
 import { ERRORS } from '../shared/errors.js';
 import {
   isArrayValid,
@@ -15,11 +15,9 @@ import {
  */
 export const canArrayBeShuffled = (input: unknown[]): void => {
   if (!Array.isArray(input) || input.length <= 1) {
-    throw new Error(
-      encodeError(
-        'For an array to be shuffled it must contain at least 2 items.',
-        ERRORS.INVALID_OR_EMPTY_ARRAY,
-      ),
+    throw new Exception(
+      'For an array to be shuffled it must contain at least 2 items.',
+      ERRORS.INVALID_OR_EMPTY_ARRAY,
     );
   }
 };
@@ -34,19 +32,15 @@ export const canArrayBeShuffled = (input: unknown[]): void => {
  */
 export const validateObjectAndKeys = (input: unknown, propKeys: unknown): void => {
   if (!isObjectValid(input)) {
-    throw new Error(
-      encodeError(
-        'The input must be a valid and non-empty object.',
-        ERRORS.INVALID_OR_EMPTY_OBJECT,
-      ),
+    throw new Exception(
+      'The input must be a valid and non-empty object.',
+      ERRORS.INVALID_OR_EMPTY_OBJECT,
     );
   }
   if (!isArrayValid(propKeys)) {
-    throw new Error(
-      encodeError(
-        'The keys must be a valid and non-empty array of strings.',
-        ERRORS.INVALID_OR_EMPTY_ARRAY,
-      ),
+    throw new Exception(
+      'The keys must be a valid and non-empty array of strings.',
+      ERRORS.INVALID_OR_EMPTY_ARRAY,
     );
   }
 };
@@ -59,11 +53,9 @@ export const validateObjectAndKeys = (input: unknown, propKeys: unknown): void =
  */
 export const validateAuthorizationHeader = (header: unknown): void => {
   if (!isAuthorizationHeaderValid(header)) {
-    throw new Error(
-      encodeError(
-        `The provided authorization header does not comply with the expected format (RFC6750). Received: ${header}`,
-        ERRORS.INVALID_AUTHORIZATION_HEADER,
-      ),
+    throw new Exception(
+      `The provided authorization header does not comply with the expected format (RFC6750). Received: ${header}`,
+      ERRORS.INVALID_AUTHORIZATION_HEADER,
     );
   }
 };
@@ -76,11 +68,9 @@ export const validateAuthorizationHeader = (header: unknown): void => {
  */
 export const validateEmailAddress = (email: unknown): void => {
   if (!isEmailValid(email)) {
-    throw new Error(
-      encodeError(
-        `The provided email address is not valid or has a forbidden extension. Received: ${email}`,
-        ERRORS.INVALID_EMAIL_ADDRESS,
-      ),
+    throw new Exception(
+      `The provided email address is not valid or has a forbidden extension. Received: ${email}`,
+      ERRORS.INVALID_EMAIL_ADDRESS,
     );
   }
 };

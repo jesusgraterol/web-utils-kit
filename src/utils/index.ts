@@ -1,11 +1,12 @@
 /* eslint-disable no-console */
 import { v4 as uuidv4, v7 as uuidv7 } from 'uuid';
-import { encodeError, extractMessage, isEncodedError } from 'error-message-utils';
-import { IUUIDVersion } from '../shared/types.js';
+import { Exception, extractMessage } from 'error-message-utils';
+import type { IUUIDVersion } from '../shared/types.js';
 import { ERRORS } from '../shared/errors.js';
 import { isIntegerValid, isStringValid } from '../validations/index.js';
-import { IDateValue, stringifyJSONDeterministically, toDate } from '../transformers/index.js';
-import { IFilterByQueryOptions, ISortDirection } from './types.js';
+import type { IDateValue } from '../transformers/index.js';
+import { stringifyJSONDeterministically, toDate } from '../transformers/index.js';
+import type { IFilterByQueryOptions, ISortDirection } from './types.js';
 import {
   canArrayBeShuffled,
   validateAuthorizationHeader,
@@ -162,11 +163,9 @@ const sortPrimitives =
     if (typeof a === 'bigint' && typeof b === 'bigint') {
       return __sortBigIntValues(a, b, direction);
     }
-    throw new Error(
-      encodeError(
-        `Unable to sort list of primitive values as they can only be string | number | bigint and must not be mixed. Received: ${typeof a}, ${typeof b}`,
-        ERRORS.MIXED_OR_UNSUPPORTED_DATA_TYPES,
-      ),
+    throw new Exception(
+      `Unable to sort list of primitive values as they can only be string | number | bigint and must not be mixed. Received: ${typeof a}, ${typeof b}`,
+      ERRORS.MIXED_OR_UNSUPPORTED_DATA_TYPES,
     );
   };
 
@@ -190,11 +189,9 @@ const sortRecords =
     if (typeof a[key] === 'bigint' && typeof b[key] === 'bigint') {
       return __sortBigIntValues(a[key], b[key], direction);
     }
-    throw new Error(
-      encodeError(
-        `Unable to sort list of record values as they can only be string | number | bigint and must not be mixed. Received: ${typeof a[key]}, ${typeof b[key]}`,
-        ERRORS.MIXED_OR_UNSUPPORTED_DATA_TYPES,
-      ),
+    throw new Exception(
+      `Unable to sort list of record values as they can only be string | number | bigint and must not be mixed. Received: ${typeof a[key]}, ${typeof b[key]}`,
+      ERRORS.MIXED_OR_UNSUPPORTED_DATA_TYPES,
     );
   };
 
@@ -220,24 +217,20 @@ export const sortRecordsWithBigIntString =
         return __sortBigIntValues(aBigInt, bBigInt, direction);
       }
 
-      throw new Error(
-        encodeError(
-          `Unable to sort list of record values as they can only be stringified bigints. Received: ${typeof aValue}, ${typeof bValue}`,
-          ERRORS.MIXED_OR_UNSUPPORTED_DATA_TYPES,
-        ),
+      throw new Exception(
+        `Unable to sort list of record values as they can only be stringified bigints. Received: ${typeof aValue}, ${typeof bValue}`,
+        ERRORS.MIXED_OR_UNSUPPORTED_DATA_TYPES,
       );
     } catch (e) {
       console.log(`key: ${String(key)}`);
       console.log('a: ', a);
       console.log('b: ', b);
-      if (isEncodedError(e)) {
+      if (e instanceof Exception && e.code === ERRORS.MIXED_OR_UNSUPPORTED_DATA_TYPES) {
         throw e;
       }
-      throw new Error(
-        encodeError(
-          `Failed to sort list of record values as they can only be stringified bigints: ${extractMessage(e)}`,
-          ERRORS.MIXED_OR_UNSUPPORTED_DATA_TYPES,
-        ),
+      throw new Exception(
+        `Failed to sort list of record values as they can only be stringified bigints: ${extractMessage(e)}`,
+        ERRORS.MIXED_OR_UNSUPPORTED_DATA_TYPES,
       );
     }
   };
@@ -261,24 +254,20 @@ export const sortRecordsWithDateValue =
         return __sortNumberValues(aDate.getTime(), bDate.getTime(), direction);
       }
 
-      throw new Error(
-        encodeError(
-          `Unable to sort list of record values as they can only be date values.`,
-          ERRORS.MIXED_OR_UNSUPPORTED_DATA_TYPES,
-        ),
+      throw new Exception(
+        `Unable to sort list of record values as they can only be date values.`,
+        ERRORS.MIXED_OR_UNSUPPORTED_DATA_TYPES,
       );
     } catch (e) {
       console.log(`key: ${String(key)}`);
       console.log('a: ', a);
       console.log('b: ', b);
-      if (isEncodedError(e)) {
+      if (e instanceof Exception && e.code === ERRORS.MIXED_OR_UNSUPPORTED_DATA_TYPES) {
         throw e;
       }
-      throw new Error(
-        encodeError(
-          `Failed to sort list of record values as they can only be date strings: ${extractMessage(e)}`,
-          ERRORS.MIXED_OR_UNSUPPORTED_DATA_TYPES,
-        ),
+      throw new Exception(
+        `Failed to sort list of record values as they can only be date strings: ${extractMessage(e)}`,
+        ERRORS.MIXED_OR_UNSUPPORTED_DATA_TYPES,
       );
     }
   };
@@ -321,11 +310,9 @@ const splitArrayIntoBatches = <T>(items: T[], batchSize: number): Array<T[]> => 
 
   // ensure the batch size is a valid integer greater than zero
   if (!isIntegerValid(batchSize, 1)) {
-    throw new Error(
-      encodeError(
-        `In order to split an array into batches, the batch size must be an integer greater than 0. Received: ${batchSize}`,
-        ERRORS.INVALID_BATCH_SIZE,
-      ),
+    throw new Exception(
+      `In order to split an array into batches, the batch size must be an integer greater than 0. Received: ${batchSize}`,
+      ERRORS.INVALID_BATCH_SIZE,
     );
   }
 
@@ -558,6 +545,33 @@ const extractFirstMarkdownHeadingName = (markdownContent: string): string | null
   return firstHeadingName;
 };
 
+/**
+ * Extracts the names of substitution placeholders in the given text.
+ * @param text The text containing substitution placeholders.
+ * @returns An array of substitution placeholder names.
+ */
+const extractSubstitutionPlaceholderNames = (text: string): string[] => {
+  // ensure the string is valid before attempting to extract the variables
+  if (!isStringValid(text)) {
+    return [];
+  }
+
+  // extract the variables (if any)
+  const pattern = /{{(.*?)}}/g;
+  const variables = new Set<string>();
+
+  // eslint-disable-next-line no-restricted-syntax
+  for (const match of text.matchAll(pattern)) {
+    const variableName = match[1];
+
+    if (isStringValid(variableName)) {
+      variables.add(variableName);
+    }
+  }
+
+  return [...variables];
+};
+
 /* ************************************************************************************************
  *                                         MODULE EXPORTS                                         *
  ************************************************************************************************ */
@@ -596,4 +610,5 @@ export {
   getInitials,
   getNextPageParam,
   extractFirstMarkdownHeadingName,
+  extractSubstitutionPlaceholderNames,
 };
