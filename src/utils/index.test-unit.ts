@@ -1,5 +1,6 @@
 // @vitest-environment node
 import { describe, afterEach, test, expect, vi } from 'vitest';
+import { Exception } from 'error-message-utils';
 import type { ISortDirection } from './types.js';
 import {
   generateSequence,
@@ -53,6 +54,36 @@ const TEST_OBJ = {
 
 // records containing date values accepted by sortRecordsWithDateValue
 type IDateSortRecord = Record<'v', Date | number | string>;
+
+// error code values used by Exception assertions.
+type IExpectedErrorCode = (typeof ERRORS)[keyof typeof ERRORS];
+
+/**
+ * Asserts that a synchronous function throws an Exception with the expected code.
+ * @param fn The function expected to throw.
+ * @param expectedCode The expected Exception code.
+ * @param assertionMessage The optional assertion message to show when the expectation fails.
+ * @returns Nothing.
+ */
+const expectException = (
+  fn: () => unknown,
+  expectedCode: IExpectedErrorCode,
+  assertionMessage?: string,
+): void => {
+  let thrownError: unknown;
+
+  try {
+    fn();
+  } catch (error) {
+    thrownError = error;
+  }
+
+  expect(thrownError, assertionMessage).toBeInstanceOf(Exception);
+
+  const exception = thrownError as Exception;
+
+  expect(exception.code, assertionMessage).toBe(expectedCode);
+};
 
 /* ************************************************************************************************
  *                                             TESTS                                              *
@@ -158,7 +189,10 @@ describe('Sorting Utils', () => {
     [[1n, '2', 3n, 4n, 5n], 'asc'],
     [[[1], 2, 3], 'asc'],
   ])('sortPrimitives(%o, %s) -> Error: MIXED_OR_UNSUPPORTED_DATA_TYPES', (a, b) => {
-    expect(() => a.sort(sortPrimitives(b))).toThrow(ERRORS.MIXED_OR_UNSUPPORTED_DATA_TYPES);
+    expectException(
+      () => a.sort(sortPrimitives(b)),
+      ERRORS.MIXED_OR_UNSUPPORTED_DATA_TYPES,
+    );
   });
 
   test.each(<Array<[Record<string, any>[], ISortDirection, Record<string, any>[]]>>[
@@ -267,7 +301,10 @@ describe('Sorting Utils', () => {
     [[{ v: 1n }, { v: 2n }, { v: '3' }]],
     [[{ v: [1] }, { v: [2] }, { v: '3' }]],
   ])('sortRecords(%o, %s) -> Error: MIXED_OR_UNSUPPORTED_DATA_TYPES', (a) => {
-    expect(() => a.sort(sortRecords('v', 'asc'))).toThrow(ERRORS.MIXED_OR_UNSUPPORTED_DATA_TYPES);
+    expectException(
+      () => a.sort(sortRecords('v', 'asc')),
+      ERRORS.MIXED_OR_UNSUPPORTED_DATA_TYPES,
+    );
   });
 
   test.each(<Array<[Array<Record<'v', string>>, ISortDirection, Array<Record<'v', string>>]>>[
@@ -304,17 +341,20 @@ describe('Sorting Utils', () => {
     ['mixed value types', [{ v: '1' }, { v: 2 }]],
     ['missing sort key', [{ v: '1' }, { value: '2' }]],
   ])('sortRecordsWithBigIntString(%s) -> Error: MIXED_OR_UNSUPPORTED_DATA_TYPES', (caseName, a) => {
-    expect(() => a.sort(sortRecordsWithBigIntString('v', 'asc')), caseName).toThrow(
+    expectException(
+      () => a.sort(sortRecordsWithBigIntString('v', 'asc')),
       ERRORS.MIXED_OR_UNSUPPORTED_DATA_TYPES,
+      caseName,
     );
   });
 
   test('sortRecordsWithBigIntString(invalid bigint string) -> Error: MIXED_OR_UNSUPPORTED_DATA_TYPES', () => {
     const consoleLogSpy = vi.spyOn(console, 'log').mockImplementation(() => undefined);
 
-    expect(() =>
-      [{ v: '1' }, { v: 'not-a-bigint' }].sort(sortRecordsWithBigIntString('v', 'asc')),
-    ).toThrow(ERRORS.MIXED_OR_UNSUPPORTED_DATA_TYPES);
+    expectException(
+      () => [{ v: '1' }, { v: 'not-a-bigint' }].sort(sortRecordsWithBigIntString('v', 'asc')),
+      ERRORS.MIXED_OR_UNSUPPORTED_DATA_TYPES,
+    );
     expect(consoleLogSpy).toHaveBeenCalledTimes(3);
   });
 
@@ -387,8 +427,10 @@ describe('Sorting Utils', () => {
   ])('sortRecordsWithDateValue(%s) -> Error: MIXED_OR_UNSUPPORTED_DATA_TYPES', (caseName, a) => {
     vi.spyOn(console, 'log').mockImplementation(() => undefined);
 
-    expect(() => a.sort(sortRecordsWithDateValue('v', 'asc')), caseName).toThrow(
+    expectException(
+      () => a.sort(sortRecordsWithDateValue('v', 'asc')),
       ERRORS.MIXED_OR_UNSUPPORTED_DATA_TYPES,
+      caseName,
     );
   });
 });
@@ -401,7 +443,7 @@ describe('Object Management Helpers', () => {
       [[1, 2, 3], 2.5],
       [[1, 2, 3], NaN],
     ])('splitArrayIntoBatches(%o, %s) throws INVALID_BATCH_SIZE', (a, b) => {
-      expect(() => splitArrayIntoBatches(a, b)).toThrow(ERRORS.INVALID_BATCH_SIZE);
+      expectException(() => splitArrayIntoBatches(a, b), ERRORS.INVALID_BATCH_SIZE);
     });
 
     test('passing an empty array returns an empty array', () => {
@@ -460,14 +502,14 @@ describe('Object Management Helpers', () => {
       ['abc', ['id']],
       [1, ['id']],
     ])('pickProps(%s)', (a, b) => {
-      expect(() => pickProps(a, b)).toThrow(ERRORS.INVALID_OR_EMPTY_OBJECT);
+      expectException(() => pickProps(a, b), ERRORS.INVALID_OR_EMPTY_OBJECT);
     });
 
     test.each<Array<any>>([
       [{ id: 1 }, {}],
       [{ id: 1 }, []],
     ])('pickProps(%s)', (a, b) => {
-      expect(() => pickProps(a, b)).toThrow(ERRORS.INVALID_OR_EMPTY_ARRAY);
+      expectException(() => pickProps(a, b), ERRORS.INVALID_OR_EMPTY_ARRAY);
     });
   });
 
@@ -496,14 +538,14 @@ describe('Object Management Helpers', () => {
       ['abc', ['id']],
       [1, ['id']],
     ])('omitProps(%s)', (a, b) => {
-      expect(() => omitProps(a, b)).toThrow(ERRORS.INVALID_OR_EMPTY_OBJECT);
+      expectException(() => omitProps(a, b), ERRORS.INVALID_OR_EMPTY_OBJECT);
     });
 
     test.each<Array<any>>([
       [{ id: 1 }, {}],
       [{ id: 1 }, []],
     ])('omitProps(%s)', (a, b) => {
-      expect(() => omitProps(a, b)).toThrow(ERRORS.INVALID_OR_EMPTY_ARRAY);
+      expectException(() => omitProps(a, b), ERRORS.INVALID_OR_EMPTY_ARRAY);
     });
   });
 
@@ -520,7 +562,7 @@ describe('Object Management Helpers', () => {
       [null, []],
       [undefined, {}],
     ])("throws UNSUPPORTED_DATA_TYPE if any of the values isn't an object or an array", (a, b) => {
-      expect(() => isEqual(a, b)).toThrow(ERRORS.UNSUPPORTED_DATA_TYPE);
+      expectException(() => isEqual(a, b), ERRORS.UNSUPPORTED_DATA_TYPE);
     });
 
     test.each([
@@ -751,7 +793,8 @@ describe('Misc Helpers', () => {
     ])(
       'extractTokenFromAuthorizationHeader(%s) -> Error: INVALID_AUTHORIZATION_HEADER',
       (header) => {
-        expect(() => extractTokenFromAuthorizationHeader(header as string)).toThrow(
+        expectException(
+          () => extractTokenFromAuthorizationHeader(header as string),
           ERRORS.INVALID_AUTHORIZATION_HEADER,
         );
       },
@@ -781,7 +824,7 @@ describe('Misc Helpers', () => {
       'johndoe@gmail.',
       'johndoe@gmail.con',
     ])('extractEmailUsername(%s) -> Error: INVALID_EMAIL_ADDRESS', (email) => {
-      expect(() => extractEmailUsername(email as string)).toThrow(ERRORS.INVALID_EMAIL_ADDRESS);
+      expectException(() => extractEmailUsername(email as string), ERRORS.INVALID_EMAIL_ADDRESS);
     });
   });
 

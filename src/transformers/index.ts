@@ -1,8 +1,8 @@
-import { decodeError, encodeError, extractMessage } from 'error-message-utils';
-import { IJSONValue } from '../shared/types.js';
+import { decodeError, Exception, extractMessage } from 'error-message-utils';
+import type { IJSONValue } from '../shared/types.js';
 import { ERRORS } from '../shared/errors.js';
 import { isArrayValid, isObjectValid } from '../validations/index.js';
-import {
+import type {
   IDateTemplate,
   IDateValue,
   INumberFormatConfig,
@@ -28,6 +28,22 @@ import {
   validateJSONDeserializationResult,
 } from './validations.js';
 import { buildNumberFormatConfig, parseTimeString, sortJSONObjectKeys } from './utils.js';
+
+/**
+ * Extracts the code from Exception instances or legacy encoded errors.
+ * @param error The error to inspect.
+ * @returns The application error code when one can be extracted.
+ */
+const getErrorCode = (error: unknown): unknown =>
+  error instanceof Exception ? error.code : decodeError(error).code;
+
+/**
+ * Extracts the message text to preserve nested Exception codes in wrapped errors.
+ * @param error The error to format for inclusion in another error message.
+ * @returns The extracted error message.
+ */
+const extractThrowableMessage = (error: unknown): string =>
+  error instanceof Exception ? error.toString() : extractMessage(error);
 
 /* ************************************************************************************************
  *                                            GENERAL                                             *
@@ -207,11 +223,9 @@ const toSlug = (value: string): string => {
     .replace(/-+/g, '-') // collapse multiple "-"
     .replace(/^-|-$/g, ''); // trim "-" from start/end
   if (slug.length === 0) {
-    throw new Error(
-      encodeError(
-        `Failed to slugify the string '${value}': the resulting slug is empty.`,
-        ERRORS.UNABLE_TO_SLUGIFY_STRING,
-      ),
+    throw new Exception(
+      `Failed to slugify the string '${value}': the resulting slug is empty.`,
+      ERRORS.UNABLE_TO_SLUGIFY_STRING,
     );
   }
   return slug;
@@ -351,11 +365,9 @@ const toMS = (str: ITimeString): number => {
     case 'millisecond':
       return value;
     default:
-      throw new Error(
-        encodeError(
-          `The unit provided to the toMS function is invalid: "${unit}". Received: ${str}`,
-          ERRORS.INVALID_TIME_STRING,
-        ),
+      throw new Exception(
+        `The unit provided to the toMS function is invalid: "${unit}". Received: ${str}`,
+        ERRORS.INVALID_TIME_STRING,
       );
   }
 };
@@ -380,12 +392,10 @@ const stringifyJSON = <T>(value: T): string => {
     validateJSONSerializationResult(value, result);
     return result;
   } catch (e) {
-    if (decodeError(e).code !== ERRORS.UNABLE_TO_SERIALIZE_JSON) {
-      throw new Error(
-        encodeError(
-          `Failed to stringify the JSON value '${value}': ${extractMessage(e)}`,
-          ERRORS.UNABLE_TO_SERIALIZE_JSON,
-        ),
+    if (getErrorCode(e) !== ERRORS.UNABLE_TO_SERIALIZE_JSON) {
+      throw new Exception(
+        `Failed to stringify the JSON value '${value}': ${extractThrowableMessage(e)}`,
+        ERRORS.UNABLE_TO_SERIALIZE_JSON,
       );
     }
     throw e;
@@ -407,12 +417,10 @@ const stringifyJSONDeterministically = <T>(value: T): string => {
   try {
     return stringifyJSON(sortJSONObjectKeys(value) as object);
   } catch (e) {
-    if (decodeError(e).code !== ERRORS.UNABLE_TO_SERIALIZE_JSON) {
-      throw new Error(
-        encodeError(
-          `Failed to stringify the JSON value deterministically '${value}': ${extractMessage(e)}`,
-          ERRORS.UNABLE_TO_SERIALIZE_JSON,
-        ),
+    if (getErrorCode(e) !== ERRORS.UNABLE_TO_SERIALIZE_JSON) {
+      throw new Exception(
+        `Failed to stringify the JSON value deterministically '${value}': ${extractThrowableMessage(e)}`,
+        ERRORS.UNABLE_TO_SERIALIZE_JSON,
       );
     }
     throw e;
@@ -435,12 +443,10 @@ const parseJSON = <T>(value: string): T => {
     validateJSONDeserializationResult(value, result);
     return result;
   } catch (e) {
-    if (decodeError(e).code !== ERRORS.UNABLE_TO_DESERIALIZE_JSON) {
-      throw new Error(
-        encodeError(
-          `Failed to parse the JSON value '${value}': ${extractMessage(e)}`,
-          ERRORS.UNABLE_TO_DESERIALIZE_JSON,
-        ),
+    if (getErrorCode(e) !== ERRORS.UNABLE_TO_DESERIALIZE_JSON) {
+      throw new Exception(
+        `Failed to parse the JSON value '${value}': ${extractThrowableMessage(e)}`,
+        ERRORS.UNABLE_TO_DESERIALIZE_JSON,
       );
     }
     throw e;
@@ -458,11 +464,9 @@ const createDeepClone = <T>(value: T): T => {
   try {
     return parseJSON(stringifyJSON(value));
   } catch (e) {
-    throw new Error(
-      encodeError(
-        `Failed to create a deep clone of the value '${value}': ${extractMessage(e)}`,
-        ERRORS.UNABLE_TO_CREATE_DEEP_CLONE,
-      ),
+    throw new Exception(
+      `Failed to create a deep clone of the value '${value}': ${extractThrowableMessage(e)}`,
+      ERRORS.UNABLE_TO_CREATE_DEEP_CLONE,
     );
   }
 };

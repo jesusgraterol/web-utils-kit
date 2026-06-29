@@ -1,5 +1,7 @@
+// @vitest-environment node
 import { describe, test, expect } from 'vitest';
-import { IUUIDVersion } from '../shared/types.js';
+import { Exception } from 'error-message-utils';
+import type { IUUIDVersion } from '../shared/types.js';
 import { ERRORS } from '../shared/errors.js';
 import { isIntegerValid, isUUIDValid } from '../validations/index.js';
 import {
@@ -9,6 +11,35 @@ import {
   generateRandomInteger,
   shuffleArray,
 } from './index.js';
+
+/* ************************************************************************************************
+ *                                           CONSTANTS                                            *
+ ************************************************************************************************ */
+
+// error code values used by Exception assertions.
+type IExpectedErrorCode = (typeof ERRORS)[keyof typeof ERRORS];
+
+/**
+ * Asserts that a synchronous function throws an Exception with the expected code.
+ * @param fn The function expected to throw.
+ * @param expectedCode The expected Exception code.
+ * @returns Nothing.
+ */
+const expectException = (fn: () => unknown, expectedCode: IExpectedErrorCode): void => {
+  let thrownError: unknown;
+
+  try {
+    fn();
+  } catch (error) {
+    thrownError = error;
+  }
+
+  expect(thrownError).toBeInstanceOf(Exception);
+
+  const exception = thrownError as Exception;
+
+  expect(exception.code).toBe(expectedCode);
+};
 
 /* ************************************************************************************************
  *                                             TESTS                                              *
@@ -120,7 +151,7 @@ describe('Object management helpers', () => {
         ]),
       ],
     ])('shuffleArray(%o)', (arr) => {
-      expect(() => shuffleArray(arr)).toThrowError(ERRORS.INVALID_OR_EMPTY_ARRAY);
+      expectException(() => shuffleArray(arr), ERRORS.INVALID_OR_EMPTY_ARRAY);
     });
   });
 });
