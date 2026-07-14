@@ -1,12 +1,14 @@
 {
   "name": "web-utils-kit",
-  "version": "1.2.11",
+  "version": "1.3.0",
   "description": "The web-utils-kit package provides a collection of well-tested and thoroughly documented utility functions for various web development needs. Each function adheres to a strict coding style and best practices to ensure consistency and maintainability.",
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "ts-lib-builder --tsconfig=tsconfig.build.json",
+    "format:check": "prettier --check src package.json .github/workflows/publish.yml",
+    "lint": "eslint src --ext .ts",
     "test": "npm run test:unit && npm run test:integration",
     "test:e2e": "vitest run --config=vitest.test-e2e.config.ts",
     "test:integration": "vitest run --config vitest.test-integration.config.ts",
@@ -14,6 +16,8 @@
     "test:bench": "vitest bench",
     "watch-test:e2e": "vitest --config=vitest.test-e2e.config.ts",
     "watch-test:integration": "vitest --config vitest.test-integration.config.ts",
+    "typecheck": "tsc --noEmit --project tsconfig.build.json",
+    "verify": "npm test && npm run typecheck && npm run lint && npm run format:check",
     "watch-test:unit": "vitest --config vitest.test-unit.config.ts"
   },
   "repository": {
@@ -46,7 +50,7 @@
     "vitest": "4.1.8"
   },
   "dependencies": {
-    "error-message-utils": "1.2.7",
+    "error-message-utils": "1.2.10",
     "uuid": "14.0.0"
   }
 }

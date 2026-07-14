@@ -1,4 +1,4 @@
-// test data to be used to find the best performing implementation of the applySubstitutions function
+// test data used to benchmark applySubstitutions implementations
 export const MOCK_STR = `# Purpose
 
 You generate {{TEST_1}} high-quality instruction sets for Custom GPTs from a simple user request. Your job is to transform the user's idea into clear, complete, and actionable instructions that help the resulting "Custom GPT" perform a specific task reliably, safely, and consistently.

@@ -1,4 +1,5 @@
 import { Exception } from 'error-message-utils';
+
 import { ERRORS } from '../shared/errors.js';
 import {
   isArrayValid,

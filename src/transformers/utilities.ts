@@ -1,5 +1,6 @@
 import { isArrayValid, isObjectValid } from '../validations/index.js';
-import { INumberFormatConfig, ITimeString } from './types.js';
+
+import type { INumberFormatConfig, ITimeString } from './types.js';
 import {
   validateTimeStringChunks,
   validateTimeStringType,
