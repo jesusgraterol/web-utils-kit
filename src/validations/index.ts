@@ -1,5 +1,7 @@
 import { version as uuidVersion, validate as uuidValidate } from 'uuid';
+
 import { IUUIDVersion } from '../shared/types.js';
+import { EMAIL_MAX_LENGTH } from './constants.js';
 
 /**
  * Verifies if a value is a valid string and its length is within a range (optional).
@@ -97,7 +99,7 @@ export const isEmailValid = (
   value: unknown,
   forbiddenExtensions: string[] = ['.con'],
 ): value is string => {
-  if (!isStringValid(value, 5, 200)) {
+  if (!isStringValid(value, 5, EMAIL_MAX_LENGTH)) {
     return false;
   }
   const email = value.toLowerCase();

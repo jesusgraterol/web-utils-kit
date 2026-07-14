@@ -19,6 +19,7 @@ import {
   isURLValid,
   isUUIDValid,
 } from './index.js';
+import { EMAIL_MAX_LENGTH } from './constants.js';
 
 describe('isStringValid', () => {
   test.each([
@@ -307,6 +308,17 @@ describe('isEmailValid', () => {
     ],
   ])('isEmailValid(%s) -> %s', (value, forbiddenExtensions, expected) => {
     expect(isEmailValid(value, forbiddenExtensions)).toBe(expected);
+  });
+
+  test('accepts email addresses up to 320 characters', () => {
+    const domain = ['b'.repeat(63), 'c'.repeat(63), 'd'.repeat(63), 'e'.repeat(63)].join('.');
+    const emailAtMaxLength = `${'a'.repeat(64)}@${domain}`;
+    const emailOverMaxLength = `${'a'.repeat(65)}@${domain}`;
+
+    expect(emailAtMaxLength).toHaveLength(EMAIL_MAX_LENGTH);
+    expect(isEmailValid(emailAtMaxLength)).toBe(true);
+    expect(emailOverMaxLength).toHaveLength(EMAIL_MAX_LENGTH + 1);
+    expect(isEmailValid(emailOverMaxLength)).toBe(false);
   });
 });
 
