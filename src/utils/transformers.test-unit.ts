@@ -1,4 +1,6 @@
-import { describe, test, expect } from 'vitest';
+// @vitest-environment node
+import { describe, expect, test } from 'vitest';
+
 import { buildNormalizedQueryTokens, normalizeItemValue } from './transformers.js';
 
 describe('buildNormalizedQueryTokens', () => {

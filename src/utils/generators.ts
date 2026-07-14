@@ -39,21 +39,19 @@ export const generateRandomString = (
  * Generates a random number (decimal) constrained by the range.
  * @param min The minimum value of the range.
  * @param max The maximum value of the range.
- * @returns A randomly generated decimal number within the specified range.
+ * @returns A random decimal greater than or equal to min and less than max.
  */
-export const generateRandomFloat = (min: number, max: number): number => {
-  const value = Math.random() * (max - min + 1) + min;
-  return value > max ? max : value;
-};
+export const generateRandomFloat = (min: number, max: number): number =>
+  Math.random() * (max - min) + min;
 
 /**
  * Generates a random number (integer) constrained by the range.
  * @param min The minimum value of the range.
  * @param max The maximum value of the range.
- * @returns A randomly generated integer number within the specified range.
+ * @returns A random integer within the inclusive range.
  */
 export const generateRandomInteger = (min: number, max: number): number =>
-  Math.floor(generateRandomFloat(min, max));
+  Math.floor(Math.random() * (max - min + 1)) + min;
 
 /**
  * Generates a sequence of numbers within a range based on a number of steps.

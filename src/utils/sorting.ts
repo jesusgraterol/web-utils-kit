@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import { Exception, extractMessage } from 'error-message-utils';
 
 import { ERRORS } from '../shared/errors.js';
@@ -137,9 +136,6 @@ export const sortRecordsWithBigIntString =
         ERRORS.MIXED_OR_UNSUPPORTED_DATA_TYPES,
       );
     } catch (error) {
-      console.log(`key: ${String(key)}`);
-      console.log('a: ', firstRecord);
-      console.log('b: ', secondRecord);
       if (error instanceof Exception && error.code === ERRORS.MIXED_OR_UNSUPPORTED_DATA_TYPES) {
         throw error;
       }
@@ -157,31 +153,43 @@ export const sortRecordsWithBigIntString =
  * @param direction The direction to sort the values.
  * @returns A number indicating the sort order based on the date values.
  * @throws
- * - MIXED_OR_UNSUPPORTED_DATA_TYPES: if the values are mixed or are different to date values
+ * - MIXED_OR_UNSUPPORTED_DATA_TYPES: if either record has a missing, null, or invalid date value
  */
 export const sortRecordsWithDateValue =
   <T extends Record<string, unknown>>(key: keyof T, direction: ISortDirection) =>
   (firstRecord: T, secondRecord: T): number => {
     try {
-      if (firstRecord[key] && secondRecord[key]) {
-        const firstDate = toDate(firstRecord[key] as IDateValue);
-        const secondDate = toDate(secondRecord[key] as IDateValue);
-        return __sortNumberValues(firstDate.getTime(), secondDate.getTime(), direction);
+      const firstValue = firstRecord[key];
+      const secondValue = secondRecord[key];
+
+      if (
+        firstValue === null ||
+        firstValue === undefined ||
+        secondValue === null ||
+        secondValue === undefined
+      ) {
+        throw new Exception(
+          'Unable to sort list of record values as they can only be valid date values.',
+          ERRORS.MIXED_OR_UNSUPPORTED_DATA_TYPES,
+        );
       }
 
-      throw new Exception(
-        `Unable to sort list of record values as they can only be date values.`,
-        ERRORS.MIXED_OR_UNSUPPORTED_DATA_TYPES,
-      );
+      const firstDate = toDate(firstValue as IDateValue);
+      const secondDate = toDate(secondValue as IDateValue);
+      if (Number.isNaN(firstDate.getTime()) || Number.isNaN(secondDate.getTime())) {
+        throw new Exception(
+          'Unable to sort list of record values as they can only be valid date values.',
+          ERRORS.MIXED_OR_UNSUPPORTED_DATA_TYPES,
+        );
+      }
+
+      return __sortNumberValues(firstDate.getTime(), secondDate.getTime(), direction);
     } catch (error) {
-      console.log(`key: ${String(key)}`);
-      console.log('a: ', firstRecord);
-      console.log('b: ', secondRecord);
       if (error instanceof Exception && error.code === ERRORS.MIXED_OR_UNSUPPORTED_DATA_TYPES) {
         throw error;
       }
       throw new Exception(
-        `Failed to sort list of record values as they can only be date strings: ${extractMessage(error)}`,
+        `Failed to sort list of record values as they can only be valid date values: ${extractMessage(error)}`,
         ERRORS.MIXED_OR_UNSUPPORTED_DATA_TYPES,
       );
     }

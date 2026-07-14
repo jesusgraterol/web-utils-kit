@@ -20,6 +20,12 @@ describe('toDate', () => {
 });
 
 describe('prettifyDate', () => {
+  test('uses date-short when no template is provided', () => {
+    const value = new Date(2024, 11, 5, 12);
+
+    expect(prettifyDate(value)).toBe(prettifyDate(value, 'date-short'));
+  });
+
   test.each(<Array<[IDateTemplate]>>[
     ['date-short'],
     ['date-medium'],

@@ -25,6 +25,8 @@ Module entry files contain explicit named re-exports only. Implementation files 
 
 Each unit or integration test suite is colocated with, named after, and imports the implementation file it covers. Tests for the same implementation file remain together, with separate unit and integration files only when both test levels are needed. Entry-point tests are reserved for assertions about the flat package API.
 
+The publish workflow runs the complete test suite, type checking, linting, formatting verification, and the package build before publishing to npm.
+
 ## Examples
 
 Validate a password:
@@ -50,7 +52,10 @@ Execute an asynchronous function persistently:
 ```typescript
 import { retryAsyncFunction } from 'web-utils-kit';
 
-const res = await retryAsyncFunction(() => fetch('https://api.example.com/user/1')[(3, 5)]);
+const res = await retryAsyncFunction(
+  () => fetch('https://api.example.com/user/1'),
+  [3, 5],
+);
 await res.json();
 // {
 //   uid: '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d',
@@ -107,6 +112,20 @@ await res.json();
 </details>
 
 ### Validations
+
+<details>
+  <summary><code>MAX_EMAIL_LENGTH</code></summary>
+  <br/>
+
+  The maximum email length accepted by `isEmailValid`.
+
+  ```typescript
+  import { MAX_EMAIL_LENGTH } from 'web-utils-kit';
+
+  MAX_EMAIL_LENGTH; // 320
+  ```
+  <br/>
+</details>
 
 <details>
   <summary><code>isStringValid</code></summary>
@@ -230,7 +249,7 @@ await res.json();
   <summary><code>isEmailValid</code></summary>
   <br/>
 
-  Verifies if a value is a valid email address.
+  Verifies if a value is a valid email address with a maximum length of 320 characters.
 
   ```typescript
   import { isEmailValid } from 'web-utils-kit';
@@ -248,17 +267,14 @@ await res.json();
   <summary><code>isSlugValid</code></summary>
   <br/>
 
-  Verifies if a slug meets the following requirements:
-  - Accepts any Alpha Characters (lower and upper case)
-  - Accepts any digits
-  - Accepts `-` `,` `.` and/or `_`
-  - Meets a length range (Defaults to 2 - 16)
+  Verifies that a slug contains lowercase letters or digits separated by single hyphens and meets a length range (defaults to 2–16 characters).
 
   ```typescript
   import { isSlugValid } from 'web-utils-kit';
 
-  isSlugValid('PythonWiz333'); // true
-  isSlugValid('hello-world', true); // true
+  isSlugValid('python-wiz-333'); // true
+  isSlugValid('PythonWiz333'); // false
+  isSlugValid('hello-world', 2, 32); // true
   isSlugValid('jesus@graterol'); // false
   ```
   <br/>
@@ -464,6 +480,8 @@ await res.json();
   ```typescript
   import { prettifyDate } from 'web-utils-kit';
 
+  prettifyDate(new Date());
+  // '12/05/2024'
   prettifyDate(new Date(), 'datetime-long');
   // 'Thursday, December 5, 2024 at 12:05:20 PM'
   prettifyDate(Date.now(), 'date-medium');
@@ -794,7 +812,7 @@ await res.json();
   <summary><code>generateRandomFloat</code></summary>
   <br/>
 
-  Generates a random number (decimal) constrained by the range.
+  Generates a random decimal number greater than or equal to the minimum and less than the maximum.
 
   ```typescript
   import { generateRandomFloat } from 'web-utils-kit';
@@ -808,7 +826,7 @@ await res.json();
   <summary><code>generateRandomInteger</code></summary>
   <br/>
 
-  Generates a random number (integer) constrained by the range.
+  Generates a random integer constrained by the inclusive minimum and maximum values.
 
   ```typescript
   import { generateRandomInteger } from 'web-utils-kit';
@@ -913,7 +931,7 @@ await res.json();
     { v: '-12' }, 
     { v: '0' }, 
     { v: '9007199254740992' }
-  ].sort(sortRecords('v', 'desc'));
+  ].sort(sortRecordsWithBigIntString('v', 'desc'));
   // [{ v: '9007199254740993' }, { v: '9007199254740992' }, { v: '0' }, { v: '-12' }]
   ```
   <br/>
@@ -924,6 +942,8 @@ await res.json();
   <br/>
 
   Sorts a list of record values by key, treating date values as actual Date objects, based on a sort direction.
+
+  Missing, null, or invalid date values throw an `Exception` with the `MIXED_OR_UNSUPPORTED_DATA_TYPES` code. The exception does not add metadata, a cause, an HTTP status, or a response mapping.
 
   ```typescript
   import { sortRecordsWithDateValue } from 'web-utils-kit';

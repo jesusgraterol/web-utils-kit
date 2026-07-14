@@ -17,13 +17,13 @@ export const filterByQuery = <T>(
   options?: IFilterByQueryOptions<T>,
 ): T[] => {
   if (!items.length || !query) {
-    return items;
+    return items.slice();
   }
 
   // build the query tokens
   const queryTokens = buildNormalizedQueryTokens(query);
   if (!queryTokens.length) {
-    return items;
+    return items.slice();
   }
 
   // apply the filter to the items based on the query and provided options

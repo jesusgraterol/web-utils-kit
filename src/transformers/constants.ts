@@ -70,6 +70,8 @@ export const DATE_TEMPLATE_CONFIGS: IDateTemplateConfigs = {
 
 // the units that can be used in a time string
 export const TIME_STRING_UNITS: IUnit[] = [
+  'milliseconds',
+  'millisecond',
   'seconds',
   'second',
   'minutes',

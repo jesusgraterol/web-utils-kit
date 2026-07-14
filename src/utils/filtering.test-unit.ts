@@ -23,6 +23,13 @@ describe('Filters', () => {
       ]);
     });
 
+    test('returns a shallow copy when filtering is unnecessary', () => {
+      const items = [1, 2, 3];
+
+      expect(filterByQuery(items, '')).not.toBe(items);
+      expect(filterByQuery(items, '   ')).not.toBe(items);
+    });
+
     test('can query records by property', () => {
       const items = [
         { name: 'aaa', lastName: 'bbb' },

@@ -1,5 +1,5 @@
 // @vitest-environment node
-import { afterEach, describe, expect, test, vi } from 'vitest';
+import { describe, expect, test } from 'vitest';
 
 import { ERRORS } from '../shared/errors.js';
 import { expectToThrowCode } from '../test-utils/index.js';
@@ -16,10 +16,6 @@ import {
 type IDateSortRecord = Record<'v', Date | number | string>;
 
 describe('Sorting Utils', () => {
-  afterEach(() => {
-    vi.restoreAllMocks();
-  });
-
   test.each(<Array<[(number | string | bigint)[], ISortDirection, (number | string | bigint)[]]>>[
     [[], 'asc', []],
 
@@ -234,17 +230,15 @@ describe('Sorting Utils', () => {
   });
 
   test('sortRecordsWithBigIntString(invalid bigint string) -> Error: MIXED_OR_UNSUPPORTED_DATA_TYPES', () => {
-    const consoleLogSpy = vi.spyOn(console, 'log').mockImplementation(() => undefined);
-
     expectToThrowCode(
       () => [{ v: '1' }, { v: 'not-a-bigint' }].sort(sortRecordsWithBigIntString('v', 'asc')),
       ERRORS.MIXED_OR_UNSUPPORTED_DATA_TYPES,
     );
-    expect(consoleLogSpy).toHaveBeenCalledTimes(3);
   });
 
   test.each(<Array<[IDateSortRecord[], ISortDirection, IDateSortRecord[]]>>[
     [[], 'asc', []],
+    [[{ v: 1 }, { v: 0 }], 'asc', [{ v: 0 }, { v: 1 }]],
     [
       [
         { v: '2026-06-15T00:00:00.000Z' },
@@ -309,9 +303,8 @@ describe('Sorting Utils', () => {
       [{ v: '2024-01-01T00:00:00.000Z' }, { value: '2025-01-01T00:00:00.000Z' }],
     ],
     ['null date value', [{ v: null }, { v: '2025-01-01T00:00:00.000Z' }]],
+    ['invalid date value', [{ v: 'invalid-date' }, { v: '2025-01-01T00:00:00.000Z' }]],
   ])('sortRecordsWithDateValue(%s) -> Error: MIXED_OR_UNSUPPORTED_DATA_TYPES', (_, a) => {
-    vi.spyOn(console, 'log').mockImplementation(() => undefined);
-
     expectToThrowCode(
       () => a.sort(sortRecordsWithDateValue('v', 'asc')),
       ERRORS.MIXED_OR_UNSUPPORTED_DATA_TYPES,

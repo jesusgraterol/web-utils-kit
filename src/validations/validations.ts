@@ -88,7 +88,7 @@ export const isArrayValid = (value: unknown, allowEmpty?: boolean): value is Arr
   Array.isArray(value) && (allowEmpty || value.length > 0);
 
 /**
- * Verifies if a value is a valid email address.
+ * Verifies if a value is a valid email address with a maximum length of 320 characters.
  * Important: when providing forbiddenExtensions, ensure to include the dot (.) at the beginning.
  * For example, to forbid .con, use ['.con'].
  * @param value The value to be validated.
@@ -111,11 +111,8 @@ export const isEmailValid = (
 };
 
 /**
- * Verifies if a slug meets the following requirements:
- * - Accepts any lowercase alpha characters
- * - Accepts any digits
- * - Accepts - , . and/or _
- * - Meets a length range (Defaults to 2 - 16)
+ * Verifies that a slug contains lowercase letters or digits separated by single hyphens and meets
+ * a length range.
  * @param value The value to be validated.
  * @param minLength? The minimum length of the slug. Defaults to 2.
  * @param maxLength? The maximum length of the slug. Defaults to 16.

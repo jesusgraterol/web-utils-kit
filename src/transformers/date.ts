@@ -38,10 +38,10 @@ export const toDate = (value: IDateValue): Date => {
  * - datetime-medium: December 5, 2024 at 12:05 PM
  * - datetime-long: Thursday, December 5, 2024 at 12:05:20 PM
  * @param value The date value to be formatted. It can be a Date object, a timestamp, or a date string.
- * @param template The template to use for formatting the date.
+ * @param template The template to use for formatting the date. Defaults to date-short.
  * @returns A string representing the formatted date.
  */
-export const prettifyDate = (value: IDateValue, template: IDateTemplate): string =>
+export const prettifyDate = (value: IDateValue, template: IDateTemplate = 'date-short'): string =>
   toDate(value).toLocaleString(undefined, DATE_TEMPLATE_CONFIGS[template]);
 
 /**

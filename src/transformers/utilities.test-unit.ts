@@ -1,5 +1,7 @@
-import { describe, test, expect } from 'vitest';
-import { INumberFormatConfig } from './types.js';
+// @vitest-environment node
+import { describe, expect, test } from 'vitest';
+
+import type { INumberFormatConfig } from './types.js';
 import { buildNumberFormatConfig, sortJSONObjectKeys } from './utilities.js';
 
 /* ************************************************************************************************

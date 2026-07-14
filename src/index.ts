@@ -5,6 +5,8 @@ export type { IJSONValue, IUUIDVersion } from './shared/types.js';
 export { expectToThrowCode, expectToRejectCode } from './test-utils/index.js';
 
 // validations
+export { MAX_EMAIL_LENGTH } from './validations/index.js';
+
 export {
   isStringValid,
   isNumberValid,

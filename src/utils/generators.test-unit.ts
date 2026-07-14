@@ -1,9 +1,35 @@
 // @vitest-environment node
 import { afterEach, describe, expect, test, vi } from 'vitest';
 
-import { generateDateId, generateSequence } from './generators.js';
+import {
+  generateDateId,
+  generateRandomFloat,
+  generateRandomInteger,
+  generateSequence,
+} from './generators.js';
 
 describe('Generators', () => {
+  afterEach(() => {
+    vi.restoreAllMocks();
+    vi.useRealTimers();
+  });
+
+  describe('generateRandomFloat', () => {
+    test('uses a uniform continuous range without clamping values to the maximum', () => {
+      vi.spyOn(Math, 'random').mockReturnValue(0.5);
+
+      expect(generateRandomFloat(0, 1)).toBe(0.5);
+    });
+  });
+
+  describe('generateRandomInteger', () => {
+    test('includes the maximum integer in the range', () => {
+      vi.spyOn(Math, 'random').mockReturnValue(0.999_999);
+
+      expect(generateRandomInteger(1, 10)).toBe(10);
+    });
+  });
+
   describe('generateSequence', () => {
     test.each([
       [1, 10, 1, [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]],
@@ -15,10 +41,6 @@ describe('Generators', () => {
   });
 
   describe('generateDateId', () => {
-    afterEach(() => {
-      vi.useRealTimers();
-    });
-
     test.each(<Array<[Date | number | string, string]>>[
       [new Date(2024, 0, 5, 12), '2024_01_05'],
       [new Date(2024, 10, 15, 12).getTime(), '2024_11_15'],
