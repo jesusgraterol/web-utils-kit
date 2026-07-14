@@ -1,6 +1,6 @@
 import { describe, test, expect } from 'vitest';
 import { INumberFormatConfig } from './types.js';
-import { buildNumberFormatConfig, sortJSONObjectKeys } from './utils.js';
+import { buildNumberFormatConfig, sortJSONObjectKeys } from './utilities.js';
 
 /* ************************************************************************************************
  *                                            HELPERS                                             *

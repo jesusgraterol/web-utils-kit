@@ -1,25 +1,28 @@
-import { describe, test, expect } from 'vitest';
-import { IUUIDVersion } from '../shared/types.js';
+// @vitest-environment node
+import { describe, expect, test } from 'vitest';
+
+import type { IUUIDVersion } from '../shared/types.js';
+
+import { MAX_EMAIL_LENGTH } from './constants.js';
 import {
-  isStringValid,
-  isNumberValid,
+  isArrayValid,
+  isAuthorizationHeaderValid,
+  isEmailValid,
   isIntegerValid,
-  isTimestampValid,
+  isJWTValid,
+  isNumberValid,
   isNumeric,
   isObjectValid,
-  isArrayValid,
-  isEmailValid,
-  isSlugValid,
-  isPasswordValid,
   isOTPSecretValid,
   isOTPTokenValid,
-  isJWTValid,
-  isAuthorizationHeaderValid,
+  isPasswordValid,
   isSemverValid,
+  isSlugValid,
+  isStringValid,
+  isTimestampValid,
   isURLValid,
   isUUIDValid,
-} from './index.js';
-import { EMAIL_MAX_LENGTH } from './constants.js';
+} from './validations.js';
 
 describe('isStringValid', () => {
   test.each([
@@ -315,9 +318,9 @@ describe('isEmailValid', () => {
     const emailAtMaxLength = `${'a'.repeat(64)}@${domain}`;
     const emailOverMaxLength = `${'a'.repeat(65)}@${domain}`;
 
-    expect(emailAtMaxLength).toHaveLength(EMAIL_MAX_LENGTH);
+    expect(emailAtMaxLength).toHaveLength(MAX_EMAIL_LENGTH);
     expect(isEmailValid(emailAtMaxLength)).toBe(true);
-    expect(emailOverMaxLength).toHaveLength(EMAIL_MAX_LENGTH + 1);
+    expect(emailOverMaxLength).toHaveLength(MAX_EMAIL_LENGTH + 1);
     expect(isEmailValid(emailOverMaxLength)).toBe(false);
   });
 });

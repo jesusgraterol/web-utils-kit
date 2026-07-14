@@ -1,5 +1,5 @@
 import { describe, bench } from 'vitest';
-import { MOCK_STR } from './index.test-data.js';
+import { MOCK_STR } from './string.test-data.js';
 
 /* ************************************************************************************************
  *                                           CONSTANTS                                            *

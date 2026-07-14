@@ -1,4 +1,4 @@
-import { IDateTemplateConfigs, IUnit } from './types.js';
+import type { IDateTemplateConfigs, IUnit } from './types.js';
 
 /* ************************************************************************************************
  *                                            NUMBERS                                             *

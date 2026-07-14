@@ -12,6 +12,19 @@ Install the package:
 npm i -S web-utils-kit
 ```
 
+## Project blueprint
+
+- `src/index.ts` is the flat consumer-facing package API. Consumers import supported functions and types directly from `web-utils-kit`.
+- `src/validations/` owns validation functions and exposes them through a thin, explicit module entry file.
+- `src/transformers/` groups date, JSON, number, and string transformations behind a thin, explicit module entry file.
+- `src/utils/` groups async, collection, extraction, filtering, generation, Markdown, pagination, and sorting utilities behind a thin, explicit module entry file.
+- `src/test-utils/` provides code-aware assertions for synchronous throws and promise rejections.
+- `src/shared/` contains contracts and error definitions shared by the package modules.
+
+Module entry files contain explicit named re-exports only. Implementation files export public symbols at their declarations, while constants and supporting validations, transformers, and utilities are package-internal and unsupported unless they are intentionally added to `src/index.ts`.
+
+Each unit or integration test suite is colocated with, named after, and imports the implementation file it covers. Tests for the same implementation file remain together, with separate unit and integration files only when both test levels are needed. Entry-point tests are reserved for assertions about the flat package API.
+
 ## Examples
 
 Validate a password:
@@ -48,6 +61,50 @@ await res.json();
 <br/>
 
 ## API Reference
+
+### Test Utilities
+
+<details>
+  <summary><code>expectToThrowCode</code></summary>
+  <br/>
+
+  Asserts that a synchronous operation throws an error with the expected string or numeric code. Codes are resolved through `error-message-utils`, so encoded errors and objects carrying a `code` property are supported. When `expectedMessage` is provided, the extracted message must contain that text.
+
+  The helper returns `undefined` when the assertion passes. Otherwise, it throws an `Error`; code and message mismatches preserve the original thrown value as `cause`. Use `expectToRejectCode` for asynchronous operations.
+
+  ```typescript
+  import { expectToThrowCode } from 'web-utils-kit';
+
+  const error = Object.assign(new Error('Access denied'), { code: 'ACCESS_DENIED' });
+
+  expectToThrowCode(
+    () => {
+      throw error;
+    },
+    'ACCESS_DENIED',
+    'Access denied',
+  );
+  ```
+  <br/>
+</details>
+
+<details>
+  <summary><code>expectToRejectCode</code></summary>
+  <br/>
+
+  Asserts that a `PromiseLike` rejects with an error carrying the expected string or numeric code. Codes are resolved through `error-message-utils`, so encoded errors and objects carrying a `code` property are supported. When `expectedMessage` is provided, the extracted rejection message must contain that text.
+
+  The returned promise resolves with `undefined` when the assertion passes. It rejects with an `Error` when the input resolves or the rejection does not match; code and message mismatches preserve the original rejected value as `cause`.
+
+  ```typescript
+  import { expectToRejectCode } from 'web-utils-kit';
+
+  const error = Object.assign(new Error('Access denied'), { code: 'ACCESS_DENIED' });
+
+  await expectToRejectCode(Promise.reject(error), 'ACCESS_DENIED', 'Access denied');
+  ```
+  <br/>
+</details>
 
 ### Validations
 
@@ -607,6 +664,8 @@ await res.json();
 
   Serializes a JSON object with the `JSON.stringify` method.
 
+  Serialization failures throw an `Exception` with code `UNABLE_TO_SERIALIZE_JSON`. Wrapped failures contribute only their readable message and are not attached as metadata or a cause.
+
   ```typescript
   import { stringifyJSON } from 'web-utils-kit';
 
@@ -621,6 +680,8 @@ await res.json();
   <br/>
 
   Stringifies a JSON object in a deterministic way, ensuring that the keys are sorted and the output is consistent.
+
+  Serialization failures throw an `Exception` with code `UNABLE_TO_SERIALIZE_JSON`. Wrapped failures contribute only their readable message and are not attached as metadata or a cause.
 
   ```typescript
   import { stringifyJSONDeterministically } from 'web-utils-kit';
@@ -637,6 +698,8 @@ await res.json();
 
   Deserializes a JSON string with the `JSON.parse` method.
 
+  Parsing failures throw an `Exception` with code `UNABLE_TO_DESERIALIZE_JSON`. Wrapped failures contribute only their readable message and are not attached as metadata or a cause.
+
   ```typescript
   import { parseJSON } from 'web-utils-kit';
 
@@ -651,6 +714,8 @@ await res.json();
   <br/>
 
   Creates a deep clone of an object by using the `JSON.stringify` and `JSON.parse` methods.
+
+  Clone failures throw an `Exception` with code `UNABLE_TO_CREATE_DEEP_CLONE`. Wrapped failures contribute only their readable message and are not attached as metadata or a cause.
 
   ```typescript
   import { createDeepClone } from 'web-utils-kit';

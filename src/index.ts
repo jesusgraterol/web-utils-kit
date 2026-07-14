@@ -1,5 +1,8 @@
-// shared
+// shared types
 export type { IJSONValue, IUUIDVersion } from './shared/types.js';
+
+// error assertions
+export { expectToThrowCode, expectToRejectCode } from './test-utils/index.js';
 
 // validations
 export {
@@ -23,12 +26,15 @@ export {
 } from './validations/index.js';
 
 // transformers
+export type {
+  IDateTemplate,
+  IDateValue,
+  INumberFormatConfig,
+  ISubstitutionOptions,
+  ITimeString,
+} from './transformers/index.js';
+
 export {
-  type INumberFormatConfig,
-  type IDateValue,
-  type IDateTemplate,
-  type ITimeString,
-  type ISubstitutionOptions,
   prettifyNumber,
   prettifyPercentage,
   toDate,
@@ -52,10 +58,10 @@ export {
   pruneJSON,
 } from './transformers/index.js';
 
-// utils
+// utilities
+export type { IFilterByQueryOptions, ISortDirection } from './utils/index.js';
+
 export {
-  type ISortDirection,
-  type IFilterByQueryOptions,
   generateUUID,
   generateRandomString,
   generateRandomFloat,
@@ -67,6 +73,7 @@ export {
   sortRecordsWithBigIntString,
   sortRecordsWithDateValue,
   shuffleArray,
+  splitArrayIntoBatches,
   pickProps,
   omitProps,
   isEqual,

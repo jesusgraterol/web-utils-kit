@@ -6,7 +6,7 @@ import { normalizeItemValue } from './transformers.js';
  * @param items The list of items to be filtered.
  * @param queryTokens The array of normalized query tokens to filter the items by.
  * @param queryProp The property of the item to filter by, if not provided, the whole item will be used for filtering.
- * @returns A filtered array of items that match the query tokens.
+ * @returns The filtered array of items that match the query tokens.
  */
 export const filterItemsByQueryTokens = <T>(
   items: T[],
