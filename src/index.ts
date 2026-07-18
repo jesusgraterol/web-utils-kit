@@ -64,6 +64,7 @@ export {
 export type { IFilterByQueryOptions, ISortDirection } from './utils/index.js';
 
 export {
+  applyDefaults,
   generateUUID,
   generateRandomString,
   generateRandomFloat,

@@ -109,3 +109,21 @@ export const isEqual = (
   secondValue: Record<string, any> | Array<any>,
 ): boolean =>
   stringifyJSONDeterministically(firstValue) === stringifyJSONDeterministically(secondValue);
+
+/**
+ * Applies non-nullish overrides to a defaults object and returns a new shallow object.
+ * @param defaults The object containing the default properties and values.
+ * @param overrides The values that should replace matching defaults when they are not nullish.
+ * @returns A new object containing the default keys and resolved values.
+ */
+export const applyDefaults = <T extends Record<string, unknown>>(
+  defaults: T,
+  overrides: Partial<T>,
+): T =>
+  Object.entries(defaults).reduce(
+    (resolvedValues, [key, defaultValue]) => ({
+      ...resolvedValues,
+      [key]: overrides[key] ?? defaultValue,
+    }),
+    {} as T,
+  );

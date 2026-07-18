@@ -2,6 +2,7 @@
 import { describe, expect, test } from 'vitest';
 
 import {
+  applyDefaults,
   expectToRejectCode,
   expectToThrowCode,
   MAX_EMAIL_LENGTH,
@@ -9,6 +10,10 @@ import {
 } from './index.js';
 
 describe('public API', () => {
+  test('exports applyDefaults from the package entry point', () => {
+    expect(applyDefaults({ retryCount: 8 }, { retryCount: 4 })).toStrictEqual({ retryCount: 4 });
+  });
+
   test('exports splitArrayIntoBatches from the package entry point', () => {
     expect(splitArrayIntoBatches([1, 2, 3], 2)).toStrictEqual([[1, 2], [3]]);
   });

@@ -4,7 +4,13 @@ import { describe, expect, test } from 'vitest';
 import { ERRORS } from '../shared/errors.js';
 import { expectToThrowCode } from '../test-utils/index.js';
 
-import { isEqual, omitProps, pickProps, splitArrayIntoBatches } from './collections.js';
+import {
+  applyDefaults,
+  isEqual,
+  omitProps,
+  pickProps,
+  splitArrayIntoBatches,
+} from './collections.js';
 
 const TEST_OBJ = {
   id: 1,
@@ -141,6 +147,64 @@ describe('Object Management Helpers', () => {
       [{ id: 1 }, []],
     ])('omitProps(%s)', (a, b) => {
       expectToThrowCode(() => omitProps(a, b), ERRORS.INVALID_OR_EMPTY_ARRAY);
+    });
+  });
+
+  describe('applyDefaults', () => {
+    test('applies non-nullish overrides to the default values', () => {
+      const defaults = {
+        name: 'Anonymous',
+        retryCount: 8,
+        isEnabled: true,
+      };
+
+      expect(
+        applyDefaults(defaults, {
+          name: 'Alice',
+          retryCount: 0,
+          isEnabled: false,
+        }),
+      ).toStrictEqual({
+        name: 'Alice',
+        retryCount: 0,
+        isEnabled: false,
+      });
+    });
+
+    test('uses defaults for missing or nullish overrides', () => {
+      const defaults: {
+        name: string | null;
+        retryCount: number | null;
+        isEnabled: boolean;
+      } = {
+        name: 'Anonymous',
+        retryCount: 8,
+        isEnabled: true,
+      };
+
+      expect(
+        applyDefaults(defaults, {
+          name: null,
+          retryCount: undefined,
+        }),
+      ).toStrictEqual(defaults);
+    });
+
+    test('returns a new shallow object containing only default keys', () => {
+      const defaults = {
+        options: { retryCount: 8 },
+      };
+      const overrides = {
+        options: { retryCount: 4 },
+        unsupportedProp: true,
+      };
+      const result = applyDefaults(defaults, overrides);
+
+      expect(result).toStrictEqual({
+        options: overrides.options,
+      });
+      expect(result).not.toBe(defaults);
+      expect(result.options).toBe(overrides.options);
     });
   });
 

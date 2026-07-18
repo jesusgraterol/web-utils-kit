@@ -1018,6 +1018,24 @@ await res.json();
 
 
 <details>
+  <summary><code>applyDefaults</code></summary>
+  <br/>
+
+  Applies non-nullish overrides to a defaults object and returns a new shallow object containing only the default keys. Missing, `null`, and `undefined` override values preserve their corresponding defaults.
+
+  ```typescript
+  import { applyDefaults } from 'web-utils-kit';
+
+  applyDefaults(
+    { name: 'Anonymous', retryCount: 8, isEnabled: true },
+    { name: 'Alice', retryCount: 0, isEnabled: false },
+  );
+  // { name: 'Alice', retryCount: 0, isEnabled: false }
+  ```
+  <br/>
+</details>
+
+<details>
   <summary><code>pickProps</code></summary>
   <br/>
 
