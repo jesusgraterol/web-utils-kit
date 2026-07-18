@@ -6,6 +6,7 @@ export { delay, retryAsyncFunction } from './async.js';
 
 // collection utilities
 export {
+  applyDefaults,
   isEqual,
   omitProps,
   pickProps,
