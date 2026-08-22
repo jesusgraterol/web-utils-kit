@@ -87,6 +87,7 @@ export {
   extractEmailUsername,
   getInitials,
   getNextPageParam,
+  estimateReadingTime,
   extractFirstMarkdownHeadingName,
   extractSubstitutionPlaceholderNames,
 } from './utils/index.js';

@@ -43,6 +43,9 @@ export {
 // pagination utilities
 export { getNextPageParam } from './pagination.js';
 
+// reading utilities
+export { estimateReadingTime } from './reading.js';
+
 // sorting utilities
 export {
   sortPrimitives,
