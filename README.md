@@ -17,7 +17,7 @@ npm i -S web-utils-kit
 - `src/index.ts` is the flat consumer-facing package API. Consumers import supported functions and types directly from `web-utils-kit`.
 - `src/validations/` owns validation functions and exposes them through a thin, explicit module entry file.
 - `src/transformers/` groups date, JSON, number, and string transformations behind a thin, explicit module entry file.
-- `src/utils/` groups async, collection, extraction, filtering, generation, Markdown, pagination, and sorting utilities behind a thin, explicit module entry file.
+- `src/utils/` groups async, collection, extraction, filtering, generation, Markdown, pagination, reading, and sorting utilities behind a thin, explicit module entry file.
 - `src/test-utils/` provides code-aware assertions for synchronous throws and promise rejections.
 - `src/shared/` contains contracts and error definitions shared by the package modules.
 
@@ -1117,6 +1117,24 @@ await res.json();
     'croatoan'
   );
   // [{ a: { x: 'Hello', y: ['yak', 123], p: { a: { b: 'croatoan' } }, z: { foo: 'bar' } } }]
+  ```
+  <br/>
+</details>
+
+<details>
+  <summary><code>estimateReadingTime</code></summary>
+  <br/>
+
+  Estimates how long text takes to read at an average speed of 200 words per minute and returns the duration in milliseconds. Words are separated by whitespace. Non-string and empty inputs return `0`.
+
+  ```typescript
+  import { estimateReadingTime, prettifyTime } from 'web-utils-kit';
+
+  const article = 'word '.repeat(200);
+
+  estimateReadingTime(article); // 60_000
+  prettifyTime(estimateReadingTime(article)); // '1m'
+  estimateReadingTime('   '); // 0
   ```
   <br/>
 </details>
