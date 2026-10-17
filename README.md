@@ -16,8 +16,8 @@ npm i -S web-utils-kit
 
 - `src/index.ts` is the flat consumer-facing package API. Consumers import supported functions and types directly from `web-utils-kit`.
 - `src/validations/` owns validation functions and exposes them through a thin, explicit module entry file.
-- `src/transformers/` groups date, JSON, number, and string transformations behind a thin, explicit module entry file.
-- `src/utils/` groups async, collection, extraction, filtering, generation, Markdown, pagination, reading, and sorting utilities behind a thin, explicit module entry file.
+- `src/transformers/` groups base64url, date, JSON, number, and string transformations behind a thin, explicit module entry file.
+- `src/utils/` groups async, collection, environment, extraction, filtering, generation, Markdown, pagination, reading, and sorting utilities behind a thin, explicit module entry file.
 - `src/test-utils/` provides code-aware assertions for synchronous throws and promise rejections.
 - `src/shared/` contains contracts and error definitions shared by the package modules.
 
@@ -404,6 +404,25 @@ await res.json();
   <br/>
 </details>
 
+<details>
+  <summary><code>isFileNameValid</code></summary>
+  <br/>
+
+  Verifies if a value is a file name that works on Windows, macOS and Linux: a single path component whose UTF-8 size is between 1 and `maxBytes` (255 by default, the limit of ext4, APFS and NTFS). It rejects `.` and `..`, control characters, the characters `< > : " / \ | ? *`, a trailing space or period, and Windows device names such as `con` or `lpt1.txt`, in any letter case.
+
+  ```typescript
+  import { isFileNameValid } from 'web-utils-kit';
+
+  isFileNameValid('report.pdf'); // true
+  isFileNameValid('.gitignore'); // true
+  isFileNameValid('notes/today.md'); // false
+  isFileNameValid('CON.txt'); // false
+  isFileNameValid('é'.repeat(128)); // false (256 bytes)
+  isFileNameValid('draft.md', 4); // false
+  ```
+  <br/>
+</details>
+
 ### Transformers
 
 <details>
@@ -467,15 +486,23 @@ await res.json();
   <summary><code>prettifyDate</code></summary>
   <br/>
 
-  Formats a date instance based on a template.
+  Formats a date instance based on a template. The output is always in `en-US`, whatever the runtime's locale, and hours have no leading zero.
   - `date-short` -> 12/05/2024 (Default)
   - `date-medium` -> December 5, 2024
   - `date-long` -> Thursday, December 5, 2024
-  - `time-short` -> 12:05 PM
-  - `time-medium` -> 12:05:20 PM
-  - `datetime-short` -> 12/5/2024, 12:05 PM
-  - `datetime-medium` -> December 5, 2024 at 12:05 PM
-  - `datetime-long` -> Thursday, December 5, 2024 at 12:05:20 PM
+  - `time-short` -> 9:05 PM
+  - `time-medium` -> 9:05:20 PM
+  - `datetime-short` -> 12/5/2024, 9:05 PM
+  - `datetime-medium` -> December 5, 2024 at 9:05 PM
+  - `datetime-long` -> Thursday, December 5, 2024 at 9:05:20 PM
+
+  The optional third argument is an IANA time zone, such as `'UTC'` or `'America/New_York'`. Without it, the runtime's local time zone is used. With it, templates that include a time end with the zone's short name, and an unknown zone throws a `RangeError`.
+
+  Rules for consistent dates:
+  - Pass `'UTC'` for calendar dates, such as a billing period or a publish date, and for data defined in UTC periods. In local time, a calendar date shifts by a day for viewers west of UTC.
+  - Times shown in a fixed zone carry its label, for example `December 5, 2024 at 11:30 PM UTC`.
+  - Server-rendered output needs an explicit time zone, or the server and the browser can render different text for the same instant.
+  - Prefer `date-medium`, `datetime-medium` and `time-medium` in UI text, and avoid the numeric templates.
 
   ```typescript
   import { prettifyDate } from 'web-utils-kit';
@@ -483,9 +510,13 @@ await res.json();
   prettifyDate(new Date());
   // '12/05/2024'
   prettifyDate(new Date(), 'datetime-long');
-  // 'Thursday, December 5, 2024 at 12:05:20 PM'
+  // 'Thursday, December 5, 2024 at 9:05:20 PM'
   prettifyDate(Date.now(), 'date-medium');
   // 'December 5, 2024'
+  prettifyDate('2024-12-05T23:30:00Z', 'datetime-medium', 'UTC');
+  // 'December 5, 2024 at 11:30 PM UTC'
+  prettifyDate('2024-12-05T23:30:00Z', 'date-medium', 'Asia/Tokyo');
+  // 'December 6, 2024'
   ```
   <br/>
 </details>
@@ -510,13 +541,15 @@ await res.json();
   <summary><code>prettifyFileSize</code></summary>
   <br/>
 
-  Formats a bytes value into a human readable format.
+  Formats a bytes value into a human readable format. It accepts a number or a bigint, such as a `BIGINT` database value, and formats bigints beyond `Number.MAX_SAFE_INTEGER` without losing precision.
 
   ```typescript
   import { prettifyFileSize } from 'web-utils-kit';
 
   prettifyFileSize(85545, 6); // '83.540039 kB'
   prettifyFileSize(79551423); // '75.87 MB'
+  prettifyFileSize(79551423n); // '75.87 MB'
+  prettifyFileSize(2n ** 60n); // '1.00 EB'
   ```
   <br/>
 </details>
@@ -677,6 +710,38 @@ await res.json();
 </details>
 
 <details>
+  <summary><code>encodeBase64Url</code></summary>
+  <br/>
+
+  Encodes a string as UTF-8 base64url without padding. It works in browsers and Node.js, and for ASCII input its output equals the `btoa`-based and `Buffer`-based base64url encodings.
+
+  ```typescript
+  import { encodeBase64Url } from 'web-utils-kit';
+
+  encodeBase64Url('{"page":2}'); // 'eyJwYWdlIjoyfQ'
+  encodeBase64Url('€'); // '4oKs'
+  ```
+  <br/>
+</details>
+
+<details>
+  <summary><code>decodeBase64Url</code></summary>
+  <br/>
+
+  Decodes a base64url value, without padding, into the UTF-8 string it encodes. It accepts only the canonical encoding of a string, so every string has exactly one valid encoding.
+
+  Invalid values throw an `Exception` with code `INVALID_BASE64URL`: characters outside `[A-Za-z0-9_-]`, padding, a length of 1 modulo 4, bytes that aren't valid UTF-8, or a non-canonical encoding.
+
+  ```typescript
+  import { decodeBase64Url } from 'web-utils-kit';
+
+  decodeBase64Url('eyJwYWdlIjoyfQ'); // '{"page":2}'
+  decodeBase64Url('YR'); // throws INVALID_BASE64URL (the canonical form is 'YQ')
+  ```
+  <br/>
+</details>
+
+<details>
   <summary><code>stringifyJSON</code></summary>
   <br/>
 
@@ -730,6 +795,8 @@ await res.json();
 <details>
   <summary><code>createDeepClone</code></summary>
   <br/>
+
+  > **Deprecated:** use the built-in `structuredClone` instead. `createDeepClone` copies through JSON, so Dates become strings, `Map` and `Set` become `{}`, `undefined` properties are dropped, and BigInts or circular references throw. `structuredClone` keeps all of them.
 
   Creates a deep clone of an object by using the `JSON.stringify` and `JSON.parse` methods.
 
@@ -1143,13 +1210,18 @@ await res.json();
   <summary><code>delay</code></summary>
   <br/>
 
-  Creates an asynchronous delay that resolves once the provided seconds have passed.
+  Creates an asynchronous delay that resolves once the provided seconds have passed. Pass a `signal` to cancel it: the promise rejects with the signal's reason when the signal is already aborted or aborts during the wait.
 
   ```typescript
   import { delay } from 'web-utils-kit';
 
   await delay(3);
   // ~3 seconds later
+
+  const controller = new AbortController();
+  setTimeout(() => controller.abort(new Error('Cancelled')), 1000);
+  await delay(3, { signal: controller.signal });
+  // rejects with 'Cancelled' after ~1 second
   ```
   <br/>
 </details>
@@ -1160,6 +1232,10 @@ await res.json();
   <br/>
 
   Executes an asynchronous function persistently, retrying on error with incremental delays defined in retryScheduleDuration (seconds).
+
+  The optional third argument accepts:
+  - `signal`: when it aborts, the returned promise rejects with the signal's reason right away, even while an attempt is pending. The attempt itself isn't cancelled, so pass the signal into the function's own work as well, as with `fetch` below.
+  - `shouldRetry`: called with each error before a retry; returning `false` rethrows that error immediately.
 
   ```typescript
   import { retryAsyncFunction } from 'web-utils-kit';
@@ -1173,6 +1249,105 @@ await res.json();
   //   uid: '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d',
   //   nickname: 'PythonWiz333'
   // }
+
+  const controller = new AbortController();
+  const user = await retryAsyncFunction(
+    async () => {
+      const res = await fetch('https://api.example.com/user/1', { signal: controller.signal });
+      if (!res.ok) {
+        throw new Error(`Request failed with status ${res.status}`, { cause: res.status });
+      }
+      return res.json();
+    },
+    [1, 2, 4],
+    {
+      signal: controller.signal,
+      // retry network failures and server errors, but not 4xx responses
+      shouldRetry: (error) => !(error instanceof Error && Number(error.cause) < 500),
+    },
+  );
+  // controller.abort() stops the retries and cancels the pending request
+  ```
+  <br/>
+</details>
+
+<details>
+  <summary><code>waitUntil</code></summary>
+  <br/>
+
+  Probes a condition until it returns a value other than `null`, `undefined` or `false`, and resolves with that value. It probes immediately, then every `intervalSeconds` (1 by default), and one final time at the deadline.
+
+  `timeoutSeconds` bounds the whole call: once it passes, the promise rejects with an `Exception` with code `WAIT_UNTIL_TIMED_OUT`, even while a probe is still pending. A probe that throws or rejects ends the wait with its error, and an aborted `signal` rejects with the signal's reason. A running probe isn't cancelled when the call stops waiting, so pass your own signal into it when it supports one.
+
+  ```typescript
+  import { waitUntil } from 'web-utils-kit';
+
+  const order = await waitUntil(
+    async () => {
+      const res = await fetch('https://api.example.com/orders/42');
+      const body = await res.json();
+      return body.status === 'paid' ? body : null;
+    },
+    { timeoutSeconds: 30, intervalSeconds: 2 },
+  );
+  // { id: 42, status: 'paid' }
+  ```
+  <br/>
+</details>
+
+<details>
+  <summary><code>hasWindow</code></summary>
+  <br/>
+
+  Checks whether a global `window` object exists. It reports presence only and doesn't prove the code runs in a browser.
+
+  ```typescript
+  import { hasWindow } from 'web-utils-kit';
+
+  hasWindow(); // true in browsers, false in Node.js
+  ```
+  <br/>
+</details>
+
+<details>
+  <summary><code>hasNavigator</code></summary>
+  <br/>
+
+  Checks whether a global `navigator` object exists. It reports presence only: Node.js 21 and later define a global `navigator` too, so it returns `true` there as well.
+
+  ```typescript
+  import { hasNavigator } from 'web-utils-kit';
+
+  hasNavigator(); // true in browsers and in Node.js 21+
+  ```
+  <br/>
+</details>
+
+<details>
+  <summary><code>isIndexedDbAvailable</code></summary>
+  <br/>
+
+  Checks whether the IndexedDB API exists in the current environment.
+
+  ```typescript
+  import { isIndexedDbAvailable } from 'web-utils-kit';
+
+  isIndexedDbAvailable(); // true in browsers, false in Node.js
+  ```
+  <br/>
+</details>
+
+<details>
+  <summary><code>prefersReducedMotion</code></summary>
+  <br/>
+
+  Checks whether the user asked the system to reduce motion. It reads the `(prefers-reduced-motion: reduce)` media query from the global `window` by default, or from the view you pass, such as an element's `ownerDocument.defaultView`. It returns `false` without a view or without `matchMedia`, including in Node.js.
+
+  ```typescript
+  import { prefersReducedMotion } from 'web-utils-kit';
+
+  prefersReducedMotion(); // true when the user prefers reduced motion
+  prefersReducedMotion(element.ownerDocument.defaultView);
   ```
   <br/>
 </details>
@@ -1294,6 +1469,60 @@ await res.json();
 </details>
 
 <details>
+  <summary><code>IDelayOptions</code></summary>
+  <br/>
+
+  The options that can be passed to the `delay` function.
+
+  ```typescript
+  type IDelayOptions = {
+    // aborts the wait and rejects with the signal's reason
+    signal?: AbortSignal;
+  };
+  ```
+  <br/>
+</details>
+
+<details>
+  <summary><code>IRetryAsyncFunctionOptions</code></summary>
+  <br/>
+
+  The options that can be passed to the `retryAsyncFunction` function.
+
+  ```typescript
+  type IRetryAsyncFunctionOptions = {
+    // stops retrying and rejects with the signal's reason, even while an attempt is pending
+    signal?: AbortSignal;
+
+    // decides whether a failed attempt is retried; returning false rethrows the error immediately
+    shouldRetry?: (error: unknown) => boolean;
+  };
+  ```
+  <br/>
+</details>
+
+<details>
+  <summary><code>IWaitUntilOptions</code></summary>
+  <br/>
+
+  The options that can be passed to the `waitUntil` function.
+
+  ```typescript
+  type IWaitUntilOptions = {
+    // the maximum number of seconds the whole call can take
+    timeoutSeconds: number;
+
+    // the number of seconds to wait between probes. Defaults to 1
+    intervalSeconds?: number;
+
+    // stops waiting and rejects with the signal's reason, even while a probe is pending
+    signal?: AbortSignal;
+  };
+  ```
+  <br/>
+</details>
+
+<details>
   <summary><code>ISortDirection</code></summary>
   <br/>
 
@@ -1342,11 +1571,11 @@ await res.json();
   - `date-short` -> 12/05/2024 (Default)
   - `date-medium` -> December 5, 2024
   - `date-long` -> Thursday, December 5, 2024
-  - `time-short` -> 12:05 PM
-  - `time-medium` -> 12:05:20 PM
-  - `datetime-short` -> 12/5/2024, 12:05 PM
-  - `datetime-medium` -> December 5, 2024 at 12:05 PM
-  - `datetime-long` -> Thursday, December 5, 2024 at 12:05:20 PM
+  - `time-short` -> 9:05 PM
+  - `time-medium` -> 9:05:20 PM
+  - `datetime-short` -> 12/5/2024, 9:05 PM
+  - `datetime-medium` -> December 5, 2024 at 9:05 PM
+  - `datetime-long` -> Thursday, December 5, 2024 at 9:05:20 PM
 
   ```typescript
   type IDateTemplate = 'date-short' | 'date-medium' | 'date-long' | 'time-short' | 'time-medium' | 'datetime-short' | 'datetime-medium' | 'datetime-long';

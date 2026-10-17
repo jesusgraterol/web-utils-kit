@@ -7,6 +7,9 @@ export type {
   ITimeString,
 } from './types.js';
 
+// base64url transformers
+export { decodeBase64Url, encodeBase64Url } from './base64url.js';
+
 // date transformers
 export { prettifyDate, prettifyTime, toDate, toMS } from './date.js';
 

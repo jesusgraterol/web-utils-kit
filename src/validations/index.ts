@@ -6,6 +6,7 @@ export {
   isArrayValid,
   isAuthorizationHeaderValid,
   isEmailValid,
+  isFileNameValid,
   isIntegerValid,
   isJWTValid,
   isNumberValid,
