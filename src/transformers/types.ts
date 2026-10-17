@@ -23,14 +23,14 @@ export type IDateValue = Date | number | string;
 /**
  * Date Template
  * A date can be prettified by choosing a template that meets the user's requirements.
- * - date-short: 29/04/1453
- * - date-medium: April 29th, 1453
- * - date-long: Friday, April 29th, 1453
- * - time-short: 12:00 AM
- * - time-medium: 12:00:00 AM
- * - datetime-short: 29/04/1453, 12:00 AM
- * - datetime-medium: Apr 29, 1453, 12:00:00 AM
- * - datetime-long: Friday, April 29th, 1453 at 12:00:00 AM
+ * - date-short: 12/05/2024
+ * - date-medium: December 5, 2024
+ * - date-long: Thursday, December 5, 2024
+ * - time-short: 9:05 PM
+ * - time-medium: 9:05:20 PM
+ * - datetime-short: 12/5/2024, 9:05 PM
+ * - datetime-medium: December 5, 2024 at 9:05 PM
+ * - datetime-long: Thursday, December 5, 2024 at 9:05:20 PM
  */
 export type IDateTemplate =
   | 'date-short'

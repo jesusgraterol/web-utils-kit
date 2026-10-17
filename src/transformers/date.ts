@@ -4,7 +4,7 @@ import { ERRORS } from '../shared/errors.js';
 
 import type { IDateTemplate, IDateValue, ITimeString } from './types.js';
 import {
-  DATE_TEMPLATE_CONFIGS,
+  DATE_LOCALE,
   ONE_DAY_IN_MILLISECONDS,
   ONE_HOUR_IN_MILLISECONDS,
   ONE_MINUTE_IN_MILLISECONDS,
@@ -13,7 +13,7 @@ import {
   ONE_WEEK_IN_MILLISECONDS,
   ONE_YEAR_IN_MILLISECONDS,
 } from './constants.js';
-import { parseTimeString } from './utilities.js';
+import { buildDateFormatOptions, parseTimeString } from './utilities.js';
 
 /**
  * Creates an instance of Date based on a value.
@@ -28,21 +28,34 @@ export const toDate = (value: IDateValue): Date => {
 };
 
 /**
- * Formats a date instance based on a template.
+ * Formats a date instance based on a template. The output is always en-US, whatever the runtime's
+ * locale, and hours have no leading zero.
  * - date-short: 12/05/2024 (Default)
  * - date-medium: December 5, 2024
  * - date-long: Thursday, December 5, 2024
- * - time-short: 12:05 PM
- * - time-medium: 12:05:20 PM
- * - datetime-short: 12/5/2024, 12:05 PM
- * - datetime-medium: December 5, 2024 at 12:05 PM
- * - datetime-long: Thursday, December 5, 2024 at 12:05:20 PM
+ * - time-short: 9:05 PM
+ * - time-medium: 9:05:20 PM
+ * - datetime-short: 12/5/2024, 9:05 PM
+ * - datetime-medium: December 5, 2024 at 9:05 PM
+ * - datetime-long: Thursday, December 5, 2024 at 9:05:20 PM
+ *
+ * Without a time zone, the runtime's local zone is used, so a server and a browser can format the
+ * same instant differently. Pass 'UTC' for calendar dates and for data defined in UTC periods, and
+ * an explicit time zone for server-rendered output. Templates with a time end with the zone's short
+ * name when a time zone is given, for example "December 5, 2024 at 11:30 PM UTC". Prefer
+ * date-medium, datetime-medium and time-medium in UI text over the numeric templates.
  * @param value The date value to be formatted. It can be a Date object, a timestamp, or a date string.
  * @param template The template to use for formatting the date. Defaults to date-short.
+ * @param timeZone? The IANA time zone to format in, such as 'UTC'. Defaults to the runtime's time zone.
  * @returns A string representing the formatted date.
+ * @throws
+ * - A RangeError if the time zone is unknown.
  */
-export const prettifyDate = (value: IDateValue, template: IDateTemplate = 'date-short'): string =>
-  toDate(value).toLocaleString(undefined, DATE_TEMPLATE_CONFIGS[template]);
+export const prettifyDate = (
+  value: IDateValue,
+  template: IDateTemplate = 'date-short',
+  timeZone?: string,
+): string => toDate(value).toLocaleString(DATE_LOCALE, buildDateFormatOptions(template, timeZone));
 
 /**
  * Formats a duration in milliseconds into a human-readable string.

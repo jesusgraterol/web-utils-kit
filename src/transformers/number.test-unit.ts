@@ -48,6 +48,40 @@ describe('prettifyFileSize', () => {
   ])('prettifyFileSize(%d, %i) -> %s', (a, b, expected) => {
     expect(prettifyFileSize(a, b)).toBe(expected);
   });
+
+  test.each([
+    [1000n, 2, '1000 B'],
+    [2785n, 2, '2.72 kB'],
+    [85545n, 6, '83.540039 kB'],
+    [977615n, 1, '954.7 kB'],
+    [1211423n, 2, '1.16 MB'],
+    [79551423n, 2, '75.87 MB'],
+    [99479551423n, 2, '92.65 GB'],
+    [BigInt(Number.MAX_SAFE_INTEGER), 2, '8.00 PB'],
+  ])('prettifyFileSize(%sn, %i) -> %s', (a, b, expected) => {
+    expect(prettifyFileSize(a, b)).toBe(expected);
+  });
+
+  test.each([
+    [2n ** 60n, 2, '1.00 EB'],
+    [9007199254740993n, 2, '8.00 PB'],
+    [2n ** 70n + 2n ** 69n, 1, '1.5 ZB'],
+    [2n ** 60n * 1023n + 2n ** 59n, 2, '1023.50 EB'],
+    [2n ** 60n * 1024n - 1n, 2, '1.00 ZB'],
+    [2n ** 90n, 2, '1024.00 YB'],
+    [9007199254740993n, 0, '8 PB'],
+  ])('prettifyFileSize(%sn, %i) -> %s beyond Number.MAX_SAFE_INTEGER', (a, b, expected) => {
+    expect(prettifyFileSize(a, b)).toBe(expected);
+  });
+
+  test.each([
+    [0, '0 B'],
+    [-1, '0 B'],
+    [0n, '0 B'],
+    [-1n, '0 B'],
+  ])('prettifyFileSize(%s) -> %s', (a, expected) => {
+    expect(prettifyFileSize(a)).toBe(expected);
+  });
 });
 
 describe('prettifyBadgeCount', () => {

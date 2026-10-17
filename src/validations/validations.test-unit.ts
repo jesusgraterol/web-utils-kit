@@ -8,6 +8,7 @@ import {
   isArrayValid,
   isAuthorizationHeaderValid,
   isEmailValid,
+  isFileNameValid,
   isIntegerValid,
   isJWTValid,
   isNumberValid,
@@ -768,5 +769,54 @@ describe('isUUIDValid', () => {
     [true, 4, false],
   ])('isUUIDValid(%s, %d) -> %s', (a, b, expected) => {
     expect(isUUIDValid(a, b)).toBe(expected);
+  });
+});
+
+describe('isFileNameValid', () => {
+  test.each([
+    ['file.txt', true],
+    ['.gitignore', true],
+    ['a', true],
+    ['report 2026-10-16.pdf', true],
+    ['console.log', true],
+    ['com0', true],
+    ['a'.repeat(255), true],
+    ['é'.repeat(127), true],
+    ['', false],
+    ['.', false],
+    ['..', false],
+    ['con', false],
+    ['CON.txt', false],
+    ['lpt9.md', false],
+    ['nul', false],
+    ['Aux.tar.gz', false],
+    ['a<b', false],
+    ['a>b', false],
+    ['a:b', false],
+    ['a"b', false],
+    ['a/b', false],
+    ['a\\b', false],
+    ['a|b', false],
+    ['a?b', false],
+    ['a*b', false],
+    ['\u0001', false],
+    ['a\u007fb', false],
+    ['name.', false],
+    ['name ', false],
+    ['a'.repeat(256), false],
+    ['é'.repeat(128), false],
+    [undefined, false],
+    [123, false],
+  ])('isFileNameValid(%j) -> %s', (value, expected) => {
+    expect(isFileNameValid(value)).toBe(expected);
+  });
+
+  test.each([
+    ['abcd', 4, true],
+    ['abcde', 4, false],
+    ['éé', 4, true],
+    ['ééé', 4, false],
+  ])('isFileNameValid(%s, %d) -> %s', (value, maxBytes, expected) => {
+    expect(isFileNameValid(value, maxBytes)).toBe(expected);
   });
 });

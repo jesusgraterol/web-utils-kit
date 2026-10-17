@@ -1,7 +1,12 @@
 import { version as uuidVersion, validate as uuidValidate } from 'uuid';
 
 import type { IUUIDVersion } from '../shared/types.js';
-import { MAX_EMAIL_LENGTH } from './constants.js';
+import {
+  FILE_NAME_FORBIDDEN_CHARACTERS,
+  MAX_EMAIL_LENGTH,
+  MAX_FILE_NAME_BYTES,
+  WINDOWS_RESERVED_FILE_NAME,
+} from './constants.js';
 
 /**
  * Verifies if a value is a valid string and its length is within a range (optional).
@@ -217,3 +222,30 @@ export const isURLValid = (value: unknown): value is string => {
  */
 export const isUUIDValid = (value: unknown, version: IUUIDVersion): value is string =>
   typeof value === 'string' && uuidValidate(value) && uuidVersion(value) === version;
+
+/**
+ * Verifies if a value is a file name that is valid on Windows, macOS and Linux: one path component
+ * whose UTF-8 size is between 1 and maxBytes. It rejects ".", "..", control characters, the
+ * characters < > : " / \ | ? *, a trailing space or period, and Windows device names such as
+ * "con" or "lpt1.txt", in any letter case.
+ * @param value The value to be validated.
+ * @param maxBytes? The maximum size of the name in UTF-8 bytes. Defaults to 255.
+ * @returns A boolean indicating whether the value is a portable file name.
+ */
+export const isFileNameValid = (
+  value: unknown,
+  maxBytes: number = MAX_FILE_NAME_BYTES,
+): value is string => {
+  if (typeof value !== 'string') {
+    return false;
+  }
+  const byteLength = new TextEncoder().encode(value).length;
+  return (
+    byteLength >= 1 &&
+    byteLength <= maxBytes &&
+    !FILE_NAME_FORBIDDEN_CHARACTERS.test(value) &&
+    // a trailing period also rejects "." and ".."
+    !/[ .]$/.test(value) &&
+    !WINDOWS_RESERVED_FILE_NAME.test(value)
+  );
+};

@@ -16,6 +16,7 @@ export {
   isObjectValid,
   isArrayValid,
   isEmailValid,
+  isFileNameValid,
   isSlugValid,
   isPasswordValid,
   isOTPSecretValid,
@@ -53,6 +54,8 @@ export {
   stringifyValue,
   applySubstitutions,
   toMS,
+  encodeBase64Url,
+  decodeBase64Url,
   stringifyJSON,
   stringifyJSONDeterministically,
   parseJSON,
@@ -61,7 +64,13 @@ export {
 } from './transformers/index.js';
 
 // utilities
-export type { IFilterByQueryOptions, ISortDirection } from './utils/index.js';
+export type {
+  IDelayOptions,
+  IFilterByQueryOptions,
+  IRetryAsyncFunctionOptions,
+  ISortDirection,
+  IWaitUntilOptions,
+} from './utils/index.js';
 
 export {
   applyDefaults,
@@ -83,6 +92,11 @@ export {
   filterByQuery,
   delay,
   retryAsyncFunction,
+  waitUntil,
+  hasWindow,
+  hasNavigator,
+  isIndexedDbAvailable,
+  prefersReducedMotion,
   extractTokenFromAuthorizationHeader,
   extractEmailUsername,
   getInitials,

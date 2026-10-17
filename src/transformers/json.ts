@@ -91,6 +91,8 @@ export const parseJSON = <T>(value: string): T => {
 
 /**
  * Creates a deep clone of an object by using the JSON.stringify and JSON.parse methods.
+ * @deprecated Use the built-in structuredClone instead. It keeps Dates, Maps, Sets and undefined
+ * properties, and it supports BigInts and circular references, which this function can't clone.
  * @param value The value to be cloned. It should be an object or an array.
  * @returns A deep clone of the provided value.
  * @throws

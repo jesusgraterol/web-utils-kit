@@ -1,8 +1,14 @@
 // types
-export type { IFilterByQueryOptions, ISortDirection } from './types.js';
+export type {
+  IDelayOptions,
+  IFilterByQueryOptions,
+  IRetryAsyncFunctionOptions,
+  ISortDirection,
+  IWaitUntilOptions,
+} from './types.js';
 
 // async utilities
-export { delay, retryAsyncFunction } from './async.js';
+export { delay, retryAsyncFunction, waitUntil } from './async.js';
 
 // collection utilities
 export {
@@ -13,6 +19,14 @@ export {
   shuffleArray,
   splitArrayIntoBatches,
 } from './collections.js';
+
+// environment checks
+export {
+  hasNavigator,
+  hasWindow,
+  isIndexedDbAvailable,
+  prefersReducedMotion,
+} from './environment.js';
 
 // extractors
 export {

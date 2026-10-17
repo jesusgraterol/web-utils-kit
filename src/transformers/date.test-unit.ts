@@ -1,10 +1,11 @@
 // @vitest-environment node
-import { describe, expect, test } from 'vitest';
+import { afterEach, describe, expect, test, vi } from 'vitest';
 
 import { ERRORS } from '../shared/errors.js';
 import { expectToThrowCode } from '../test-utils/index.js';
 
 import type { IDateTemplate, ITimeString } from './types.js';
+import { DATE_LOCALE, DATE_TEMPLATES_WITH_TIME } from './constants.js';
 import { prettifyDate, prettifyTime, toDate, toMS } from './date.js';
 
 describe('toDate', () => {
@@ -39,6 +40,86 @@ describe('prettifyDate', () => {
     const res = prettifyDate(Date.now(), template);
     expect(res).toBeTypeOf('string');
     expect(res.length).toBeGreaterThan(0);
+  });
+
+  // ICU separates the time from AM/PM with a narrow no-break space in recent versions
+  const normalizeSpaces = (value: string): string => value.replace(/\s/g, ' ');
+  const INSTANT = '2026-10-16T21:08:05Z';
+
+  test.each(<Array<[IDateTemplate, string]>>[
+    ['date-short', '10/16/2026'],
+    ['date-medium', 'October 16, 2026'],
+    ['date-long', 'Friday, October 16, 2026'],
+    ['time-short', '9:08 PM UTC'],
+    ['time-medium', '9:08:05 PM UTC'],
+    ['datetime-short', '10/16/2026, 9:08 PM UTC'],
+    ['datetime-medium', 'October 16, 2026 at 9:08 PM UTC'],
+    ['datetime-long', 'Friday, October 16, 2026 at 9:08:05 PM UTC'],
+  ])("prettifyDate(instant, %s, 'UTC') -> %s", (template, expected) => {
+    expect(normalizeSpaces(prettifyDate(INSTANT, template, 'UTC'))).toBe(expected);
+  });
+
+  test('formats calendar days in the provided time zone', () => {
+    const instant = '2024-12-05T23:30:00Z';
+
+    expect(prettifyDate(instant, 'date-medium', 'UTC')).toBe('December 5, 2024');
+    expect(prettifyDate(instant, 'date-medium', 'Asia/Tokyo')).toBe('December 6, 2024');
+    expect(normalizeSpaces(prettifyDate(instant, 'datetime-medium', 'Asia/Tokyo'))).toBe(
+      'December 6, 2024 at 8:30 AM GMT+9',
+    );
+  });
+
+  test('labels only the templates that include a time', () => {
+    const templates = <IDateTemplate[]>[
+      'date-short',
+      'date-medium',
+      'date-long',
+      'time-short',
+      'time-medium',
+      'datetime-short',
+      'datetime-medium',
+      'datetime-long',
+    ];
+    templates.forEach((template) => {
+      expect(prettifyDate(INSTANT, template, 'UTC').endsWith('UTC')).toBe(
+        DATE_TEMPLATES_WITH_TIME.includes(template),
+      );
+    });
+  });
+
+  test('throws a RangeError for an unknown time zone', () => {
+    expect(() => prettifyDate(INSTANT, 'datetime-medium', 'Mars/Olympus_Mons')).toThrow(RangeError);
+  });
+
+  describe('locale', () => {
+    afterEach(() => {
+      vi.restoreAllMocks();
+    });
+
+    test.each(
+      (<IDateTemplate[]>[
+        'date-short',
+        'date-medium',
+        'date-long',
+        'time-short',
+        'time-medium',
+        'datetime-short',
+        'datetime-medium',
+        'datetime-long',
+      ]).flatMap(
+        (template): Array<[IDateTemplate, string | undefined]> => [
+          [template, undefined],
+          [template, 'UTC'],
+        ],
+      ),
+    )('prettifyDate(instant, %s, %s) requests the en-US locale', (template, timeZone) => {
+      const spy = vi.spyOn(Date.prototype, 'toLocaleString');
+
+      prettifyDate(INSTANT, template, timeZone);
+
+      expect(spy).toHaveBeenCalledOnce();
+      expect(spy.mock.calls[0][0]).toBe(DATE_LOCALE);
+    });
   });
 });
 

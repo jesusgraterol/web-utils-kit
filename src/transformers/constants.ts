@@ -1,4 +1,4 @@
-import type { IDateTemplateConfigs, IUnit } from './types.js';
+import type { IDateTemplate, IDateTemplateConfigs, IUnit } from './types.js';
 
 /* ************************************************************************************************
  *                                            NUMBERS                                             *
@@ -11,6 +11,18 @@ export const FILE_SIZE_UNITS: string[] = ['kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'Z
 /* ************************************************************************************************
  *                                             DATES                                              *
  ************************************************************************************************ */
+
+// the locale every date is formatted in, so output doesn't depend on the runtime's locale
+export const DATE_LOCALE = 'en-US';
+
+// the templates that include a time, which get the time zone's name when a time zone is provided
+export const DATE_TEMPLATES_WITH_TIME: IDateTemplate[] = [
+  'time-short',
+  'time-medium',
+  'datetime-short',
+  'datetime-medium',
+  'datetime-long',
+];
 
 // the configurations that will be used to prettify dates
 export const DATE_TEMPLATE_CONFIGS: IDateTemplateConfigs = {
@@ -31,11 +43,11 @@ export const DATE_TEMPLATE_CONFIGS: IDateTemplateConfigs = {
     year: 'numeric',
   },
   'time-short': {
-    hour: '2-digit',
+    hour: 'numeric',
     minute: '2-digit',
   },
   'time-medium': {
-    hour: '2-digit',
+    hour: 'numeric',
     minute: '2-digit',
     second: '2-digit',
   },
@@ -43,14 +55,14 @@ export const DATE_TEMPLATE_CONFIGS: IDateTemplateConfigs = {
     day: 'numeric',
     month: '2-digit',
     year: 'numeric',
-    hour: '2-digit',
+    hour: 'numeric',
     minute: '2-digit',
   },
   'datetime-medium': {
     day: 'numeric',
     month: 'long',
     year: 'numeric',
-    hour: '2-digit',
+    hour: 'numeric',
     minute: '2-digit',
   },
   'datetime-long': {
@@ -58,11 +70,21 @@ export const DATE_TEMPLATE_CONFIGS: IDateTemplateConfigs = {
     day: 'numeric',
     month: 'long',
     year: 'numeric',
-    hour: '2-digit',
+    hour: 'numeric',
     minute: '2-digit',
     second: '2-digit',
   },
 };
+
+/* ************************************************************************************************
+ *                                           BASE64URL                                            *
+ ************************************************************************************************ */
+
+// the characters a base64url value can hold (no padding)
+export const BASE64URL_PATTERN = /^[A-Za-z0-9_-]*$/;
+
+// the bytes converted per String.fromCharCode call, kept well below the engines' argument limits
+export const BINARY_STRING_CHUNK_SIZE = 32768;
 
 /* ************************************************************************************************
  *                                          TIME STRING                                           *

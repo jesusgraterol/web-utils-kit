@@ -1,6 +1,6 @@
 import type { INumberFormatConfig } from './types.js';
 import { FILE_SIZE_THRESHOLD, FILE_SIZE_UNITS } from './constants.js';
-import { buildNumberFormatConfig } from './utilities.js';
+import { buildNumberFormatConfig, formatLargeFileSize } from './utilities.js';
 
 /**
  * Formats a numeric value based on the user's default language.
@@ -39,12 +39,21 @@ export const prettifyPercentage = (
 };
 
 /**
- * Formats a bytes value into a human readable format.
- * @param value The bytes value to be formatted.
+ * Formats a bytes value into a human readable format. Bigints, such as BIGINT database values, are
+ * accepted too; values beyond Number.MAX_SAFE_INTEGER are formatted without losing precision.
+ * @param value The bytes value to be formatted, as a number or a bigint.
  * @param decimalPlaces The number of decimal places to include. Defaults to 2.
  * @returns A string representing the formatted file size.
  */
-export const prettifyFileSize = (value: number, decimalPlaces: number = 2): string => {
+export const prettifyFileSize = (value: number | bigint, decimalPlaces: number = 2): string => {
+  if (typeof value === 'bigint') {
+    if (value <= 0n) {
+      return '0 B';
+    }
+    return value <= BigInt(Number.MAX_SAFE_INTEGER)
+      ? prettifyFileSize(Number(value), decimalPlaces)
+      : formatLargeFileSize(value, decimalPlaces);
+  }
   if (typeof value === 'number' && value > 0) {
     let bytes = value;
 
